@@ -69,6 +69,19 @@ const rules: KarabinerRules[] = [
       p: app("Spotify"),
     },
 
+    // c = Musi*c* which isn't "m" because we want it to be on the left hand
+    c: {
+      p: {
+        to: [{ key_code: "play_or_pause" }],
+      },
+      n: {
+        to: [{ key_code: "fastforward" }],
+      },
+      b: {
+        to: [{ key_code: "rewind" }],
+      },
+    },
+
     // w = "Window" via rectangle.app
     w: {
       semicolon: {
@@ -234,19 +247,6 @@ const rules: KarabinerRules[] = [
       },
       i: {
         to: [{ key_code: "page_up" }],
-      },
-    },
-
-    // c = Musi*c* which isn't "m" because we want it to be on the left hand
-    c: {
-      p: {
-        to: [{ key_code: "play_or_pause" }],
-      },
-      n: {
-        to: [{ key_code: "fastforward" }],
-      },
-      b: {
-        to: [{ key_code: "rewind" }],
       },
     },
 

@@ -1,3 +1,4 @@
+// utils.ts
 import { To, KeyCode, Manipulator, KarabinerRules } from "./types";
 
 /**
@@ -15,8 +16,7 @@ type HyperKeySublayer = {
 
 /**
  * Create a Hyper Key sublayer, where every command is prefixed with a key
- * e.g. Hyper + O ("Open") is the "open applications" layer, I can press
- * e.g. Hyper + O + G ("Google Chrome") to open Chrome
+ * e.g. Hyper + O ("Open") is the "open applications" layer, you have to keep pressing Hyper
  */
 export function createHyperSubLayer(
   sublayer_key: KeyCode,
@@ -99,7 +99,7 @@ export function createHyperSubLayer(
 }
 
 /**
- * Create all hyper sublayers. This needs to be a single function, as well need to
+ * Create all hyper sublayers. This needs to be a single function, as we need to
  * have all the hyper variable names in order to filter them and make sure only one
  * activates at a time
  */
@@ -148,6 +148,95 @@ export function createHyperSubLayers(subLayers: {
           ),
         }
   );
+}
+
+/**
+ * Creates rules for sequential Hyper Key chords (press and release Hyper + key, then press another key).
+ */
+export function createSequentialHyperLayers(subLayers: {
+  [trigger_key in KeyCode]?: Record<KeyCode, LayerCommand>;
+}): Manipulator[] {
+  const allManipulators: Manipulator[] = [];
+
+  for (const triggerKey in subLayers) {
+    if (subLayers.hasOwnProperty(triggerKey)) {
+      const commands = subLayers[triggerKey as KeyCode];
+      if (commands) {
+        const stageOneVariableName = `hyper_seq_${triggerKey}_stage_1`;
+        const allStageOneVariables = Object.keys(commands).map(
+          (key) => `hyper_seq_${key}_stage_1`
+        );
+        const timeoutVariableName = `${stageOneVariableName}_timer`; //timer
+
+        const initialTrigger: Manipulator = {
+          description: `Hyper + ${triggerKey} (Stage 1)`,
+          type: "basic",
+          from: {
+            key_code: triggerKey as KeyCode,
+            modifiers: { optional: ["any"] },
+          },
+          to_after_key_up: [
+            { set_variable: { name: stageOneVariableName, value: 1 } },
+            { set_variable: { name: timeoutVariableName, value: 1 } }, //set timer flag
+          ],
+          to: [],
+          conditions: [
+            { type: "variable_if", name: "hyper", value: 1 },
+            ...allStageOneVariables
+              .filter((varName) => varName !== stageOneVariableName)
+              .map((varName) => ({
+                type: "variable_if" as const,
+                name: varName,
+                value: 0,
+              })),
+          ],
+        };
+
+        allManipulators.push(initialTrigger);
+
+        for (const secondKey in commands) {
+          if (commands.hasOwnProperty(secondKey)) {
+            const command = commands[secondKey as KeyCode];
+            if (command) {
+              const subsequentAction: Manipulator = {
+                ...command,
+                type: "basic",
+                from: { key_code: secondKey as KeyCode, modifiers: { optional: ["any"] } },
+                conditions: [
+                  { type: "variable_if", name: stageOneVariableName, value: 1 },
+                  { type: "variable_if", name: timeoutVariableName, value: 1 }, // Only if timer is active
+                ],
+                to: [
+                  ...command.to,
+                  { set_variable: { name: stageOneVariableName, value: 0 } },
+                  { set_variable: { name: timeoutVariableName, value: 0 } }, // Reset timer flag
+                ],
+              };
+              allManipulators.push(subsequentAction);
+            }
+          }
+        }
+        const timeoutReset: Manipulator = {
+          type: "basic",
+          from: { key_code: "any", modifiers: { optional: ["any"] } }, // Any key press will reset if timer is active
+          to: [
+            { set_variable: { name: stageOneVariableName, value: 0 } },
+            { set_variable: { name: timeoutVariableName, value: 0 } }, // Reset timer flag
+          ],
+          conditions: [
+            { type: "variable_if", name: stageOneVariableName, value: 1 },
+            { type: "variable_if", name: timeoutVariableName, value: 1 },
+            { type: "event_changed_if", value: true }, // Trigger on any key event
+          ],
+          parameters: {
+            "basic.simultaneous_threshold_milliseconds": 500, //default timeout
+          },
+        };
+        allManipulators.push(timeoutReset);
+      }
+    }
+  }
+  return allManipulators;
 }
 
 function generateSubLayerVariableName(key: KeyCode) {
