@@ -1,21 +1,31 @@
-;; Caps to escape/control configuration for Kanata
+#|
+MacOS: Sequoia 15.4.1 (24E263)
+Prerequisites:
+1. Privacy & Security > Full Disk Access: Add <kanata-bin-path>
+2. Privacy & Security > Input Monitoring: Add <kanata-bin-path>
+
+Launch Commands (Terminal):
+sudo launchctl load /Library/LaunchDaemons/com.<username>.kanata.plist
+sudo launchctl start com.<username>.kanata
+|#
+
+(defcfg
+  process-unmapped-keys yes
+)
 
 (defsrc
-  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
   caps
 )
 
-;; Definine two aliases, one for esc/control to other for function key
+(defvar
+  tap-time 200
+  hold-time 200
+)
+
 (defalias
-  escctrl (tap-hold 100 100 esc lctl)
+  hyperkey (tap-hold-press $tap-time $hold-time esc (multi lsft lctl lalt lmet))
 )
 
 (deflayer base
-  brdn  brup  _    _    _    _   prev  pp  next  mute  vold  volu
-  @escctrl
-)
-
-(deflayer fn
-  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
-  @escctrl
+  @hyperkey
 )
