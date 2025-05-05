@@ -436,4 +436,5 @@ export type KeyCode =
   | "vk_consumer_next"
   //   not_from: true
   | "volume_down"
-  | "volume_up";
+  | "volume_up"
+  | "any";
