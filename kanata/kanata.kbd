@@ -1,20 +1,19 @@
 #|
 MacOS: Sequoia 15.4.1 (24E263)
 Prerequisites:
-1. Privacy & Security > Full Disk Access: Add <kanata-bin-path>
-2. Privacy & Security > Input Monitoring: Add <kanata-bin-path>
+1.  Privacy & Security > Full Disk Access: Add <kanata-bin-path>
+2.  Privacy & Security > Input Monitoring: Add <kanata-bin-path>
 
 Launch Commands (Terminal):
 sudo launchctl load /Library/LaunchDaemons/com.<username>.kanata.plist
 sudo launchctl start com.<username>.kanata
 |#
-
 (defcfg
   process-unmapped-keys yes
 )
 
 (defsrc
-  f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
   caps
 )
 
@@ -24,15 +23,10 @@ sudo launchctl start com.<username>.kanata
 )
 
 (defalias
-  hyper (tap-hold-press $tap-time $hold-time esc (layer-switch hyper-layer))
+  hyperkey (tap-hold-press $tap-time $hold-time esc (multi lsft lctl lalt lmet))
 )
 
 (deflayer base
-  f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
-  @hyper
-)
-
-(deflayer hyper-layer
-  _     _     _     _     _     _     prev  pp    next  mute  vold  volu
-  brdn  brup  _     _     _     _     _     _     _     _     _     _
+  brdn  brup  _    _    _    _   prev  pp  next  mute  vold  volu
+  @hyperkey
 )
