@@ -113,7 +113,9 @@
 # cmd + shift - return : open -n -a "Google Chrome"
 
 
-cmd + ctrl + alt + shift - g : open -n -a "Google Chrome"
+# cmd + ctrl + alt + shift - g : open -n -a "Google Chrome"
+
+# shift + cmd - j : echo 'hello SKHD'
 
 
 # open qutebrowser
@@ -121,3 +123,37 @@ cmd + ctrl + alt + shift - g : open -n -a "Google Chrome"
 
 # open mpv
 # cmd - m : open -na /Applications/mpv.app $(pbpaste)
+
+# ---
+# https://notes.alinpanaitiu.com/Keyboard-tricks-from-a-macOS-app-dev
+
+# Edit skhd config
+fn + k : code $HOME/.skhdrc
+
+# Easy to use Sleep hotkey
+fn - q : pmset sleepnow
+
+# Turn on lights to warm colors
+fn - w : shortcuts run "Warm Blend"
+
+# Connect or disconnect Sidecar
+fn - s : $HOME/.local/bin/lunar toggle-connection sidecar
+
+# Search selected text on Google
+fn - g : skhd -k 'cmd - c'; open "https://www.google.ro/search?q=$(pbpaste)"
+# Upload selected file and copy URL to clipboard
+fn - f : skhd -k 'cmd + alt - c'; \
+       terminal-notifier -title "Uploading file" -message "$(pbpaste)" -ignoreDnD; \
+       curl --upload-file "$(pbpaste)" "https://transfer.sh/$(basename $(pbpaste))" | pbcopy; \
+       terminal-notifier -title "File uploaded" -message "$(pbpaste)" -ignoreDnD
+
+
+# --- Things that need SIP disabled ---
+()
+# Decrease window opacity (more transparent) -- "0x1B" => "minus (-)"
+fn - 0x1B : yabai -m window --opacity $(bc -e "$(yabai -m query --windows --window | jq -r '."opacity"') - 0.05")
+# Increase window opacity (less transparent) -- "0x18" => "plus (=)",
+fn - 0x18 : yabai -m window --opacity $(bc -e "$(yabai -m query --windows --window | jq -r '."opacity"') + 0.05")
+
+# Toggle Picture-in-Picture for the current window
+fn - p : yabai -m window --toggle pip

@@ -6,12 +6,19 @@ This repository contains the configuration files for my macOS environment.
 
 These are some of the applications I typically install on a new macOS system:
 
-* iTerm2
+* iTerm2 / Kitty
 * Shortcat
 * Dropover
 * Obsidian
 * Visual Studio Code
 * Raycast
+
+Optional
+* Hyperkey / Kanata 
+* Raycast Shortcuts / skskhd
+* Hammerspoon (Mac automations)
+* Amaethyst / Yabai
+
 
 ## Setup Instructions for a New Laptop
 
@@ -90,3 +97,5 @@ For software developers, you can run the provided script to create a basic folde
 ```bash
 cd macos-config/scripts
 ./create_dev_folders.sh
+
+6. Raycast Snipets
