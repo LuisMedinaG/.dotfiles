@@ -23,6 +23,7 @@ alias ...='cd ../../'
 alias ....='cd ../../../'
 alias grep='grep --color=auto'
 alias h='history 1'
+alias ls='ls --color=auto'
 alias l='ls -lAh'
 alias python='/usr/local/bin/python3'
 alias g='git'
@@ -258,7 +259,7 @@ reload-ssh() {
 source ~/.zshenv
 
 ## pic-tools
-source $HOME/Documents/dbaas/local/pic-tools/scripts/*.env
+source $HOME/Documents/Code/Archives/pic-tools/scripts/*.env
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/lumedina/.rd/bin:$PATH"
