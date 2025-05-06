@@ -5,9 +5,11 @@ Prerequisites:
 2.  Privacy & Security > Input Monitoring: Add <kanata-bin-path>
 
 Launch Commands (Terminal):
+sudo cp com.<username>.kanata.plist /Library/LaunchDaemons/
 sudo launchctl load /Library/LaunchDaemons/com.<username>.kanata.plist
 sudo launchctl start com.<username>.kanata
 |#
+
 (defcfg
   process-unmapped-keys yes
 )

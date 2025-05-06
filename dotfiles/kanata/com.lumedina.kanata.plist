@@ -9,7 +9,7 @@
     <array>
         <string>/opt/homebrew/bin/kanata</string>
         <string>-c</string>
-        <string>/Users/lumedina/Documents/personal/code/karabiner/kanata/kanata.kbd</string>
+        <string>/Users/lumedina/Documents/Code/Personal/macos-config/dotfiles/kanata/kanata.kbd</string>
     </array>
 
     <key>RunAtLoad</key>
