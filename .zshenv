@@ -8,7 +8,7 @@
 export M3_HOME="/usr/local/Cellar/maven/3.9.8"
 export M3="$M3_HOME/bin"
 export PATH=$M3:$PATH
-
+    
 # Oracle environment variables
 export http_proxy=http://www-proxy.us.oracle.com:80
 export https_proxy=http://www-proxy.us.oracle.com:80
