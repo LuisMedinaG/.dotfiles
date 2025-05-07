@@ -1,0 +1,34 @@
+# Brewfile for Luis Medina's setup
+
+# Taps
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/core"
+
+# CLI tools
+brew "curl"
+brew "wget"
+brew "git"
+brew "zsh"
+brew "fzf"
+brew "bat"
+brew "fd"
+brew "neovim"
+brew "ripgrep"
+brew "tree"
+brew "jq"
+brew "yadm"         # For dotfile management
+brew "maven"        # Java build tool
+
+# Development tools
+brew "pyenv"        # Python version management
+brew "jenv"         # Java version management
+
+# Applications
+cask "visual-studio-code"
+cask "rancher"      # Kubernetes management
+
+# Optional - Uncomment if needed
+# cask "iterm2"
+# cask "docker"
+# cask "rectangle"    # Window management
