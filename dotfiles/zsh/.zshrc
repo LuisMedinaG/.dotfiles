@@ -12,12 +12,15 @@ alias ....='cd ../../../'
 alias grep='grep --color=auto'
 alias h='history 1'
 alias l='ls -lAh'
+alias cat='bat'
+alias vim='nvim'
+alias preview="fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}'"
 
 # Git Shortcuts
 alias g='git'
 alias gpl='git pull'
-alias gps='git push'
-alias gc='git checkout'
+alias gpo='git push origin'
+alias gco='git checkout'
 alias ghc='git rev-parse HEAD | pbcopy'
 alias gsc='git branch --show-current | pbcopy'
 
