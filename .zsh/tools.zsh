@@ -105,6 +105,4 @@ reload-ssh() {
 }
 
 # Start SCM agent socket if not running
-if [ ! -f ~/.ssh/scm-agent.sock ] && command -v ssh-agent >/dev/null; then
-  ssh-agent -a ~/.ssh/scm-agent.sock >/dev/null
-fi
+[[ ! -a ~/.ssh/scm-agent.sock ]] && ssh-agent -a ~/.ssh/scm-agent.sock
