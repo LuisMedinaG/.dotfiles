@@ -125,7 +125,7 @@ _fzf_comprun() {
 
 ### ───── Completion Engine ─────
 autoload -U compinit && compinit
-source ~/.zsh/completion.zsh
+# source ~/.zsh/completion.zsh
 zstyle ':completion:*' auto-description 'specify: %d'
 zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}'
 zstyle ':completion:*' menu select=0
