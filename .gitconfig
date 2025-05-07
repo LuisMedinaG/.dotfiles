@@ -1,0 +1,10 @@
+[user]
+	name = Luis Medina
+	email = luis.m.medina@oracle.com
+
+[alias]
+	undo = reset --soft HEAD^
+[core]
+	editor = code --wait
+[rerere]
+	enabled = true
