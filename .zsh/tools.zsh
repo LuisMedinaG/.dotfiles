@@ -74,13 +74,20 @@ if [ -d "/opt/oracle/instantclient_23_3" ]; then
 fi
 
 ### ───── FZF (Fuzzy Finder) ─────
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# Basic fzf setup
+export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --info=inline --cycle --pointer=► --marker=✓'
+export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
 
 export FZF_COMPLETION_TRIGGER='~~'
 export FZF_COMPLETION_OPTS='--border --info=inline'
-export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --bind 'ctrl-/:change-preview-window(down|hidden|)' --bind shift-up:preview-page-up,shift-down:preview-page-down"
+
+# CTRL-R - Search command history
+export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
+
+# export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+# export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --bind 'ctrl-/:change-preview-window(down|hidden|)' --bind shift-up:preview-page-up,shift-down:preview-page-down"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # FZF helper functions
 _fzf_compgen_path() { command -v fd >/dev/null && fd --hidden --follow --exclude ".git" . "$1"; }
