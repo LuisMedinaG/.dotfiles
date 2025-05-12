@@ -9,7 +9,7 @@ export LC_ALL="en_US.UTF-8"
 export EDITOR="code"
 
 # Starship
-eval "$(starship init zsh)"
+# eval "$(starship init zsh)"
 
 # Load essential ZSH options first
 [ -f ~/.zsh/options.zsh ] && source ~/.zsh/options.zsh

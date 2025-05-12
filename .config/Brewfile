@@ -29,6 +29,6 @@ cask "visual-studio-code"
 cask "rancher"      # Kubernetes management
 
 # Optional - Uncomment if needed
-# cask "iterm2"
+cask "iterm2"
 # cask "docker"
 # cask "rectangle"    # Window management
