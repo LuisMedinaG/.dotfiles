@@ -14,7 +14,6 @@ if [ -f "/opt/homebrew/bin/brew" ]; then
     export PATH="$HOMEBREW_PREFIX/opt/curl/bin:$PATH"
   fi
 elif [ -f "/usr/local/bin/brew" ]; then
-  # macOS Intel or Linux
   export HOMEBREW_PREFIX="/usr/local"
   eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
 fi
