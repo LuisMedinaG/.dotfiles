@@ -4,6 +4,15 @@
 
 [alias]
 	undo = reset --soft HEAD^
+[diff]
+	colorMoved = zebra
+[format]
+	pretty = oneline
+# [rebase]
+# 	autosquash = true
+# 	instructionFormat = (%an <%ae>) %s
+[pull]
+	rebase = false
 [core]
 	editor = code --wait
 [rerere]
