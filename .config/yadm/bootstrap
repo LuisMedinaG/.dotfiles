@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Install packages
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  brew install neovim ripgrep fzf
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  sudo apt install neovim ripgrep fzf
+fi
