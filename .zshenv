@@ -15,4 +15,4 @@ alias quickbuild='mvn clean install -DskipTests=true -Dfindbugs.skip=false -Dpmd
 alias fastbuild='mvn clean install -DskipTests=true -Dfindbugs.skip=true -Dpmd.skip=true -Dmaven.javadoc.skip=true -Dcheckstyle.skip=true'
 
 # Seeks
-$HOME/Documents/Code/Work/seeks/venv/bin/seeks
+# $HOME/Documents/Code/Work/seeks/venv/bin/seeks
