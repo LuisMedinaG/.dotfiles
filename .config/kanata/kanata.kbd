@@ -18,6 +18,7 @@ sudo launchctl start com.<username>.kanata
 (defsrc
   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
   caps a s d f j k l ;
+  fn
   rsft
 )
 (defvar
@@ -37,11 +38,13 @@ sudo launchctl start com.<username>.kanata
   k (tap-hold $tap-time $hold-time k rmet)
   l (tap-hold $tap-time $hold-time l ralt)
   ; (tap-hold $tap-time $hold-time ; rctl)
+  fnl (tap-hold 200 200 fn (layer-toggle fn))
 )
 
 (deflayer base
   brdn  brup  _    _    _    _   prev  pp  next  mute  vold  volu
   @hyperkey @a @s @d @f @j @k @l @;
+  @fnl
   bspc
 )
 
@@ -49,4 +52,5 @@ sudo launchctl start com.<username>.kanata
   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
   _ _ _ _ _ _ _ _ _
   bspc
+  fn
 )
