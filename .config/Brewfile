@@ -6,19 +6,26 @@ tap "homebrew/cask"
 tap "homebrew/core"
 
 # CLI tools
+brew "awk"           # Text processing
 brew "curl"
 brew "wget"
 brew "git"
 brew "zsh"
+brew "fd"           # Alternative to find
 brew "fzf"
-brew "bat"
-brew "fd"
+brew "bat"          # Cat with syntax highlighting
+brew "zplug"        # Zsh plugin manager
 brew "neovim"
-brew "ripgrep"
+brew "ripgrep"      # Search tool
 brew "tree"
 brew "jq"
 brew "yadm"         # For dotfile management
 brew "maven"        # Java build tool
+
+brew "zsh-syntax-highlighting" 
+brew "zsh-completions"          
+brew "zsh-autosuggestions"      
+
 
 # Development tools
 brew "pyenv"        # Python version management

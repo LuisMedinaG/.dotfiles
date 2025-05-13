@@ -87,21 +87,21 @@ export FZF_COMPLETION_OPTS='--border --info=inline'
 # CTRL-R - Search command history
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 
-# export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-# export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --bind 'ctrl-/:change-preview-window(down|hidden|)' --bind shift-up:preview-page-up,shift-down:preview-page-down"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --bind 'ctrl-/:change-preview-window(down|hidden|)' --bind shift-up:preview-page-up,shift-down:preview-page-down"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # FZF helper functions
-_fzf_compgen_path() { command -v fd >/dev/null && fd --hidden --follow --exclude ".git" . "$1"; }
-_fzf_compgen_dir() { command -v fd >/dev/null && fd --type d --hidden --follow --exclude ".git" . "$1"; }
-_fzf_comprun() {
-  local command=$1; shift
-  case "$command" in
-    cd|ls) fzf "$@" --preview 'tree -C {} | head -200' ;;
-    *) fzf "$@" ;;
-  esac
-}
+# _fzf_compgen_path() { command -v fd >/dev/null && fd --hidden --follow --exclude ".git" . "$1"; }
+# _fzf_compgen_dir() { command -v fd >/dev/null && fd --type d --hidden --follow --exclude ".git" . "$1"; }
+# _fzf_comprun() {
+#   local command=$1; shift
+#   case "$command" in
+#     cd|ls) fzf "$@" --preview 'tree -C {} | head -200' ;;
+#     *) fzf "$@" ;;
+#   esac
+# }
 
 ### ───── SSH & Yubikey ─────
 # Function to reload SSH keys with Yubikey
@@ -113,5 +113,20 @@ reload-ssh() {
   fi
 }
 
+### ───── Improving shell workflows with fzf ─────
+# https://seb.jambor.dev/posts/improving-shell-workflows-with-fzf/
+function activate-venv() {
+  local selected_env
+  selected_env=$(ls ~/.venv/ | fzf)
+
+  if [ -n "$selected_env" ]; then
+    source "$HOME/.venv/$selected_env/bin/activate"
+  fi
+}
+
 # Start SCM agent socket if not running
 [[ ! -a ~/.ssh/scm-agent.sock ]] && ssh-agent -a ~/.ssh/scm-agent.sock
+
+# https://github.com/djui/alias-tips
+# Zsh plugin to help remembering shell aliases
+# zplug "djui/alias-tips"

@@ -128,26 +128,26 @@
 # https://notes.alinpanaitiu.com/Keyboard-tricks-from-a-macOS-app-dev
 
 # Edit skhd config
-command + control + shift + option + k : code $HOME/.skhdrc
+fn + e : code $HOME/.skhdrc
 
 # Easy to use Sleep hotkey
-command + control + shift + option - q : pmset sleepnow
+# fn - q : pmset sleepnow
 
 # Turn on lights to warm colors
-command + control + shift + option - w : shortcuts run "Warm Blend"
+# fn - w : shortcuts run "Warm Blend"
 
 # Search selected text on Google
-command + control + shift + option - g : skhd -k 'cmd - c'; open "https://www.google.ro/search?q=$(pbpaste)"
+# fn - g : skhd -k 'cmd - c'; open "https://www.google.ro/search?q=$(pbpaste)"
 
 # Upload selected file and copy URL to clipboard
-# command + control + shift + option - f : skhd -k 'cmd + alt - c'; \
+# fn - f : skhd -k 'cmd + alt - c'; \
 #        terminal-notifier -title "Uploading file" -message "$(pbpaste)" -ignoreDnD; \
 #        curl --upload-file "$(pbpaste)" "https://transfer.sh/$(basename $(pbpaste))" | pbcopy; \
 #        terminal-notifier -title "File uploaded" -message "$(pbpaste)" -ignoreDnD
 
 
 # --- Things that need SIP disabled ---
-()
+# ()
 # Decrease window opacity (more transparent) -- "0x1B" => "minus (-)"
 # command + control + shift + option - 0x1B : yabai -m window --opacity $(bc -e "$(yabai -m query --windows --window | jq -r '."opacity"') - 0.05")
 # Increase window opacity (less transparent) -- "0x18" => "plus (=)",
