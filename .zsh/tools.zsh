@@ -143,8 +143,10 @@ source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # https://github.com/djui/alias-tips
 # Zsh plugin to help remembering shell aliases
-# zplug "djui/alias-tips"
+source alias-tips/alias-tips.plugin.zsh
 
+# https://github.com/Aloxaf/fzf-tab
+# Tab completion with fzf
 source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
 
 # ───── Syntax Highlighting ─────
