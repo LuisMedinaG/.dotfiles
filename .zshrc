@@ -21,22 +21,42 @@ export EDITOR="code"
 # ───── Prompt ─────
 autoload -Uz colors && colors
 
-PS1="%{$fg[cyan]%}%n@%m %{$fg[green]%}%1~ %{$reset_color%}%# "
-RPROMPT="%{$fg[yellow]%}%*%{$reset_color%}"
+# Autoload zsh's `add-zsh-hook` and `vcs_info` functions
+autoload -Uz add-zsh-hook vcs_info
 
-# History options
-export HISTSIZE=10000
-export SAVEHIST=10000
-export HISTFILE="$HOME/.zsh_history"
+# Set prompt substitution so we can use the vcs_info_message variable
+setopt prompt_subst
 
-# Add files and directories color when running ls
-# There's a generator here: http://geoff.greer.fm/lscolors/
-export CLICOLOR=1
-export LS_COLORS='di=36:ln=1;35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43'
-export GREP_COLOR='1;35;40'
+# Run the `vcs_info` hook to grab git info before displaying the prompt
+add-zsh-hook precmd vcs_info
+
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git*' formats '%b%u%c'
+# Format when the repo is in an action (merge, rebase, etc)
+# zstyle ':vcs_info:git*' actionformats '%F{14}⏱ %*%f'
+zstyle ':vcs_info:git*' unstagedstr '*'
+zstyle ':vcs_info:git*' stagedstr '+'
+# This enables %u and %c (unstaged/staged changes) to work
+zstyle ':vcs_info:*:*' check-for-changes true
+
+# Prompt: <last two directory components> <Git info> <user indicator>
+PROMPT=' %{$fg[cyan]%}%2~%f %F{blue}${vcs_info_msg_0_}%f %# '
+RPROMPT='%F{8}⎇ $vcs_info_msg_0_%f %F{7}⏱ %*%f'
 
 # Oh My Posh:
 # eval "$(oh-my-posh init zsh)"
 
 # Starship:
 # eval "$(starship init zsh)"
+
+# ───── History ─────
+export HISTSIZE=10000
+export SAVEHIST=10000
+export HISTFILE="$HOME/.zsh_history"
+
+# ───── LS_COLORS ─────
+# Add files and directories color when running ls
+# There's a generator here: http://geoff.greer.fm/lscolors/
+export CLICOLOR=1
+export LS_COLORS='di=36:ln=1;35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43'
+export GREP_COLOR='1;35;40'
