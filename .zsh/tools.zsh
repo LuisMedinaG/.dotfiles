@@ -137,6 +137,10 @@ export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --b
 # https://github.com/Phantas0s/.dotfiles/blob/master/zsh/completion.zsh
 source $HOME/.zsh/completion.zsh
 
+# ───── Auto Suggestions ─────
+# https://github.com/zsh-users/zsh-autosuggestions
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
 # https://github.com/djui/alias-tips
 # Zsh plugin to help remembering shell aliases
 # zplug "djui/alias-tips"
