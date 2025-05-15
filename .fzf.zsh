@@ -1,9 +1,9 @@
 #!/usr/bin/env zsh
 
-zle     -N            fzf-cd-widget
-bindkey -M emacs '\C-e' fzf-cd-widget
-bindkey -M vicmd '\C-e' fzf-cd-widget
-bindkey -M viins '\C-e' fzf-cd-widget
+zle     -N              fzf-cd-widget
+bindkey -M emacs '\C-g' fzf-cd-widget
+bindkey -M vicmd '\C-g' fzf-cd-widget
+bindkey -M viins '\C-g' fzf-cd-widget
 
 FZF_COLORS="bg+:-1,\
 fg:gray,\
@@ -36,7 +36,7 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # Search command history
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 # Preview files
-export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --bind 'ctrl-/:change-preview-window(down|hidden|)' --bind shift-up:preview-page-up,shift-down:preview-page-down"
+export FZF_CTRL_T_OPTS="--walker-skip .git,node_modules,target --preview 'bat -n --style=numbers --color=always {}' --bind 'ctrl-/:change-preview-window(down|hidden|)' --bind shift-up:preview-page-up,shift-down:preview-page-down"
 # cd into the selected directory
 export FZF_ALT_C_OPTS="--walker-skip .git,node_modules,target --preview 'tree -C {}'"
 
@@ -53,6 +53,7 @@ _fzf_comprun() {
         ls)                 fzf --preview 'tree -C {} | head -200'      "$@" ;;
         cd)                 rg -d . | fzf "$@" --preview 'tree -C {} | head -200' ;;
         export | unset)     fzf --preview "eval 'echo \$'{}"            "$@" ;;
+        tree)               find . -type d | fzf --preview 'tree -C {}' "$@";;
         *)                  fzf "$@" ;;
     esac
 }
@@ -67,3 +68,10 @@ _fzf_compgen_path() {
 _fzf_compgen_dir() {
     fd --type d --hidden --follow --exclude ".git" "$1"
 }
+
+# https://thevaluable.dev/fzf-shell-integration/
+# _fzf_complete_git() {
+#   _fzf_complete -- "$@" < <(
+#     git --help -a | grep -E '^\s+' | awk '{print $1}'
+#   )
+# }
