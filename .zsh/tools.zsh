@@ -104,6 +104,7 @@ export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --b
 
 # Completion 
 # https://github.com/Phantas0s/.dotfiles/blob/master/zsh/completion.zsh
+# Uses https://github.com/zsh-users/zsh-completions
 source $HOME/.zsh/completion.zsh
 
 # https://github.com/zsh-users/zsh-autosuggestions
