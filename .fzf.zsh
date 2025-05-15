@@ -1,9 +1,4 @@
-# Setup fzf
-# ---------
-# Rebind ALT-c to CTRL-e
-# bindkey -rM emacs '\ec'
-# bindkey -rM vicmd '\ec'
-# bindkey -rM viins '\ec'
+#!/usr/bin/env zsh
 
 if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
   PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"

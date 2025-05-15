@@ -72,6 +72,9 @@ if [ -d "/opt/oracle/instantclient_23_3" ]; then
   export PATH="$PATH:$ORACLE_HOME"
 fi
 
+# Man pages
+export MANPAGER='nvim +Man!'
+
 # ───── Zoxide ─────
 # https://github.com/ajeetdsouza/zoxide
 eval "$(zoxide init zsh)"
@@ -79,8 +82,21 @@ eval "$(zoxide init zsh)"
 # ───── Broot ───── 
 # source $HOME/.config/broot/launcher/bash/br
 
-# ───── FZF (Fuzzy Finder) ─────
-# Basic fzf setup
+# ───── FZF ─────
+FZF_COLORS="bg+:-1,\
+fg:gray,\
+fg+:white,\
+border:black,\
+spinner:0,\
+hl:yellow,\
+header:blue,\
+info:green,\
+pointer:red,\
+marker:blue,\
+prompt:gray,\
+hl+:red"
+# --color '$FZF_COLORS' \
+
 export FZF_DEFAULT_OPTS="--height 60% \
 --border \
 --layout=reverse \
@@ -88,16 +104,15 @@ export FZF_DEFAULT_OPTS="--height 60% \
 --prompt '∷ ' \
 --pointer=► \
 --marker=✓"
+export FZF_COMPLETION_OPTS='--border --info=inline'
+export FZF_COMPLETION_DIR_COMMANDS="cd pushd rmdir tree ls"
 
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
-
-export FZF_COMPLETION_DIR_COMMANDS="cd pushd rmdir tree ls"
-export FZF_COMPLETION_OPTS='--border --info=inline'
-
-# CTRL-R - Search command history
-export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
-
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# Search command history
+export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
+# Preview files
 export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --bind 'ctrl-/:change-preview-window(down|hidden|)' --bind shift-up:preview-page-up,shift-down:preview-page-down"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
