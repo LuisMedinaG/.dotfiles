@@ -15,7 +15,7 @@ _fzf_comprun() {
 }
 
 _fzf_compgen_path() {
-    fd --type f --strip-cwd-prefix --hidden --follow --exclude .git "$1"
+    fd --type f --hidden --follow --exclude ".git" "$1"
 }
 
 _fzf_compgen_dir() {

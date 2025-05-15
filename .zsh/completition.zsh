@@ -3,23 +3,16 @@
 # | General |
 # +---------+
 
-# Load more completions
+# Load completions
 fpath=($(brew --prefix zsh-completions)/src $fpath)
-
-# Should be called before compinit
 zmodload zsh/complist
 
 # Use hjlk in menu selection (during completion)
-# Doesn't work well with interactive mode
 bindkey -M menuselect 'h' vi-backward-char
 bindkey -M menuselect 'k' vi-up-line-or-history
 bindkey -M menuselect 'j' vi-down-line-or-history
 bindkey -M menuselect 'l' vi-forward-char
 
-bindkey -M menuselect '^xg' clear-screen
-bindkey -M menuselect '^xi' vi-insert                      # Insert
-bindkey -M menuselect '^xh' accept-and-hold                # Hold
-bindkey -M menuselect '^xn' accept-and-infer-next-history  # Next
 bindkey -M menuselect '^xu' undo                           # Undo
 
 autoload -U compinit; compinit
@@ -29,7 +22,7 @@ _comp_options+=(globdots) # With hidden files
 # | Options |
 # +---------+
 
-# setopt GLOB_COMPLETE      # Show autocompletion menu with globs
+setopt GLOB_COMPLETE        # Show autocompletion menu with globs
 setopt MENU_COMPLETE        # Automatically highlight first element of completion menu
 setopt AUTO_LIST            # Automatically list choices on ambiguous completion.
 setopt COMPLETE_IN_WORD     # Complete from both ends of a word.
@@ -46,7 +39,7 @@ zstyle ':completion:*' completer _extensions _complete _approximate
 
 # Use cache for commands using cache
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/.zcompcache"
+zstyle ':completion:*' cache-path "~/.zsh/.zcompcache"
 # Complete the alias when _expand_alias is used as a function
 zstyle ':completion:*' complete true
 
@@ -64,7 +57,7 @@ zstyle ':completion:*' complete-options true
 
 zstyle ':completion:*' file-sort modification
 
-
+# Formatting
 zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
 zstyle ':completion:*:*:*:*:descriptions' format '%F{blue}-- %D %d --%f'
 zstyle ':completion:*:*:*:*:messages' format ' %F{purple} -- %d --%f'
@@ -77,14 +70,11 @@ zstyle ':completion:*:*:*:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
 # zstyle ':completion:*:complete:git:argument-1:' tag-order !aliases
 
-# Required for completion to be in good groups (named after the tags)
-zstyle ':completion:*' group-name ''
-
-zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions commands
-
+# Case-insensitive matching (important feature)
 # See ZSHCOMPWID "completion matching control"
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
 zstyle ':completion:*' keep-prefix true
 
+# SSH hosts completion
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'

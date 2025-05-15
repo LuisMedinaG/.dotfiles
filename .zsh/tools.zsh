@@ -97,13 +97,8 @@ prompt:gray,\
 hl+:red"
 # --color '$FZF_COLORS' \
 
-export FZF_DEFAULT_OPTS="--height 60% \
---border \
---layout=reverse \
---info=inline --cycle \
---prompt '∷ ' \
---pointer=► \
---marker=✓"
+export FZF_DEFAULT_OPTS="--height 60% --border --layout=reverse --info=inline --cycle --prompt '∷ ' --pointer=► --marker=✓"
+
 export FZF_COMPLETION_OPTS='--border --info=inline'
 export FZF_COMPLETION_DIR_COMMANDS="cd pushd rmdir tree ls"
 
