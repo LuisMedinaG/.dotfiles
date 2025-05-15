@@ -1,0 +1,9 @@
+[submodule "Documents/.zsh/plugins/fzf-tab"]
+	path = Documents/.zsh/plugins/fzf-tab
+	url = https://github.com/Aloxaf/fzf-tab
+[submodule "/Users/lumedina/.zsh/plugins/fzf-tab"]
+	path = /Users/lumedina/.zsh/plugins/fzf-tab
+	url = https://github.com/Aloxaf/fzf-tab
+[submodule "/Users/lumedina/.zsh/plugins/alias-tips"]
+	path = /Users/lumedina/.zsh/plugins/alias-tips
+	url = https://github.com/djui/alias-tips.git
