@@ -18,6 +18,8 @@ marker:blue,\
 prompt:gray,\
 hl+:red"
 
+# FZF_COLORS="bg+:#3F3F3F,bg:#4B4B4B,border:#6B6B6B,spinner:#98BC99,hl:#719872,fg:#D9D9D9,header:#719872,info:#BDBB72,pointer:#E12672,marker:#E17899,fg+:#D9D9D9,preview-bg:#3F3F3F,prompt:#98BEDE,hl+:#98BC99"
+
 export FZF_DEFAULT_OPTS="--height 60% \
 --border sharp \
 --color '$FZF_COLORS' \
@@ -51,7 +53,7 @@ _fzf_comprun() {
     shift
     case "$command" in
         ls)                 fzf --preview 'tree -C {} | head -200'      "$@" ;;
-        cd)                 rg -d . | fzf "$@" --preview 'tree -C {} | head -200' ;;
+        cd)                 find . -type d | fzf "$@" --preview 'tree -C {} | head -200' ;;
         export | unset)     fzf --preview "eval 'echo \$'{}"            "$@" ;;
         tree)               find . -type d | fzf --preview 'tree -C {}' "$@";;
         *)                  fzf "$@" ;;
