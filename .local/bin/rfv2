@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+INITIAL_QUERY=''
+DIRECTORY_QUERY=''
+
+CMD_PREFIX='fd --full-path '
+PREVIEW_CMD='bat --color=always {} '
+
+# if there is only one argument it needs to be a query
+if [[ $# -eq 1 ]]; then
+    INITIAL_QUERY="$*"
+
+# if there is more then one then all but the last one is the query
+# and the last is the file path to search
+elif [[ $# -gt 1 ]]; then
+    while [[ $# -gt 1 ]]; do
+        INITIAL_QUERY+="$1"
+        shift
+    done
+
+    DIRECTORY_QUERY="$1"
+fi
+
+
+# there should be a better way to do this
+# but i cant seem to get anything else to work right
+IFS=$'\n' read -d '' -ra selected < <(
+  FZF_DEFAULT_COMMAND="$CMD_PREFIX $(printf '%q' "$INITIAL_QUERY") $DIRECTORY_QUERY" \
+  fzf --multi  \
+      --ansi \
+      --disabled --query "$INITIAL_QUERY" \
+      --bind "change:reload:sleep 0.1; $CMD_PREFIX {q} $DIRECTORY_QUERY || true" \
+      --preview "$PREVIEW_CMD" \
+      --preview-window 'up,60%,border-bottom,~3'
+)
+
+[ -n "$selected" ] && "$EDITOR" "${selected[@]}"
