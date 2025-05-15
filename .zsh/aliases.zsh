@@ -24,11 +24,8 @@ alias ghc='git rev-parse HEAD | pbcopy'
 alias gsc='git branch --show-current | pbcopy'
 alias glu='git ls-files --modified --deleted --other --exclude-standard --deduplicate $(git rev-parse --show-toplevel)'
 alias gsf="git status --short | grep '^[A-Z]' | awk '{print $NF}'"
-alias gsa="git add $(git ls-files --modified --deleted --other --exclude-standard --deduplicate $(git rev-parse --show-toplevel) | fzf --multi --reverse --no-sort)"
-alias gua="git reset -- $(git status --short \
-  | grep '^[A-Z]' \
-  | awk '{print $NF}' \
-  | fzf --multi --reverse --no-sort)"
+# alias gsa="git add $(git ls-files --modified --deleted --other --exclude-standard --deduplicate $(git rev-parse --show-toplevel) | fzf --multi --reverse --no-sort)"
+# alias gua="git reset -- $(git status --short | grep '^[A-Z]' | awk '{print $NF}' | fzf --multi --reverse --no-sort)"
 
 alias ez='vim ~/.zshrc'
 alias sz='source ~/.zshrc && echo "ZSH config sourced."'

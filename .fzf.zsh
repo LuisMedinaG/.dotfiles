@@ -1,11 +1,5 @@
 #!/usr/bin/env zsh
 
-if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
-    PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"
-fi
-
-source <(fzf --zsh)
-
 FZF_COLORS="bg+:-1,\
 fg:gray,\
 fg+:white,\
@@ -40,6 +34,12 @@ export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap 
 export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --bind 'ctrl-/:change-preview-window(down|hidden|)' --bind shift-up:preview-page-up,shift-down:preview-page-down"
 # cd into the selected directory
 # export FZF_ALT_C_OPTS="--walker-skip .git,node_modules,target --preview 'tree -C {}'"
+
+if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
+    PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"
+fi
+
+source <(fzf --zsh)
 
 _fzf_comprun() {
     local command=$1
