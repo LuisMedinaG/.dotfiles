@@ -1,15 +1,7 @@
-  # ____ ___  __  __ ____  _     _____ _____ ___ ___  _   _ 
-#  / ___/ _ \|  \/  |  _ \| |   | ____|_   _|_ _/ _ \| \ | |
-# | |  | | | | |\/| | |_) | |   |  _|   | |  | | | | |  \| |
-# | |__| |_| | |  | |  __/| |___| |___  | |  | | |_| | |\  |
-#  \____\___/|_|  |_|_|   |_____|_____| |_| |___\___/|_| \_|
- #
 
 # +---------+
 # | General |
 # +---------+
-
-# source ./gambit.zsh
 
 # Load more completions
 fpath=($(brew --prefix zsh-completions)/src $fpath)
@@ -32,10 +24,6 @@ bindkey -M menuselect '^xu' undo                           # Undo
 
 autoload -U compinit; compinit
 _comp_options+=(globdots) # With hidden files
-
-# Only work with the Zsh function vman
-# See $DOTFILES/zsh/scripts.zsh
-# compdef vman="man"
 
 # +---------+
 # | Options |
@@ -100,7 +88,3 @@ zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 
 zstyle ':completion:*' keep-prefix true
 
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
-
-## For kubernetes
-# source $DOTFILES/zsh/plugins/kubectl-completion/_kubectl
-# zstyle ':completion:*:*:kubectl:*' list-grouped false

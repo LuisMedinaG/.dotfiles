@@ -9,6 +9,11 @@
 setopt autocd # cd into dir without typing 'cd'
 setopt pushdignoredups pushdminus autopushd pushd_silent
 
+# ───── History ─────
+export HISTSIZE=10000
+export SAVEHIST=10000
+export HISTFILE="$HOME/.zsh_history"
+
 # History management
 setopt appendhistory      # Append to history, don't overwrite
 setopt inc_append_history # Append to history immediately
