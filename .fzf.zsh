@@ -1,9 +1,9 @@
 #!/usr/bin/env zsh
 
-zle     -N            fzf-cd-widget
-bindkey -M emacs '\C-e' fzf-cd-widget
-bindkey -M vicmd '\C-e' fzf-cd-widget
-bindkey -M viins '\C-e' fzf-cd-widget
+zle     -N              fzf-cd-widget
+bindkey -M emacs '\C-g' fzf-cd-widget
+bindkey -M vicmd '\C-g' fzf-cd-widget
+bindkey -M viins '\C-g' fzf-cd-widget
 
 FZF_COLORS="bg+:-1,\
 fg:gray,\
@@ -36,7 +36,7 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # Search command history
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 # Preview files
-export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --bind 'ctrl-/:change-preview-window(down|hidden|)' --bind shift-up:preview-page-up,shift-down:preview-page-down"
+export FZF_CTRL_T_OPTS="--walker-skip .git,node_modules,target --preview 'bat -n --style=numbers --color=always {}' --bind 'ctrl-/:change-preview-window(down|hidden|)' --bind shift-up:preview-page-up,shift-down:preview-page-down"
 # cd into the selected directory
 export FZF_ALT_C_OPTS="--walker-skip .git,node_modules,target --preview 'tree -C {}'"
 
