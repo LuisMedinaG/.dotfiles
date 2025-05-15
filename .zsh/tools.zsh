@@ -5,8 +5,14 @@
 
 # ───── Homebrew ─────
 # Add Homebrew to the PATH
-export HOMEBREW_PREFIX="/opt/homebrew"
-eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
+if [ -f /opt/homebrew/bin/brew ]; then
+  export HOMEBREW_PREFIX="/opt/homebrew"
+  eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
+fi
+
+if [ -d $HOME/.local/bin ]; then
+  export PATH="$HOME/.local/bin":$PATH
+fi
 
 # Add curl from Homebrew to PATH
 export PATH="$(brew --prefix curl)/bin:$PATH"
