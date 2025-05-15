@@ -5,8 +5,14 @@
 
 # ───── Homebrew ─────
 # Add Homebrew to the PATH
-export HOMEBREW_PREFIX="/opt/homebrew"
-eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
+if [ -f /opt/homebrew/bin/brew ]; then
+  export HOMEBREW_PREFIX="/opt/homebrew"
+  eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
+fi
+
+if [ -d $HOME/.local/bin ]; then
+  export PATH="$HOME/.local/bin":$PATH
+fi
 
 # Add curl from Homebrew to PATH
 export PATH="$(brew --prefix curl)/bin:$PATH"
@@ -71,17 +77,21 @@ fi
 eval "$(zoxide init zsh)"
 
 # ───── Broot ───── 
-source $HOME/.config/broot/launcher/bash/br
+# source $HOME/.config/broot/launcher/bash/br
 
 # ───── FZF (Fuzzy Finder) ─────
-# To install useful key bindings and fuzzy completion:
-# $(brew --prefix)/opt/fzf/install
-
 # Basic fzf setup
-export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --info=inline --cycle --pointer=► --marker=✓'
+export FZF_DEFAULT_OPTS="--height 60% \
+--border \
+--layout=reverse \
+--info=inline --cycle \
+--prompt '∷ ' \
+--pointer=► \
+--marker=✓"
+
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
 
-export FZF_COMPLETION_TRIGGER='~~'
+export FZF_COMPLETION_DIR_COMMANDS="cd pushd rmdir tree ls"
 export FZF_COMPLETION_OPTS='--border --info=inline'
 
 # CTRL-R - Search command history
@@ -92,56 +102,22 @@ export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --b
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# fzf
-# export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
-# export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
-# FZF_COLORS="bg+:-1,\
-# fg:gray,\
-# fg+:white,\
-# border:black,\
-# spinner:0,\
-# hl:yellow,\
-# header:blue,\
-# info:green,\
-# pointer:red,\
-# marker:blue,\
-# prompt:gray,\
-# hl+:red"
-
-# export FZF_DEFAULT_OPTS="--height 60% \
-# --border sharp \
-# --layout reverse \
-# --color '$FZF_COLORS' \
-# --prompt '∷ ' \
-# --pointer ▶ \
-# --marker ⇒"
-# export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -n 10'"
-# export FZF_COMPLETION_DIR_COMMANDS="cd pushd rmdir tree ls"
-
-# FZF helper functions
-# _fzf_compgen_path() { command -v fd >/dev/null && fd --hidden --follow --exclude ".git" . "$1"; }
-# _fzf_compgen_dir() { command -v fd >/dev/null && fd --type d --hidden --follow --exclude ".git" . "$1"; }
-# _fzf_comprun() {
-#   local command=$1; shift
-#   case "$command" in
-#     cd|ls) fzf "$@" --preview 'tree -C {} | head -200' ;;
-#     *) fzf "$@" ;;
-#   esac
-# }
-
-# ───── Completion ─────
+# Completion 
 # https://github.com/Phantas0s/.dotfiles/blob/master/zsh/completion.zsh
 source $HOME/.zsh/completion.zsh
 
-# https://github.com/djui/alias-tips
-# Zsh plugin to help remembering shell aliases
-# zplug "djui/alias-tips"
+# https://github.com/zsh-users/zsh-autosuggestions
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# ───── Syntax Highlighting ─────
+# Zsh plugin to help remembering shell aliases
+# https://github.com/djui/alias-tips
+source ~/.zsh/plugins/alias-tips/alias-tips.plugin.zsh
+
+# https://github.com/Aloxaf/fzf-tab
+source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
+
 # See: https://github.com/zsh-users/zsh-syntax-highlighting
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# ───── iTerm2 Shell Integration ─────
 # See: https://iterm2.com/documentation-shell-integration.html
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"

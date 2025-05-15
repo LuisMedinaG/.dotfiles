@@ -14,18 +14,17 @@ brew "zsh"
 brew "fd"           # Alternative to find
 brew "fzf"
 brew "bat"          # Cat with syntax highlighting
-brew "zplug"        # Zsh plugin manager
 brew "neovim"
 brew "ripgrep"      # Search tool
 brew "tree"
 brew "jq"
 brew "yadm"         # For dotfile management
-brew "maven"        # Java build tool
+brew "broot"        # Navigate directories, find files, and launch commands.
+# brew "maven"        # Java build tool
 
 brew "zsh-syntax-highlighting" 
 brew "zsh-completions"          
 brew "zsh-autosuggestions"      
-
 
 # Development tools
 brew "pyenv"        # Python version management
@@ -33,7 +32,7 @@ brew "jenv"         # Java version management
 
 # Applications
 cask "visual-studio-code"
-cask "rancher"      # Kubernetes management
+# cask "rancher"      # Kubernetes management
 
 # Optional - Uncomment if needed
 cask "iterm2"

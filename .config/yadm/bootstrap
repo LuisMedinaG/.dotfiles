@@ -16,3 +16,6 @@ if [ "$system_type" = "Darwin" ]; then
     brew bundle --global
   fi
 fi
+
+# To install useful key bindings and fuzzy completion:
+$(brew --prefix)/opt/fzf/install

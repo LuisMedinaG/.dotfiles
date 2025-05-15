@@ -12,6 +12,8 @@ alias h='history 1'
 alias l='ls -lAh'
 alias cat='bat'
 alias vim='nvim'
+alias cdz='z'
+alias y='yadm'
 
 # Git shortcuts
 alias g='git'
@@ -20,6 +22,9 @@ alias gpo='git push origin'
 alias gco='git checkout'
 alias ghc='git rev-parse HEAD | pbcopy'
 alias gsc='git branch --show-current | pbcopy'
+
+alias ez='vim ~/.zshrc'
+alias sz='source ~/.zshrc && echo "ZSH config sourced."'
 
 # Directory stack shortcuts
 alias d='dirs -v'
