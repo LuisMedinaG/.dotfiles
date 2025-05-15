@@ -72,7 +72,7 @@ if [ -d "/opt/oracle/instantclient_23_3" ]; then
   export PATH="$PATH:$ORACLE_HOME"
 fi
 
-# Man pages
+# ───── Man pages ─────
 export MANPAGER='nvim +Man!'
 
 # ───── Zoxide ─────
@@ -82,25 +82,32 @@ eval "$(zoxide init zsh)"
 # ───── Broot ───── 
 # source $HOME/.config/broot/launcher/bash/br
 
-# Completion 
+# ───── Completion ─────
 # https://github.com/Phantas0s/.dotfiles/blob/master/zsh/completion.zsh
 # Uses https://github.com/zsh-users/zsh-completions
-source ~/.zsh/completion.zsh
+[ -f ~/.zsh/completion.zsh ] && source ~/.zsh/completion.zsh
 
-# fzf
+# ───── fzf ─────
 # https://github.com/junegunn/fzf
-source ~/.fzf.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# https://github.com/zsh-users/zsh-autosuggestions
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-# Zsh plugin to help remembering shell aliases
+# ───── alias-tips ─────
 # https://github.com/djui/alias-tips
 source ~/.zsh/plugins/alias-tips/alias-tips.plugin.zsh
 
+# ───── zsh-autosuggestions ─────
+# https://github.com/zsh-users/zsh-autosuggestions
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# See: https://github.com/zsh-users/zsh-syntax-highlighting
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# https://github.com/wfxr/forgit
+[ -f $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh ] && source $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
+
+# ───── fzf-tab ─────
 # https://github.com/Aloxaf/fzf-tab
 source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
-
 # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
 zstyle ':completion:*' menu no
 # To make fzf-tab follow FZF_DEFAULT_OPTS.
@@ -108,9 +115,6 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:*' use-fzf-default-opts yes
 # switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
-
-# See: https://github.com/zsh-users/zsh-syntax-highlighting
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # https://github.com/amaya382/zsh-fzf-widgets
 # source ~/.zsh/plugins/zsh-fzf-widgets/zsh-fzf-widgets.zsh
