@@ -12,6 +12,7 @@ alias h='history 1'
 alias l='ls -lAh'
 alias cat='bat'
 alias vim='nvim'
+alias cd='z'
 
 # Git shortcuts
 alias g='git'

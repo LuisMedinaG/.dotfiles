@@ -10,8 +10,8 @@ setopt autocd # cd into dir without typing 'cd'
 setopt pushdignoredups pushdminus autopushd pushd_silent
 
 # History management
-# setopt inc_append_history # Append to history immediately
 setopt appendhistory      # Append to history, don't overwrite
+setopt inc_append_history # Append to history immediately
 setopt sharehistory       # Share command history across sessions
 setopt histignoredups     # Ignore duplicate commands in history
 setopt incappendhistory   # Write to history immediately

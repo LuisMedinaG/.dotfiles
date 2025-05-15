@@ -16,7 +16,7 @@ _fzf_comprun() {
     shift
 
     case "$command" in
-        ls|cd)           find . -type d | fzf --preview 'tree -C {}' "$@";;
+        ls|cd)        find . -type d | fzf --preview 'tree -C {}' "$@";;
         *)            fzf "$@" ;;
     esac
 }

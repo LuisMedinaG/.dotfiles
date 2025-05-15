@@ -46,17 +46,7 @@ RPROMPT='%F{8}⎇ $vcs_info_msg_0_%f %F{7}⏱ %*%f'
 # Oh My Posh:
 # eval "$(oh-my-posh init zsh)"
 
-# Starship:
-# eval "$(starship init zsh)"
-
 # ───── History ─────
 export HISTSIZE=10000
 export SAVEHIST=10000
 export HISTFILE="$HOME/.zsh_history"
-
-# ───── LS_COLORS ─────
-# Add files and directories color when running ls
-# There's a generator here: http://geoff.greer.fm/lscolors/
-export CLICOLOR=1
-export LS_COLORS='di=36:ln=1;35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43'
-export GREP_COLOR='1;35;40'

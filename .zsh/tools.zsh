@@ -84,7 +84,7 @@ source $HOME/.config/broot/launcher/bash/br
 export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --info=inline --cycle --pointer=► --marker=✓'
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
 
-export FZF_COMPLETION_TRIGGER='~~'
+# export FZF_COMPLETION_TRIGGER='~~'
 export FZF_COMPLETION_OPTS='--border --info=inline'
 
 # CTRL-R - Search command history
