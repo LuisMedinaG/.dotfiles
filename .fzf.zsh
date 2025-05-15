@@ -53,6 +53,7 @@ _fzf_comprun() {
         ls)                 fzf --preview 'tree -C {} | head -200'      "$@" ;;
         cd)                 rg -d . | fzf "$@" --preview 'tree -C {} | head -200' ;;
         export | unset)     fzf --preview "eval 'echo \$'{}"            "$@" ;;
+        tree)               find . -type d | fzf --preview 'tree -C {}' "$@";;
         *)                  fzf "$@" ;;
     esac
 }
@@ -67,3 +68,10 @@ _fzf_compgen_path() {
 _fzf_compgen_dir() {
     fd --type d --hidden --follow --exclude ".git" "$1"
 }
+
+# https://thevaluable.dev/fzf-shell-integration/
+# _fzf_complete_git() {
+#   _fzf_complete -- "$@" < <(
+#     git --help -a | grep -E '^\s+' | awk '{print $1}'
+#   )
+# }
