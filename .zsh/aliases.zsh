@@ -21,6 +21,9 @@ alias gco='git checkout'
 alias ghc='git rev-parse HEAD | pbcopy'
 alias gsc='git branch --show-current | pbcopy'
 
+alias ez='vim ~/.zshrc'
+alias sz='source ~/.zshrc;echo "ZSH aliases sourced."'
+
 # Directory stack shortcuts
 alias d='dirs -v'
 for index ({1..9}); do alias "$index"="cd +$index"; done
