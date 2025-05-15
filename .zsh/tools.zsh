@@ -91,6 +91,19 @@ eval "$(zoxide init zsh)"
 # https://github.com/junegunn/fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# https://github.com/Aloxaf/fzf-tab
+source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
+# force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+zstyle ':completion:*' menu no
+# To make fzf-tab follow FZF_DEFAULT_OPTS.
+# NOTE: This may lead to unexpected behavior since some flags break this plugin. See Aloxaf/fzf-tab#455.
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+# switch group using `<` and `>`
+zstyle ':fzf-tab:*' switch-group '<' '>'
+
+# https://github.com/wfxr/forgit
+[ -f $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh ] && source $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
+
 # ───── alias-tips ─────
 # https://github.com/djui/alias-tips
 source ~/.zsh/plugins/alias-tips/alias-tips.plugin.zsh
@@ -102,26 +115,6 @@ source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # See: https://github.com/zsh-users/zsh-syntax-highlighting
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# https://github.com/wfxr/forgit
-[ -f $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh ] && source $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
-
-# ───── fzf-tab ─────
-# https://github.com/Aloxaf/fzf-tab
-source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
-# force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
-zstyle ':completion:*' menu no
-# To make fzf-tab follow FZF_DEFAULT_OPTS.
-# NOTE: This may lead to unexpected behavior since some flags break this plugin. See Aloxaf/fzf-tab#455.
-zstyle ':fzf-tab:*' use-fzf-default-opts yes
-# switch group using `<` and `>`
-zstyle ':fzf-tab:*' switch-group '<' '>'
-
-# https://github.com/amaya382/zsh-fzf-widgets
-# source ~/.zsh/plugins/zsh-fzf-widgets/zsh-fzf-widgets.zsh
-# bindkey '^K' fzf-cdr
-
-# https://github.com/junegunn/fzf-git.sh
-# source ~/.zsh/plugins/fzf-git.sh
 
 # See: https://iterm2.com/documentation-shell-integration.html
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
