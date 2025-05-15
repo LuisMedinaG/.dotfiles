@@ -3,29 +3,22 @@
 # Contains: Homebrew, Python, Node.js, Java, Oracle, FZF, SSH
 #
 
-### ───── Homebrew ─────
-if [ -f "/opt/homebrew/bin/brew" ]; then
-  # macOS Apple Silicon
-  export HOMEBREW_PREFIX="/opt/homebrew"
-  eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
-  
-  # Add curl from Homebrew to PATH
-  if [ -d "$HOMEBREW_PREFIX/opt/curl/bin" ]; then
-    export PATH="$HOMEBREW_PREFIX/opt/curl/bin:$PATH"
-  fi
-elif [ -f "/usr/local/bin/brew" ]; then
-  export HOMEBREW_PREFIX="/usr/local"
-  eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
-fi
+# ───── Homebrew ─────
+# Add Homebrew to the PATH
+export HOMEBREW_PREFIX="/opt/homebrew"
+eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
 
-### ───── Python (pyenv) ─────
+# Add curl from Homebrew to PATH
+export PATH="$(brew --prefix curl)/bin:$PATH"
+
+# ───── Python (pyenv) ─────
 if command -v pyenv >/dev/null; then
   export PYENV_ROOT="$HOME/.pyenv"
   export PATH="$PYENV_ROOT/bin:$PATH"
   eval "$(pyenv init -)"
 fi
 
-### ───── Node.js (nvm) ─────
+# ───── Node.js (nvm) ─────
 export NVM_DIR="$HOME/.nvm"
 
 # Lazy loading NVM for faster shell startup
@@ -48,7 +41,7 @@ npm() {
   npm "$@"
 }
 
-### ───── Java (jenv) ─────
+# ───── Java (jenv) ─────
 if command -v jenv >/dev/null; then
   eval "$(jenv init -)"
   
@@ -64,7 +57,7 @@ if command -v jenv >/dev/null; then
   fi
 fi
 
-### ───── Oracle Instant Client ─────
+# ───── Oracle Instant Client ─────
 if [ -d "/opt/oracle/instantclient_23_3" ]; then
   export ORACLE_HOME="/opt/oracle/instantclient_23_3"
   export NLS_LANG="AMERICAN_AMERICA.UTF8"
@@ -73,7 +66,14 @@ if [ -d "/opt/oracle/instantclient_23_3" ]; then
   export PATH="$PATH:$ORACLE_HOME"
 fi
 
-### ───── FZF (Fuzzy Finder) ─────
+# ───── Zoxide ─────
+# https://github.com/ajeetdsouza/zoxide
+eval "$(zoxide init zsh)"
+
+# ───── Broot ───── 
+source $HOME/.config/broot/launcher/bash/br
+
+# ───── FZF (Fuzzy Finder) ─────
 # To install useful key bindings and fuzzy completion:
 # $(brew --prefix)/opt/fzf/install
 
@@ -92,6 +92,33 @@ export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --b
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# fzf
+# export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
+# export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# FZF_COLORS="bg+:-1,\
+# fg:gray,\
+# fg+:white,\
+# border:black,\
+# spinner:0,\
+# hl:yellow,\
+# header:blue,\
+# info:green,\
+# pointer:red,\
+# marker:blue,\
+# prompt:gray,\
+# hl+:red"
+
+# export FZF_DEFAULT_OPTS="--height 60% \
+# --border sharp \
+# --layout reverse \
+# --color '$FZF_COLORS' \
+# --prompt '∷ ' \
+# --pointer ▶ \
+# --marker ⇒"
+# export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -n 10'"
+# export FZF_COMPLETION_DIR_COMMANDS="cd pushd rmdir tree ls"
+
 # FZF helper functions
 # _fzf_compgen_path() { command -v fd >/dev/null && fd --hidden --follow --exclude ".git" . "$1"; }
 # _fzf_compgen_dir() { command -v fd >/dev/null && fd --type d --hidden --follow --exclude ".git" . "$1"; }
@@ -103,30 +130,18 @@ export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --b
 #   esac
 # }
 
-### ───── SSH & Yubikey ─────
-# Function to reload SSH keys with Yubikey
-reload-ssh() {
-  if command -v ssh-add >/dev/null; then
-    ssh-add -e /usr/local/lib/opensc-pkcs11.so > /dev/null
-    if [[ $? -gt 0 ]]; then echo "Failed to remove previous card"; fi
-    ssh-add -s /usr/local/lib/opensc-pkcs11.so
-  fi
-}
-
-### ───── Improving shell workflows with fzf ─────
-# https://seb.jambor.dev/posts/improving-shell-workflows-with-fzf/
-function activate-venv() {
-  local selected_env
-  selected_env=$(ls ~/.venv/ | fzf)
-
-  if [ -n "$selected_env" ]; then
-    source "$HOME/.venv/$selected_env/bin/activate"
-  fi
-}
-
-# Start SCM agent socket if not running
-[[ ! -a ~/.ssh/scm-agent.sock ]] && ssh-agent -a ~/.ssh/scm-agent.sock
+# ───── Completion ─────
+# https://github.com/Phantas0s/.dotfiles/blob/master/zsh/completion.zsh
+source $HOME/.zsh/completion.zsh
 
 # https://github.com/djui/alias-tips
 # Zsh plugin to help remembering shell aliases
 # zplug "djui/alias-tips"
+
+# ───── Syntax Highlighting ─────
+# See: https://github.com/zsh-users/zsh-syntax-highlighting
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# ───── iTerm2 Shell Integration ─────
+# See: https://iterm2.com/documentation-shell-integration.html
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
