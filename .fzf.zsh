@@ -1,5 +1,10 @@
 #!/usr/bin/env zsh
 
+zle     -N            fzf-cd-widget
+bindkey -M emacs '\C-e' fzf-cd-widget
+bindkey -M vicmd '\C-e' fzf-cd-widget
+bindkey -M viins '\C-e' fzf-cd-widget
+
 FZF_COLORS="bg+:-1,\
 fg:gray,\
 fg+:white,\
@@ -23,7 +28,7 @@ export FZF_DEFAULT_OPTS="--height 60% \
 --marker=✓"
 
 export FZF_COMPLETION_OPTS='--border --info=inline'
-export FZF_COMPLETION_DIR_COMMANDS="cd pushd rmdir tree ls"
+export FZF_COMPLETION_DIR_COMMANDS="cd pushd rmdir tree"
 
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -33,7 +38,7 @@ export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap 
 # Preview files
 export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --bind 'ctrl-/:change-preview-window(down|hidden|)' --bind shift-up:preview-page-up,shift-down:preview-page-down"
 # cd into the selected directory
-# export FZF_ALT_C_OPTS="--walker-skip .git,node_modules,target --preview 'tree -C {}'"
+export FZF_ALT_C_OPTS="--walker-skip .git,node_modules,target --preview 'tree -C {}'"
 
 if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
     PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"
