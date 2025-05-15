@@ -1,20 +1,35 @@
+#!/usr/bin/env zsh
+
 #
 # Luis Medina's ZSH Profile
 # Managed with YADM
 #
 
-# ───── Core Configuration ─────
-export LC_ALL="en_US.UTF-8"
-export EDITOR="code"
+# for file in ~/.{path,prompt,exports,aliases,functions,extra}; do
+# 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
+# done;
+# unset file;
 
-[ -f ~/.zshenv ] && source ~/.zshenv
+source_if_exists () {
+    if test -r "$1"; then
+        source "$1"
+    fi
+}
 
-# History, Keybinding, Navigation and Shell behavior
-[ -f ~/.zsh/options.zsh ] && source ~/.zsh/options.zsh
+# Source the ZSH configuration
+source_if_exists $HOME/.zshenv
 
-[ -f ~/.zsh/aliases.zsh ] && source ~/.zsh/aliases.zsh
+source_if_exists $ZSH/exports.zsh
+source_if_exists $ZSH/history.zsh
+source_if_exists $ZSH/aliases.zsh
+source_if_exists $ZSH/options.zsh
+source_if_exists $ZSH/functions.zsh
+source_if_exists $ZSH/prompt.zsh
+source_if_exists $ZSH/completion.zsh
 
-# Plugins, fzf, completion, syntax highlighting and shell integration
-[ -f ~/.zsh/tools.zsh ] && source ~/.zsh/tools.zsh
+# Source the ZSH plugins
+source_if_exists $ZSH/plugins/plugins.zsh
 
-[ -f ~/.zsh/prompt.zsh ] && source ~/.zsh/prompt.zsh
+# precmd() {
+#     source $DOTFILES/zsh/aliases.zsh
+# }

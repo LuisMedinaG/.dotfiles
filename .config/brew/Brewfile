@@ -17,6 +17,7 @@ brew "bat"          # Cat with syntax highlighting
 brew "neovim"
 brew "ripgrep"      # Search tool
 brew "tree"
+brew "eza"
 brew "jq"
 brew "yadm"         # For dotfile management
 brew "broot"        # Navigate directories, find files, and launch commands.

@@ -24,13 +24,18 @@ if [ "$system_type" = "Darwin" ]; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   else
     echo "Homebrew already installed. Getting updates..."
-    /opt/homebrew/bin/brew update
-    /opt/homebrew/bin/brew doctor
+    # Make sure we’re using the latest Homebrew.
+    brew update
+    # Upgrade any already-installed formulae.
+    brew upgrade
+    brew doctor
+
+    BREW_PREFIX=$(brew --prefix)
   fi
 
-  if [ -f "$HOME/.Brewfile" ]; then
+  if [ -f "$HOME/.config/brew/.Brewfile" ]; then
     echo "Updating homebrew bundle"
-    brew bundle install --global --file ~/.config/Brewfile
+    brew bundle install --global --file $HOME/.config/brew/.Brewfile
   fi
 fi
 
