@@ -23,7 +23,7 @@ alias ghc='git rev-parse HEAD | pbcopy'
 alias gsc='git branch --show-current | pbcopy'
 
 alias ez='vim ~/.zshrc'
-alias sz='source ~/.zshrc;echo "ZSH aliases sourced."'
+alias sz='source ~/.zshrc && echo "ZSH config sourced."'
 
 # Directory stack shortcuts
 alias d='dirs -v'

@@ -145,6 +145,8 @@ source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # Zsh plugin to help remembering shell aliases
 # zplug "djui/alias-tips"
 
+source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
+
 # ───── Syntax Highlighting ─────
 # See: https://github.com/zsh-users/zsh-syntax-highlighting
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
