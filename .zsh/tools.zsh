@@ -74,9 +74,6 @@ eval "$(zoxide init zsh)"
 source $HOME/.config/broot/launcher/bash/br
 
 # ───── FZF (Fuzzy Finder) ─────
-# To install useful key bindings and fuzzy completion:
-# $(brew --prefix)/opt/fzf/install
-
 # Basic fzf setup
 export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --info=inline --cycle --pointer=► --marker=✓'
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'

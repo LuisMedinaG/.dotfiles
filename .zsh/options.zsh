@@ -6,22 +6,23 @@
 # See: https://zsh.sourceforge.io/Doc/Release/Options.html
 
 # Directory navigation
-setopt autocd             # cd into dir without typing 'cd'
+setopt autocd # cd into dir without typing 'cd'
 setopt pushdignoredups pushdminus autopushd pushd_silent
 
 # History management
+# setopt inc_append_history # Append to history immediately
 setopt appendhistory      # Append to history, don't overwrite
 setopt sharehistory       # Share command history across sessions
 setopt histignoredups     # Ignore duplicate commands in history
 setopt incappendhistory   # Write to history immediately
 setopt hist_ignore_all_dups hist_save_no_dups hist_find_no_dups histignorespace histverify extendedhistory
-setopt hist_verify        # Do not execute immediately upon history expansion.
-setopt hist_ignore_space  # Do not record an event starting with a space.
+setopt hist_verify       # Do not execute immediately upon history expansion.
+setopt hist_ignore_space # Do not record an event starting with a space.
 
 # Shell behavior
-setopt correct            # Auto-correct minor command misspellings
+setopt correct # Auto-correct minor command misspellings
 setopt interactivecomments
-setopt nocaseglob         # Case-insensitive globbing
+setopt nocaseglob # Case-insensitive globbing
 setopt promptsubst
 setopt alwaystoend
 setopt autolist automenu completeinword
@@ -45,14 +46,3 @@ backward_delete_word() {
 }
 zle -N backward_delete_word
 bindkey '^W' backward_delete_word
-
-# History options
-export HISTSIZE=10000
-export SAVEHIST=10000
-export HISTFILE=~/.zsh_history
-
-# Add files and directories color when running ls
-# There's a generator here: http://geoff.greer.fm/lscolors/
-export CLICOLOR=1
-export LS_COLORS='di=36:ln=1;35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43'
-export GREP_COLOR='1;35;40'
