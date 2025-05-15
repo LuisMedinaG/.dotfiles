@@ -4,6 +4,7 @@
 system_type=$(uname -s)
 
 if [ "$system_type" = "Darwin" ]; then
+  echo "Doing OSX install of yadm"
 
   # install homebrew if it's missing
   if ! command -v brew >/dev/null 2>&1; then
@@ -16,6 +17,16 @@ if [ "$system_type" = "Darwin" ]; then
     brew bundle --global
   fi
 fi
+
+hash yadm 2>/dev/null || (echo "yadm install failed" && exit 1)
+
+# always checkout and update
+yadm checkout -f && \
+  yadm pull --rebase && \
+  yadm submodule && \
+  yadm submodule update --init --recursive && \
+  yadm alt && \
+  yadm perms
 
 # To install useful key bindings and fuzzy completion:
 $(brew --prefix)/opt/fzf/install
