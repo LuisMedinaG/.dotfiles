@@ -7,3 +7,9 @@
 [submodule "/Users/lumedina/.zsh/plugins/alias-tips"]
 	path = /Users/lumedina/.zsh/plugins/alias-tips
 	url = https://github.com/djui/alias-tips.git
+[submodule "/Users/lumedina/.zsh/plugins/zsh-fzf-widgets"]
+	path = /Users/lumedina/.zsh/plugins/zsh-fzf-widgets
+	url = https://github.com/amaya382/zsh-fzf-widgets
+[submodule "/Users/lumedina/.zsh/plugins/fzf-git.sh"]
+	path = /Users/lumedina/.zsh/plugins/fzf-git.sh
+	url = https://github.com/junegunn/fzf-git.sh
