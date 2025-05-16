@@ -2,7 +2,7 @@
 
 # ZSH directory structure
 export ZSH=$HOME/.config/zsh
-# export ZDOTDIR="$HOME"
+export ZDOTDIR="$HOME"
 
 # Editor
 export EDITOR=code

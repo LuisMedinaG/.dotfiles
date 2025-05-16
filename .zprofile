@@ -11,9 +11,10 @@ export LC_ALL=en_US.UTF-8
 if [ -f /opt/homebrew/bin/brew ]; then
     export HOMEBREW_PREFIX="/opt/homebrew"
     eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
-
-    # Add curl from Homebrew to PATH
+    
+    # Path for Homebrew zsh-completions, used in completion.zsh
     export BREW_COMPLETIONS_PATH="$HOMEBREW_PREFIX/share/zsh-completions"
+    # Add curl from Homebrew to PATH
     export PATH="$HOMEBREW_PREFIX/opt/curl/bin:$PATH"
 fi
 
