@@ -39,7 +39,7 @@ zstyle ':completion:*' completer _extensions _complete _approximate
 
 # Use cache for commands using cache
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path "$HOME/.config/zsh/.zcompcache" # "${ZDOTDIR:-$HOME/.config/zsh}/.zcompcache"
+zstyle ':completion:*' cache-path "~/.zcompcache" # "${ZDOTDIR:-$HOME/.zsh}/.zcompcache"
 # Complete the alias when _expand_alias is used as a function
 zstyle ':completion:*' complete true
 

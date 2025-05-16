@@ -1,7 +1,7 @@
 # Core environment variables ONLY - keep this file minimal
 
 # ZSH directory structure
-export ZSH=$HOME/.config/zsh
+export ZSH=$HOME/.zsh
 export ZDOTDIR="$HOME"
 
 # Editor

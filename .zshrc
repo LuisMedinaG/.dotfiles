@@ -16,7 +16,7 @@ source_if_exists $ZSH/completion.zsh
 # compinit
 
 # # Optimized compinit loading:
-# local zcompdump_file=$HOME/.config/zsh/.zcompdump # Use ZDOTDIR
+# local zcompdump_file=$HOME/.zsh/.zcompdump # Use ZDOTDIR
 # # Recreate the dump file if it doesn't exist OR if it exists and is older than 24 hours.
 # # Otherwise, load the existing (presumably fresh) dump file.
 # if [[ ! -f "$zcompdump_file" ]] || [[ $(find "$zcompdump_file" -mtime +0 2>/dev/null) ]]; then
