@@ -4,7 +4,7 @@
 # +---------+
 
 # Load completions
-fpath=($(brew --prefix zsh-completions)/src $fpath)
+[ -n "$BREW_COMPLETIONS_PATH" ] && fpath=($BREW_COMPLETIONS_PATH/src $fpath)
 zmodload zsh/complist
 
 # Use hjlk in menu selection (during completion)

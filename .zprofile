@@ -13,7 +13,8 @@ if [ -f /opt/homebrew/bin/brew ]; then
     eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
 
     # Add curl from Homebrew to PATH
-    export PATH="$(brew --prefix curl)/bin:$PATH"
+    export BREW_COMPLETIONS_PATH="$HOMEBREW_PREFIX/share/zsh-completions"
+    export PATH="$HOMEBREW_PREFIX/opt/curl/bin:$PATH"
 fi
 
 # ───── Language/Runtime Environments ─────
@@ -54,4 +55,4 @@ if [ -d "/opt/oracle/instantclient_23_3" ]; then
 fi
 
 # Source work environment early if it exists
-source_if_exists $ZSH/work_environment.zsh
+source_if_exists $ZSH/.zsh/work_environment.zsh

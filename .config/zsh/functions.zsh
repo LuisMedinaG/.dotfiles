@@ -43,3 +43,27 @@ function take {
   mkdir -p $1
   cd $1
 }
+
+# Function to cache command output
+# Usage: cache_eval <cache_name> <command> <max_age_in_days>
+cache_eval() {
+  local cache_name="$1"
+  local command="$2"
+  local max_age="${3:-7}" # Default to 7 days max cache age
+  
+  local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+  local cache_file="$cache_dir/$cache_name.zsh"
+  
+  # Create cache directory if it doesn't exist
+  [[ ! -d "$cache_dir" ]] && mkdir -p "$cache_dir"
+  
+  # Check if cache exists and is recent enough
+  if [[ ! -f "$cache_file" || $(find "$cache_file" -mtime +$max_age -print) ]]; then
+    # Cache doesn't exist or is too old
+    echo "# Generated on $(date)" > "$cache_file"
+    eval "$command" >> "$cache_file" 2>/dev/null
+  fi
+  
+  # Source the cache file
+  source "$cache_file"
+}

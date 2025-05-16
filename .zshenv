@@ -12,8 +12,5 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Source function for other files to use
 source_if_exists() {
-  if test -r "$1"; then
-    source "$1"
-  fi
-  # [ -r "$file" ] && [ -f "$file" ] && source "$file";
+  [ -r "$1" ] && [ -f "$1" ] && source "$1";
 }

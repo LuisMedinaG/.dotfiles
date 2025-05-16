@@ -37,16 +37,16 @@ export FZF_CTRL_T_OPTS="--walker-skip .git,node_modules,target --preview 'bat -n
 export FZF_ALT_C_OPTS="--walker-skip .git,node_modules,target --preview 'tree -C {}'"
 
 # This will load keybidings
-source <(fzf --zsh)
+# source <(fzf --zsh)
 
 # Load key bindings and completion from Homebrew installation
-# if [[ -n "$HOMEBREW_PREFIX" ]]; then
-#     # Key bindings
-#     source_if_exists "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+    # Key bindings
+    source_if_exists "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
 
-#     # Auto-completion
-#     [[ $- == *i* ]] && source_if_exists "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh"
-# fi
+    # Auto-completion
+    [[ $- == *i* ]] && source_if_exists "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh"
+fi
 
 # Custom key binding for fzf-cd-widget
 zle -N fzf-cd-widget

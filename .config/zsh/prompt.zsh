@@ -21,7 +21,7 @@ zstyle ':vcs_info:*:*' check-for-changes true
 
 # Prompt: <last two directory components> <Git info> <user indicator>
 PROMPT=' %{$fg[cyan]%}%2~%f %F{blue}${vcs_info_msg_0_}%f %# '
-RPROMPT='%F{8}⎇ $vcs_info_msg_0_%f %F{7}⏱ %*%f'
+RPROMPT='%F{8}⎇ %F{7}⏱ %*%f'
 
 # Oh My Posh:
 # eval "$(oh-my-posh init zsh)"
