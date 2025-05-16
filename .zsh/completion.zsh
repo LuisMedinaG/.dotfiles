@@ -6,16 +6,18 @@
 [ -n "$BREW_COMPLETIONS_PATH" ] && fpath=($BREW_COMPLETIONS_PATH/src $fpath)
 zmodload zsh/complist
 
-# Use hjlk in menu selection (during completion)
-bindkey -M menuselect 'h' vi-backward-char
-bindkey -M menuselect 'k' vi-up-line-or-history
-bindkey -M menuselect 'j' vi-down-line-or-history
-bindkey -M menuselect 'l' vi-forward-char
+# ───── Optimized Completion System Init ─────
+# Define zcompdump file location
+zcompdump_file="${ZDOTDIR:-$HOME}/.zcompdump"
 
-bindkey -M menuselect '^xu' undo # Undo
-
-autoload -U compinit
-compinit
+# Only regenerate completion cache once per day
+if [[ ! -f "$zcompdump_file" || -n "$(find "$zcompdump_file" -mtime +1 2>/dev/null)" ]]; then
+    # Regenerate completion cache
+    compinit -i -d "$zcompdump_file"
+else
+    # Use existing cache
+    compinit -C -i -d "$zcompdump_file"
+fi
 _comp_options+=(globdots) # With hidden files
 
 # +---------+
@@ -26,6 +28,13 @@ setopt GLOB_COMPLETE    # Show autocompletion menu with globs
 setopt MENU_COMPLETE    # Automatically highlight first element of completion menu
 setopt AUTO_LIST        # Automatically list choices on ambiguous completion.
 setopt COMPLETE_IN_WORD # Complete from both ends of a word.
+
+# Use hjlk in menu selection (during completion)
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'j' vi-down-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+bindkey -M menuselect '^xu' undo # Undo
 
 # +---------+
 # | zstyles |
@@ -39,7 +48,7 @@ zstyle ':completion:*' completer _extensions _complete _approximate
 
 # Use cache for commands using cache
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path "~/.zcompcache" # "${ZDOTDIR:-$HOME/.zsh}/.zcompcache"
+zstyle ':completion:*' cache-path "$HOME/.cache/zsh/zcompcache"
 # Complete the alias when _expand_alias is used as a function
 zstyle ':completion:*' complete true
 
@@ -64,7 +73,7 @@ zstyle ':completion:*:*:*:*:messages' format ' %F{purple} -- %d --%f'
 zstyle ':completion:*:*:*:*:warnings' format ' %F{red}-- no matches found --%f'
 # zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 # Colors for files and directory
-# zstyle ':completion:*:*:*:*:default' list-colors "${(s.:.)LS_COLORS}"
+# zstyle ':completion:*:default' list-colors "${(s.:.)LS_COLORS}"
 
 # Only display some tags for the command cd
 zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
@@ -77,12 +86,26 @@ zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 
 zstyle ':completion:*' keep-prefix true
 
 # SSH hosts completion
-zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
-# zstyle -e ":completion:*:(ssh|scp|sftp|rsh|rsync):hosts" hosts \
-#     'reply=(${=${${(f)"$(
-#       { \
-#         command cat ~/.ssh/known_hosts ~/.ssh/config /etc/hosts /etc/ssh/ssh_known_hosts 2>/dev/null | \
-#         command grep -i "^\s*Host\s" | command awk '{print $2}' | command grep -v "[*?]" ; \
-#         command cat ~/.ssh/known_hosts 2>/dev/null | command awk '{print $1}' | command cut -d, -f1 | command grep -v "[*?\[]" ; \
-#       } | command sort -u
-#     )"}%%[# ]*}//,/ })'
+# zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts '
+  reply=(
+    ${=${${(f)"$(
+      {
+        # Get hosts from SSH config files
+        command cat ~/.ssh/config ~/.ssh/config-*(N) /etc/ssh/ssh_config 2>/dev/null |
+        command grep -i "^\\s*Host\\s" | command awk "{print \$2}" | 
+        command grep -v "\\*" ;
+        
+        # Get hosts from known_hosts files
+        command cat ~/.ssh/known_hosts /etc/ssh/ssh_known_hosts 2>/dev/null |
+        command awk "{print \$1}" | command cut -d, -f1 | 
+        command grep -v "\\[|\\*" | command sed "s/].*//g" ;
+        
+        # Get hosts from /etc/hosts
+        command cat /etc/hosts 2>/dev/null |
+        command grep -v "^#" | command grep -v "^\\s*$" |
+        command awk "{print \$2}" ;
+      } | command sort -u
+    )"}%%[# ]*}//,/ }
+  )
+'
