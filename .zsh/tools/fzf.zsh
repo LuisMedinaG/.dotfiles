@@ -45,12 +45,6 @@ if [[ -n "$HOMEBREW_PREFIX" ]]; then
     [[ $- == *i* ]] && source_if_exists "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh"
 fi
 
-# Custom key binding for fzf-cd-widget
-zle -N fzf-cd-widget
-bindkey -M emacs '\C-y' fzf-cd-widget
-bindkey -M vicmd '\C-y' fzf-cd-widget
-bindkey -M viins '\C-y' fzf-cd-widget
-
 # FZF completion function
 _fzf_comprun() {
     local command=$1

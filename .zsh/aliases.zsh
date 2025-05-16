@@ -10,6 +10,9 @@ alias cat='bat'
 alias grep='rg'
 alias vim='nvim'
 
+# Pretty print the path
+alias path='echo $PATH | tr -s ":" "\n"'
+
 # TODO: Use ZDOTDIR
 alias ez='code ~/.zshrc'
 alias sz='source ~/.zshrc'
@@ -26,6 +29,8 @@ alias gls="git status --short | grep '^[A-Z]' | awk '{print $NF}'"
 # Navigation
 alias ...='cd ../../'
 alias ....='cd ../../../'
+alias .....='cd ../../../..'
+alias -- -="cd -"
 
 # Directory stack shortcuts
 # Generate aliases d1, d2, ... for dirs stack
@@ -34,3 +39,6 @@ for index in {1..9}; do
     alias "d$index"="cd +$index"
 done
 unset index
+
+# Include custom aliases
+source_if_exists ~/.aliases.local
