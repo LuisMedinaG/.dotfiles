@@ -6,11 +6,9 @@
 # File operations
 alias ls='eza --icons --group-directories-first -l'
 alias ll='eza --icons --group-directories-first -lha'
-alias cdz='z'
 alias cat='bat'
 alias grep='rg'
 alias vim='nvim'
-alias y='yadm'
 
 alias ez='code ~/.zshrc'
 alias sz='source ~/.zshrc'

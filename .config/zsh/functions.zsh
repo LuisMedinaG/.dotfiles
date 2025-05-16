@@ -1,8 +1,27 @@
-# ───── Functions ─────
+# Lazy loading NVM for faster shell startup
+nvm() {
+  unfunction nvm
+  [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
+  nvm "$@"
+}
+
+node() {
+  unfunction node
+  [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+  node "$@"
+}
+
+npm() {
+  unfunction npm
+  [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+  npm "$@"
+}
+
 # Function to reload SSH keys with Yubikey
 reload-ssh() {
   if command -v ssh-add >/dev/null; then
-    ssh-add -e /usr/local/lib/opensc-pkcs11.so > /dev/null
+    ssh-add -e /usr/local/lib/opensc-pkcs11.so >/dev/null
     if [[ $? -gt 0 ]]; then echo "Failed to remove previous card"; fi
     ssh-add -s /usr/local/lib/opensc-pkcs11.so
   fi
@@ -21,6 +40,6 @@ function activate-venv() {
 
 # https://github.com/andrew8088/dotfiles/blob/main/zsh/aliases.zsh
 function take {
-    mkdir -p $1
-    cd $1
+  mkdir -p $1
+  cd $1
 }
