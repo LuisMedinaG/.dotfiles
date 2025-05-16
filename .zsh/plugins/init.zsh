@@ -3,7 +3,6 @@ source_if_exists $ZSH/plugins/alias-tips/alias-tips.plugin.zsh
 
 # https://github.com/wfxr/forgit
 source_if_exists $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
-export $FORGIT_INSTALL_DIR="$HOMEBREW_PREFIX/share/forgit"
 
 # https://github.com/Aloxaf/fzf-tab
 source_if_exists $ZSH/plugins/fzf-tab/fzf-tab.plugin.zsh

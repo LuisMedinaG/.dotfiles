@@ -3,11 +3,6 @@
 # Luis Medina's ZSH Configuration
 # Managed with YADM
 
-# Source function for other files to use
-source_if_exists() {
-  [ -r "$1" ] && [ -f "$1" ] && source "$1";
-}
-
 # $ZSH and source_if_exists should be available from .zshenv
 source_if_exists $ZSH/options.zsh
 source_if_exists $ZSH/history.zsh
