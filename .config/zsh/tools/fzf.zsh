@@ -36,9 +36,6 @@ export FZF_CTRL_T_OPTS="--walker-skip .git,node_modules,target --preview 'bat -n
 # cd into the selected directory
 export FZF_ALT_C_OPTS="--walker-skip .git,node_modules,target --preview 'tree -C {}'"
 
-# This will load keybidings
-# source <(fzf --zsh)
-
 # Load key bindings and completion from Homebrew installation
 if [[ -n "$HOMEBREW_PREFIX" ]]; then
     # Key bindings

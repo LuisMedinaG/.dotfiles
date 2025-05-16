@@ -10,6 +10,7 @@ alias cat='bat'
 alias grep='rg'
 alias vim='nvim'
 
+# TODO: Use ZDOTDIR
 alias ez='code ~/.zshrc'
 alias sz='source ~/.zshrc'
 
@@ -27,5 +28,9 @@ alias ...='cd ../../'
 alias ....='cd ../../../'
 
 # Directory stack shortcuts
+# Generate aliases d1, d2, ... for dirs stack
 alias d='dirs -v'
-for index ({1..9}); do alias "$index"="cd +$index"; done
+for index in {1..9}; do
+    alias "d$index"="cd +$index"
+done
+unset index

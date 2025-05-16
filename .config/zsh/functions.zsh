@@ -21,9 +21,25 @@ npm() {
 # Function to reload SSH keys with Yubikey
 reload-ssh() {
   if command -v ssh-add >/dev/null; then
-    ssh-add -e /usr/local/lib/opensc-pkcs11.so >/dev/null
+    if [ -f /usr/local/lib/opensc-pkcs11.so ]; then
+        yubikey_lib="/usr/local/lib/opensc-pkcs11.so"
+    elif [ -f /opt/homebrew/lib/opensc-pkcs11.so ]; then # Homebrew on Apple Silicon
+        yubikey_lib="/opt/homebrew/lib/opensc-pkcs11.so"
+    else
+        echo "Error: OpenSC PKCS#11 library not found." >&2
+        return 1
+    fi
+
+    cho "Attempting to remove previous card entries for $yubikey_lib..."
+    ssh-add -e "$yubikey_lib" # Show output for debugging
     if [[ $? -gt 0 ]]; then echo "Failed to remove previous card"; fi
-    ssh-add -s /usr/local/lib/opensc-pkcs11.so
+
+    echo "Attempting to add card: $yubikey_lib..."
+    ssh-add -s "$yubikey_lib"
+    ssh-add -l # List keys to confirm
+  else
+    echo "Error: ssh-add command not found." >&2
+    return 1
   fi
 }
 
