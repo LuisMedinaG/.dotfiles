@@ -7,6 +7,8 @@
 zmodload zsh/complist
 
 # ───── Optimized Completion System Init ─────
+autoload -U compinit
+
 # Define zcompdump file location
 zcompdump_file="${ZDOTDIR:-$HOME}/.zcompdump"
 
@@ -92,7 +94,7 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts '
     ${=${${(f)"$(
       {
         # Get hosts from SSH config files
-        command cat ~/.ssh/config ~/.ssh/config-*(N) /etc/ssh/ssh_config 2>/dev/null |
+        command cat ~/.ssh/config ~/.ssh/config-oneview ~/.ssh/config-hivemind /etc/ssh/ssh_config 2>/dev/null |
         command grep -i "^\\s*Host\\s" | command awk "{print \$2}" | 
         command grep -v "\\*" ;
         
