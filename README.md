@@ -1,106 +1,99 @@
-# macOS Configuration Repository
+# 🚀 Dotfiles: macOS Development Environment
 
-This repository contains the configuration files (dotfiles) for my macOS environment, managed with YADM (Yet Another Dotfile Manager).
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)
+![YADM](https://img.shields.io/badge/manager-YADM-red.svg)
 
-## Applications I Install
+A modern, modular dotfiles configuration for macOS development environments, optimized for performance and maintainability. Managed with YADM (Yet Another Dotfiles Manager).
 
-These are some of the applications I typically install on a new macOS system:
+## ✨ Features
 
-* iTerm2 / Kitty
-* Shortcat
-* Dropover
-* Obsidian
-* Visual Studio Code
-* Raycast
+- **Optimized ZSH Configuration**: Modular organization with performance enhancements
+- **Smart Completions**: Intelligent tab completion including SSH hosts
+- **Fast Shell Startup**: Lazy-loading for NVM and other tools
+- **Environment Isolation**: Work vs personal environment separation using YADM classes
+- **Development Tooling**: Configured for Git, Python, Node.js, Java, and more
+- **Terminal Utilities**: FZF integration, convenient aliases, and functions
 
-Optional:
-* Hyperkey / Kanata 
-* Raycast Shortcuts / skhd
-* Hammerspoon (Mac automations)
-* Amaethyst / Yabai
+## 🔧 System Requirements
 
-## Setup Instructions for a New Mac
+- Git and [YADM](https://yadm.io/)
+- Homebrew
 
-Follow these steps to set up a new macOS machine with my configurations:
+## 📦 Installation
 
-### Installation Process
+### Quick Install
 
-1. **Clone this repository using Git:**
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/macos-config.git
-   cd macos-config
-   ```
-
-2. **Run the bootstrap scripts:**
-    Run pre-bootstrap.sh first:
-    ```bash
-    ~/.config/yadm/pre_bootstrap.sh
-    ```
-
-   ```bash
-   yadm bootstrap
-   ```
-
-   The bootstrap process works in two phases:
-
-   **pre_bootstrap.sh:**
-   
-
-   **bootstrap:**
-   
-
-
-### What Gets Installed/Configured
-
-The bootstrap process handles installation and configuration of:
-
-- Shell environment (Zsh configuration)
-- Homebrew packages via ~/.config/Brewfile
-- Keyboard customization (Kanata)
-- Hotkey daemon (skhd)
-- Window management (if Yabai is selected)
-- Terminal configuration
-- Git configuration
-- Raycast extensions and snippets
-
-### Create Base Development Folders
-
-The bootstrap process automatically runs the development folder creation script:
 ```bash
-~/.local/bin/create_dev_folders.sh
+# Pre-Bootstrap: Sets up Brew and YADM
+~/.config/yadm/pre_bootstrap.sh
+
+# Install YADM if not already installed
+brew install yadm
+
+# Clone the repository
+yadm clone https://github.com/YOUR_USERNAME/dotfiles.git
+
+# Run the bootstrap script
+yadm bootstrap
 ```
-This creates a standardized project directory structure.
 
-## Directory Structure
+## 📂 Directory Structure
 
-This configuration uses the following structure:
-
-```
+```bash
 ~/
-├── .config/               # XDG config directory
-│   ├── Brewfile          # Homebrew packages list
-│   ├── starship.toml     # Starship prompt config
-│   ├── .tmux.conf        # Tmux configuration
+├── .zsh/                 # ZSH configuration (modular)
+│   ├── aliases.zsh       # Command aliases
+│   ├── completion.zsh    # Tab completion setup
+│   ├── exports.zsh       # Environment variables 
+│   ├── functions.zsh     # Shell functions
+│   ├── history.zsh       # History configuration
+│   ├── options.zsh       # ZSH options
+│   ├── prompt.zsh        # Shell prompt configuration
+│   ├── plugins/          # ZSH plugins
+│   │   └── init.zsh      # Plugin loader
+│   └── tools/            # Tool configurations
+│       └── fzf.zsh       # FZF integration
+├── .config/              # XDG config directory
+│   ├── brew/             # Homebrew
+│   │   ├── Brewfile      # Package list
+│   │   └── install.sh    # Installer
+│   ├── git/              # Git configuration
 │   ├── kanata/           # Keyboard customization
-│   │   ├── com.lumedina.kanata.plist
-│   │   └── kanata.kbd
-│   ├── raycast/          # Raycast configurations
+│   ├── nvim/             # Neovim config
+│   ├── raycast/          # Raycast settings
 │   ├── skhd/             # Keyboard shortcuts
-│   │   └── .skhdrc
+│   ├── tmux/             # Terminal multiplexer
 │   └── yadm/             # YADM-specific files
 │       ├── bootstrap     # Main setup script
-│       └── pre_bootstrap.sh
-├── .local/               # Local binaries and scripts
-│   └── bin/
-│       └── create_dev_folders.sh
-├── .zsh/                 # Modular Zsh configuration
-│   ├── aliases.zsh
-│   ├── options.zsh
-│   └── tools.zsh
-├── .gitconfig           # Git configuration
-├── .zshenv              # Zsh environment variables
-└── .zshrc               # Main Zsh configuration
+│       └── encrypt       # Encryption config
+├── .local/bin/           # Local executable scripts
+├── .zshenv               # ZSH environment loader
+├── .zprofile             # Login shell configuration
+├── .zshrc                # Interactive shell config
+└── .gitconfig            # Git configuration
 ```
+
+## 🖥️ Applications & Tools
+
+### Core Tools
+- **Shell**: ZSH with custom configuration
+- **Terminal**: iTerm2 or Kitty
+- **Editor**: Visual Studio Code / Neovim
+- **Search**: FZF + Ripgrep
+- **File Manager**: Finder + command line tools
+
+# Recommended Applications
+
+| Category | Applications |
+|----------|--------------|
+| **Productivity** | Raycast, Obsidian, Dropover |
+| **Development** | VS Code, iTerm2/Kitty, Git |
+| **Keyboard** | Kanata (key remapping), skhd (hotkeys) |
+| **Window Management** | Amethyst/Yabai |
+| **Automation** | Hammerspoon |
+
+The bootstrap process handles installation and configuration tools & applications:
 
 ## YADM Usage
 
@@ -112,25 +105,6 @@ After the initial setup, you'll interact with your dotfiles using YADM commands:
 yadm add ~/.config/some-new-app/config
 yadm commit -m "Add configuration for some-new-app"
 yadm push
-```
-
-### Updating Configurations
-
-After making changes to any configuration file:
-
-```bash
-yadm status
-yadm add [changed files]
-yadm commit -m "Update configuration for XYZ"
-yadm push
-```
-
-### Syncing Changes to Another Mac
-
-On your other Mac that already has YADM set up:
-
-```bash
-yadm pull
 ```
 
 ### Using Alternate Files for Different Machines
@@ -145,6 +119,15 @@ yadm add ~/.zshrc##hostname.work
 yadm alt
 ```
 
+### Encryption for Sensitive Data
+```bash
+# Edit encryption configuration
+yadm encrypt
+
+# Decrypt files
+yadm decrypt
+```
+
 ## Customization
 
 To customize this setup for your own use:
@@ -153,3 +136,9 @@ To customize this setup for your own use:
 2. Modify the configurations as needed
 3. Update the bootstrap script to match your requirements
 4. Update the Brewfile with your preferred applications
+
+## 📜 Credits & Acknowledgments
+This configuration draws inspiration from:
+
+- [mathiasbynens/dotfiles](https://github.com/mathiasbynens/dotfiles)
+- [thoughtbot/dotfiles](https://github.com/thoughtbot/dotfiles)
