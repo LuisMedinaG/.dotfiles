@@ -3,6 +3,11 @@
 # Luis Medina's ZSH Configuration
 # Managed with YADM
 
+# Source function for other files to use
+source_if_exists() {
+  [ -r "$1" ] && [ -f "$1" ] && source "$1";
+}
+
 # $ZSH and source_if_exists should be available from .zshenv
 source_if_exists $ZSH/options.zsh
 source_if_exists $ZSH/history.zsh
@@ -12,10 +17,8 @@ source_if_exists $ZSH/aliases.zsh
 # Source completion settings (which sets up fpath for brew zsh-completions)
 source_if_exists $ZSH/completion.zsh
 
-# autoload -Uz compinit
-# compinit
-
 # # Optimized compinit loading:
+# autoload -Uz compinit
 # local zcompdump_file=$HOME/.zsh/.zcompdump # Use ZDOTDIR
 # # Recreate the dump file if it doesn't exist OR if it exists and is older than 24 hours.
 # # Otherwise, load the existing (presumably fresh) dump file.
