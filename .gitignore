@@ -1,0 +1,111 @@
+# ~/.gitignore
+#
+# This .gitignore is for yadm, which tracks dotfiles in your $HOME directory.
+# Add patterns for files and directories that should NOT be committed to your dotfiles repository.
+
+# General OS-generated files
+############################################
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# macOS specific
+############################################
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.CFUserTextEncoding
+
+# IDE and Editor specific files
+############################################
+# VSCode
+.vscode/
+.vscode-server/
+*.code-workspace
+
+# Vim/Neovim
+*.swp
+*.swo
+*.swn
+*.viminfo 
+
+# Build artifacts, dependencies, and compiled files
+############################################
+node_modules/
+bower_components/
+vendor/
+target/
+build/
+dist/
+out/
+output/
+gen/
+tmp/
+temp/
+__pycache__/
+*.pyc
+*.pyo
+*.o
+*.obj
+*.class
+*.jar
+*.war
+*.ear
+*.dll
+*.exe
+*.so
+*.dylib
+*.bundle
+*.deb
+*.rpm
+*.snap
+*.msi
+*.pkg
+
+# Python virtual environments
+############################################
+venv/
+.venv/
+env/
+.env/
+ENV/
+.tox/
+pip-wheel-metadata/
+
+# Log files and crash dumps
+############################################
+*.log
+logs/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+appsignal.log
+*.crash
+hs_err_pid*
+
+# Archives (unless explicitly versioning a specific small archive)
+############################################
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.tar.bz2
+*.tbz
+*.rar
+*.7z
+*.gz
+*.bz2
+*.xz
+
+# Large data, cache, and frequently changing directories
+# Be very careful with these. You usually don't want them in dotfiles.
+############################################
+.cache/
