@@ -25,6 +25,8 @@ zle -N history-beginning-search-forward-end history-search-end
 # Key bindings
 bindkey "^[[1;3D" backward-word
 bindkey "^[[1;3C" forward-word
+bindkey '^E' end-of-line 
+bindkey '^A' beginning-of-line 
 
 # Custom word deletion
 backward_delete_word() {

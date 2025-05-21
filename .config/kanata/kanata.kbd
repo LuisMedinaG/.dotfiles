@@ -10,9 +10,20 @@ sudo launchctl load /Library/LaunchDaemons/com.<username>.kanata.plist
 sudo launchctl start com.<username>.kanata
 |#
 
+#|
+https://github.com/jtroo/kanata/issues/975
+# Bug: F-row key get override on MacOS
+> It seems that macOS behaves differently when fn is sent from an Apple device 
+versus when it's sent from the virtual keyboard of Karabiner-Elements
+
+# Fixed in Karabiner-Elements v15.0.14
+https://github.com/pqrs-org/Karabiner-Elements/issues/3879
+|#
+
 ;; defsrc is still necessary
 (defcfg
   process-unmapped-keys yes
+  concurrent-tap-hold   yes
 )
 
 (defsrc
@@ -20,9 +31,22 @@ sudo launchctl start com.<username>.kanata
   caps a s d f j k l ;
   fn
 )
+
 (defvar
   tap-time 150
-  hold-time 250
+  hold-time 220
+)
+
+(deflayer base
+  🔅    🔆    mctl  sls   dtn   dnd   ◀◀    ▶⏸    ▶▶    🔇    🔉    🔊
+  @hyperkey @a @s @d @f @j @k @l @;
+  @fn
+)
+
+(deflayer fn
+  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
+  _ _ _ _ _ _ _ _ _
+  fn
 )
 
 ;; CAGS/⎈⎇◆⇧
@@ -37,17 +61,5 @@ sudo launchctl start com.<username>.kanata
   k (tap-hold $tap-time $hold-time k rmet)
   l (tap-hold $tap-time $hold-time l ralt)
   ; (tap-hold $tap-time $hold-time ; rctl)
-  fnl (tap-hold 200 200 fn (layer-toggle fn))
-)
-
-(deflayer base
-  brdn  brup  _    _    _    _   prev  pp  next  mute  vold  volu
-  @hyperkey @a @s @d @f @j @k @l @;
-  @fnl
-)
-
-(deflayer fn
-  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
-  _ _ _ _ _ _ _ _ _
-  fn
+  fn (tap-hold 200 200 fn (layer-toggle fn))
 )
