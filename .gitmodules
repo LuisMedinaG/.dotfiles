@@ -10,3 +10,6 @@
 [submodule ".zsh/plugins/fzf-git.sh"]
 	path = .zsh/plugins/fzf-git.sh
 	url = https://github.com/junegunn/fzf-git.sh
+[submodule ".config/karabiner"]
+	path = .config/karabiner
+	url = git@github.com:LuisMedinaG/karabiner.git
