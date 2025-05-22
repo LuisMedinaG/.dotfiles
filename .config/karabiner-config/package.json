@@ -6,8 +6,9 @@
     "update": "npm update karabiner.ts"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^22.15.17",
     "karabiner.ts": "latest",
+    "prettier": "^2",
     "tsx": "^4",
     "typescript": "^5"
   }
