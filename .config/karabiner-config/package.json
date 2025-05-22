@@ -9,9 +9,9 @@
     "validate": "npm run lint && npm run format && npm run build"
   },
   "devDependencies": {
-    "@types/node": "^22.15.17",
-    "karabiner.ts": "latest",
+    "@types/node": "^22.15.21",
     "eslint": "^9.27.0",
+    "karabiner.ts": "latest",
     "prettier": "^2",
     "tsx": "^4",
     "typescript": "^5"
