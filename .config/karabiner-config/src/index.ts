@@ -24,7 +24,7 @@ import {
   raycastExt,
   raycastWin,
   toSystemSetting,
-  CategoryMappings
+  // CategoryMappings
 } from './utils';
 
 // Constants
@@ -37,6 +37,7 @@ function main() {
     // Core Functionality
     createHyperKeyRule(),
     createLeaderKeyRule(),
+    createHomeRowModsRule(),
 
     // Application-specific rules
     createRaycastRules(),
@@ -51,6 +52,8 @@ function main() {
     'basic.to_if_alone_timeout_milliseconds': 500,
     'basic.to_delayed_action_delay_milliseconds': 500,
     'leader.timeout_milliseconds': LEADER_TIMEOUT,
+    // 'simultaneous_threshold_milliseconds': 10,
+    // 'basic.simultaneous_threshold': 256,
   };
 
   writeToProfile(PROFILE_NAME, rules, parameters);
@@ -61,6 +64,23 @@ function createHyperKeyRule() {
   return rule('Hyper/Meh Key').manipulators([
     map('caps_lock').toHyper().toIfAlone('escape'), // Command + Control + Option + Shift
     map('right_command').toMeh().toIfAlone('escape'), // Control + Option + Shift
+  ]);
+}
+
+// --- Home Row Mods Definition ---
+function createHomeRowModsRule() {
+  return rule('Home Row Mods').manipulators([
+    // Left Hand
+    map('a').to('left_control').toIfAlone('a'), // a/⌃
+    map('s').to('left_option').toIfAlone('s'),  // s/⌥
+    map('d').to('left_command').toIfAlone('d'), // d/⌘
+    map('f').to('left_shift').toIfAlone('f'),   // f/⇧
+
+    // Right Hand
+    map('j').to('right_control').toIfAlone('j'), // j/⌃
+    map('k').to('right_option').toIfAlone('k'),  // k/⌥
+    map('l').to('right_command').toIfAlone('l'), // l/⌘
+    map('semicolon').to('right_shift').toIfAlone('semicolon'), // ;/⇧
   ]);
 }
 
