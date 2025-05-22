@@ -1,5 +1,4 @@
-/* 
-  karabiner.ts
+/* karabiner.ts
   Documentation: https://karabiner.ts.evanliu.dev/
   
   Based on: 
@@ -24,18 +23,19 @@ import {
 } from 'karabiner.ts';
 import { raycastExt, raycastWin, toSystemSetting } from './utils';
 
-const hyperKeyRule = rule('Apple Keyboard').manipulators([
-  // Hyper Key (Caps Lock to ⌘⌥⌃⇧, Escape on tap)
-  map('caps_lock').toHyper().toIfAlone('escape'),
-  map('right_command').toMeh().toIfAlone('escape'),
-]);
+// --- Configuration Constants ---
+const PROFILE_NAME = 'Default profile';
+const LEADER_MODE_TRIGGER_KEY = 'k'; // The key (With Hyper) that activates the leader mode.
 
+// --- Hyper Key Definition ---
+const hyperKeyRule = rule('Apple Keyboard (Hyper/Meh Keys)').manipulators([
+  map('caps_lock').toHyper().toIfAlone('escape'), // Command + Control + Option + Shift
+  map('right_command').toMeh().toIfAlone('escape'), // Control + Option + Shift
+]);
 
 function rule_leaderKey() {
   let _var = 'leader'
   let escapeActions = [toUnsetVar(_var), toRemoveNotificationMessage(_var)]
-
-  // const mappings: { [key: string]: string } = {
 
   let mappings = {
     o: {
@@ -97,7 +97,7 @@ function rule_leaderKey() {
   return rule('Leader Key').manipulators([
     // 0: Inactive -> Leader (1)
     withCondition(ifVar(_var, 0))([
-      map('k', 'Hyper')
+      map(LEADER_MODE_TRIGGER_KEY, 'Hyper')
         .toVar(_var, 1)
         .toNotificationMessage(_var, hint),
     ]),
@@ -130,37 +130,6 @@ function rule_leaderKey() {
     }),
   ])
 }
-
-// After releasing Hyper + L, you enter a leader mode.
-// const appLauncherLeaderLayer = hyperLayer(
-//   'l',
-//   'app_launcher_leader_mode'
-// )
-//     .description('App Launcher (Hyper+L, then key)')
-//     // By default, 'escape' and 'caps_lock' (if it's your hyper key) will cancel leader mode.
-//     .leaderMode()
-//     .notification()
-//     .manipulators({
-//       // Format: 'subsequent_key': action_to_perform
-//       c: toApp('Cisco Secure Client'),
-//       f: toApp('Finder'),
-//       g: toApp('Google Chrome'),
-//       i: toApp('iTerm2'),
-//       o: toApp('Obsidian'),
-//       l: toApp('Open WebUI'),
-//       s: toApp('Slack'),
-//       y: toApp('Spotify'),
-//       a: toApp('System Settings'),
-//       v: toApp('Visual Studio Code'),
-//       w: toApp('WhatsApp'),
-//       z: toApp('Zoom'),
-//       // Example for an app that might have a more complex name or you want to use bundle ID
-//       // n: toApp({ bundle_identifier: 'com.apple.Notes' }),
-
-//       // Example: A non-app action, like running a shell command
-//       // 'x': toShellCommand('echo "Hello from Karabiner Leader Mode" > ~/Desktop/leader_test.txt'),
-//     });
-// }
 
 function app_raycast() {
   return rule('Raycast').manipulators([
@@ -207,14 +176,12 @@ function app_raycast() {
     // Recognize Text
     // Emmoji
     // Search files
-    // Toggle Favorite Device #1
+    // Toggle Favorite Device #1o
     // Search Recent Projects
     // -----
     // Spotify - like, now playing, etc
   ])
 }
-
-const PROFILE_NAME = 'Beta';
 
 writeToProfile(
   PROFILE_NAME,
