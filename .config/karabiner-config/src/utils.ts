@@ -1,4 +1,4 @@
-import { map, to$ } from 'karabiner.ts';
+import { map, SideModifierAlias, to$, ToEvent } from 'karabiner.ts';
 
 /** Back/Forward history in most apps. */
 export function historyNavi() {
@@ -22,6 +22,26 @@ export function switcher() {
     map('h', '⌘⌥⌃').to('⇥', '⌃⇧'), //
     map('l', '⌘⌥⌃').to('⇥', '⌃'),
   ]
+}
+
+/**
+ * Map when tap a modifier key; keep as modifier when hold.
+ *
+ * - ‹⌘ Show/Hide UI (e.g. left sidebars, or all UI)
+ * - ‹⌥ Run current task (re-run)
+ * - ‹⌃ Run list
+ *
+ * - ›⌘ Show/Hide UI (e.g. right sidebars, or terminal)
+ * - ›⌥ Command Palette (e.g. ⌘K, ⌘P)
+ * - ›⌃ History (e.g. recent files)
+ */
+export function tapModifiers(
+  v: Partial<Record<SideModifierAlias | 'fn', ToEvent>>,
+) {
+  return Object.entries(v).map(([k, to]) => {
+    let key = k as SideModifierAlias | 'fn'
+    return map(key).to(key).toIfAlone(to)
+  })
 }
 
 export function raycastExt(name: string) {
