@@ -32,20 +32,22 @@ const PROFILE_NAME = "Default";
 const LEADER_TIMEOUT = 1500; // ms
 const LEADER_VAR = "leader_mode";
 
+export const APP_IDS = {
+  slack: '^com\\.tinyspeck\\.slackmacgap$',
+  vscode: '^com\\.microsoft\\.VSCode$',
+  chrome: '^com\\.google\\.Chrome$',
+  obsidian: '^md\\.obsidian$',
+  iterm: '^com\\.googlecode\\.iterm2$',
+} as const;
+
 function main() {
   const rules = [
     // Core Functionality
     createHyperKeyRule(),
     createLeaderKeyRule(),
-    // createHomeRowModsRule(),
 
     // Application-specific rules
     createRaycastRules(),
-    // app_slack(),
-
-    // Future: Add more rules as needed
-    // layer_symbol(),
-    // layer_system(),
   ];
 
   const parameters = {
@@ -166,8 +168,19 @@ function createLeaderKeyRule() {
   return createLeaderSystem(LEADER_VAR, categoryMappings, escapeActions);
 }
 
+function formatCategoryHint(
+  mapping: Record<string, string | [string, string]>
+): string {
+  return Object.entries(mapping)
+    .map(([key, value]) => {
+      const displayName = Array.isArray(value) ? value[1] : value;
+      return `${key.toUpperCase()}_${displayName}\n`;
+    })
+    .join("  ");
+}
+
 function createLeaderSystem(varName: string, mappings, escapeActions) {
-  let categoryKeys = Object.keys(mappings) as FromKeyParam[];
+  const categoryKeys = Object.keys(mappings) as FromKeyParam[];
 
   return rule("Leader Key").manipulators([
     // Part 1: Activate Leader Sub-mode (Inactive -> Category State)
@@ -214,17 +227,6 @@ function createLeaderSystem(varName: string, mappings, escapeActions) {
   ]);
 }
 
-function formatCategoryHint(
-  mapping: Record<string, string | [string, string]>
-): string {
-  return Object.entries(mapping)
-    .map(([key, value]) => {
-      const displayName = Array.isArray(value) ? value[1] : value;
-      return `${key.toUpperCase()}→${displayName}\n`;
-    })
-    .join("  ");
-}
-
 function createRaycastRules() {
   return rule("Raycast").manipulators([
     // Navigation with Hyper + arrows
@@ -258,11 +260,9 @@ function createRaycastRules() {
   ]);
 }
 
-main();
-
 // TODO: Not working
 // function app_slack() {
-//   return rule('Slack', ifApp('^com.tinyspeck.slackmacgap$')).manipulators([
+//   return rule('Slack', ifApp(APP_IDS.slack)).manipulators([
 //     ...historyNavi(),
 
 //     ...tapModifiers({
@@ -272,12 +272,6 @@ main();
 //       '›⌘': toKey('.', '⌘'), // hideRightBar
 //       '›⌥': toKey('k', '⌘'), // open
 //     }),
-
-//     map(1, 'Meh').to(
-//       // After the 1/4 width, leave some space for opening thread in a new window
-//       // before the last 1/4 width
-//       toResizeWindow('Slack', { x: 1263, y: 25 }, { w: 1760, h: 1415 }),
-//     ),
 //   ])
 // }
 
@@ -316,3 +310,5 @@ main();
 //     ),
 //   ])
 // }
+
+main();

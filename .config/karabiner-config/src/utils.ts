@@ -1,15 +1,5 @@
 import { map, SideModifierAlias, to$, ToEvent } from "karabiner.ts";
 
-export interface CategoryMapping {
-  [categoryKey: string]: {
-    name: string;
-    mapping: { [subKey: string]: string | string[] };
-    action: (v: string) => ToEvent | ToEvent[];
-  };
-}
-
-export type CategoryMappings = Record<string, CategoryMapping>;
-
 /** Back/Forward history in most apps. */
 export function historyNavi() {
   return [
@@ -45,14 +35,14 @@ export function switcher() {
  * - ›⌥ Command Palette (e.g. ⌘K, ⌘P)
  * - ›⌃ History (e.g. recent files)
  */
-export function tapModifiers(
-  v: Partial<Record<SideModifierAlias | "fn", ToEvent>>
-) {
-  return Object.entries(v).map(([k, to]) => {
-    const key = k as SideModifierAlias | "fn";
-    return map(key).to(key).toIfAlone(to);
+export const tapModifiers = (
+  modifierMappings: Partial<Record<SideModifierAlias | 'fn', ToEvent>>,
+) => {
+  return Object.entries(modifierMappings).map(([modifier, tapAction]) => {
+    const key = modifier as SideModifierAlias | 'fn';
+    return map(key).to(key).toIfAlone(tapAction);
   });
-}
+};
 
 export function raycastExt(name: string) {
   return to$(`open raycast://extensions/${name}`);
@@ -60,24 +50,6 @@ export function raycastExt(name: string) {
 
 export function raycastWin(name: string) {
   return to$(`open -g raycast://extensions/raycast/window-management/${name}`);
-}
-
-export function toResizeWindow(
-  app: string,
-  position = { x: 0, y: 220 }, // First window, below widgets
-  size = { w: 1262, h: 1220 } // First 1/4 width, screen height - widgets height
-) {
-  return to$(`osascript -e '\
-set windowPosition to {${position.x}, ${position.y}}
-set windowSize to {${size.w}, ${size.h}}
-
-tell application "System Events"
-  tell process "${app}"
-    set frontWindow to first window
-    set position of frontWindow to windowPosition
-    set size of frontWindow to windowSize
-  end tell
-end tell'`);
 }
 
 /** @see https://gist.github.com/lancethomps/a5ac103f334b171f70ce2ff983220b4f?permalink_comment_id=4698498#gistcomment-4698498 */
