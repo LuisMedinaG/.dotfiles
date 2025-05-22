@@ -1,13 +1,17 @@
 {
   "name": "karabiner-config",
-  "description": "karabiner config in karabiner.ts",
+  "license": "MIT",
   "scripts": {
     "build": "tsx src/index.ts",
-    "update": "npm update karabiner.ts"
+    "update": "npm update karabiner.ts",
+    "lint": "eslint src",
+    "format": "prettier --write \"**/*.{ts,json}\"",
+    "validate": "npm run lint && npm run format && npm run build"
   },
   "devDependencies": {
     "@types/node": "^22.15.17",
     "karabiner.ts": "latest",
+    "eslint": "^9.27.0",
     "prettier": "^2",
     "tsx": "^4",
     "typescript": "^5"
