@@ -1,10 +1,8 @@
-/* karabiner.ts
-  Documentation: https://karabiner.ts.evanliu.dev/
-  
-  Based on: 
-  https://github.com/evan-liu/karabiner-config/blob/main/karabiner-config.ts
-*/
-
+/* karabiner.ts Configuration
+ * Documentation: https://karabiner.ts.evanliu.dev/
+ * 
+ * Based on: https://github.com/evan-liu/karabiner-config
+ */
 
 import {
   map,
@@ -19,59 +17,60 @@ import {
   withCondition,
   ifVar,
   withMapper,
-  layer,
-  toMouseCursorPosition,
-  toPointingButton,
-  toSleepSystem,
-  toKey,
-  ifApp,
-  toPaste,
-  simlayer,
-  // toShellCommand,
+  FromKeyParam,
 } from 'karabiner.ts';
-import { historyNavi, raycastExt, raycastWin, tapModifiers, toClearNotifications, toResizeWindow, toSystemSetting } from './utils';
+
+import {
+  raycastExt,
+  raycastWin,
+  toSystemSetting,
+  CategoryMappings
+} from './utils';
+
+// Constants
+const PROFILE_NAME = 'Default';
+const LEADER_TIMEOUT = 1500; // ms
+const LEADER_VAR = 'leader_mode';
 
 function main() {
-  writeToProfile(
-    'Default',
-    [
-      // HyperSubLayers
-      rule_leaderKey(),
+  const rules = [
+    // Core Functionality
+    createHyperKeyRule(),
+    createLeaderKeyRule(),
 
-      // Global Layers
-      // layer_symbol(),
-      // layer_system(),
+    // Application-specific rules
+    createRaycastRules(),
+    // app_slack(),
 
-      // Apps
-      app_raycast(),
-      // app_slack(),
+    // Future: Add more rules as needed
+    // layer_symbol(),
+    // layer_system(),
+  ]
 
-      // Keyboard Remap
-      hyperKeyRule(),
-    ],
-    // Optional: Set parameters for complex_modifications
-    {
-      // 'basic.to_if_alone_timeout_milliseconds': 500, // Default is 500
-      // 'basic.to_delayed_action_delay_milliseconds': 500, // Default is 500
-      // 'basic.simultaneous_threshold_milliseconds': 50,
-      // 'leader.timeout_milliseconds': 1500, // Default timeout for leader mode (1 second)
-    }
-  );
+  const parameters = {
+    'basic.to_if_alone_timeout_milliseconds': 500,
+    'basic.to_delayed_action_delay_milliseconds': 500,
+    'leader.timeout_milliseconds': LEADER_TIMEOUT,
+  };
+
+  writeToProfile(PROFILE_NAME, rules, parameters);
 }
 
 // --- Hyper Key Definition ---
-function hyperKeyRule() {
+function createHyperKeyRule() {
   return rule('Hyper/Meh Key').manipulators([
     map('caps_lock').toHyper().toIfAlone('escape'), // Command + Control + Option + Shift
     map('right_command').toMeh().toIfAlone('escape'), // Control + Option + Shift
   ]);
 }
 
-function rule_leaderKey() {
-  let _var = 'leader'
-  let escapeActions = [toUnsetVar(_var), toRemoveNotificationMessage(_var)]
+function createLeaderKeyRule() {
+  const escapeActions = [
+    toUnsetVar(LEADER_VAR),
+    toRemoveNotificationMessage(LEADER_VAR),
+  ];
 
-  let mappings = {
+  const categoryMappings = {
     o: {
       name: 'App',
       mapping: {
@@ -79,22 +78,21 @@ function rule_leaderKey() {
         f: 'Finder',
         g: 'Google Chrome',
         i: 'iTerm',
-        o: 'Obsidian',
         l: 'Open WebUI',
-        n: 'Notes',
+        o: 'Obsidian',
         s: 'Slack',
-        y: 'Spotify',
-        ';': 'System Settings',
         v: 'Visual Studio Code',
         w: 'WhatsApp',
-        z: 'Zoom',
+        y: 'Spotify',
+        z: 'Zoom.us',
+        ';': 'System Settings',
       },
       action: toApp,
     },
     l: {
       name: 'Link',
       mapping: require('./links.json') as { [key: string]: string[] },
-      action: (x) => to$(`open ${x}`),
+      action: (url) => to$(`open ${url}`),
     },
     r: {
       name: 'Raycast',
@@ -142,52 +140,49 @@ function rule_leaderKey() {
     }
   }
 
-  let categoryKeys = Object.keys(mappings) as Array<keyof typeof mappings>
+  return createLeaderSystem(LEADER_VAR, categoryMappings, escapeActions);
+}
+
+function createLeaderSystem(varName: string, mappings, escapeActions) {
+  let categoryKeys = Object.keys(mappings) as FromKeyParam[]
 
   return rule('Leader Key').manipulators([
     // Part 1: Activate Leader Sub-mode (Inactive -> Category State)
     // Maps Hyper + <category_key> (e.g., Hyper + 'o') to set the
     // leader variable directly to the category key (e.g., 'o')
     // and show the relevant sub-options in the notification.
-    withCondition(ifVar(_var, 0))(
+    withCondition(ifVar(varName, 0))(
       categoryKeys.map((key) => {
         const category = mappings[key];
-        const categoryHint = Object.entries(category.mapping)
-          .map(([subKey, subValue]) => `${subKey}_${Array.isArray(subValue) ? subValue[1] : subValue}`)
-          .join(' ');
-        return map(key, 'Hyper') // e.g., map('o', 'Hyper')
-          .toVar(_var, key)
-          .toNotificationMessage(_var, `${category.name}: ${categoryHint}`);
+        const hint = formatCategoryHint(category.mapping);
+
+        return map(key, 'Hyper')
+          .toVar(varName, key)
+          .toNotificationMessage(varName, `${category.name}:\n  ${hint}`);
       })
     ),
 
     // Part 2: Escape from any active Leader Mode (Category State -> Inactive)
-    // If the leader variable is set (i.e., not 0), pressing Escape or Space
-    // will unset the variable and clear the notification.
-    withCondition(ifVar(_var, 0).unless())([
-      withMapper(['⎋', '⇪', '␣'])((keyToMap) => map(keyToMap).to(escapeActions)),
+    withCondition(ifVar(varName, 0).unless())([
+      withMapper(['⎋', '⇪', '␣'])((keyToMap) =>
+        map(keyToMap).to(escapeActions)),
     ]),
 
     // Part 3: Execute Action in Leader Sub-mode (Category State -> Action -> Inactive)
     // This part handles the second key press after a leader sub-mode is active.
-    // It iterates through each category. If the _var matches the categoryKey,
+    // It iterates through each category. If the varName matches the categoryKey,
     // it maps the subKeys of that category to their respective actions.
     ...categoryKeys.map((categoryKey) => {
       const { mapping, action } = mappings[categoryKey];
-      const actionSubKeys = Object.keys(mapping) as Array<keyof typeof mapping>;
+      const actionKeys = Object.keys(mapping) as string[];
 
-      return withCondition(ifVar(_var, categoryKey))(
-        actionSubKeys.map((subKey) => {
-          const mappingEntry = mapping[subKey];
-          // If the mapping entry is an array (like for Raycast ['path', 'DisplayName']),
-          // pass the first element (the actual command path/identifier) to the action.
-          // Otherwise, pass the string value directly.
-          const valueToPassToAction = Array.isArray(mappingEntry)
-            ? mappingEntry[0]
-            : mappingEntry;
+      return withCondition(ifVar(varName, categoryKey))(
+        actionKeys.map((subKey: string) => {
+          const value = mapping[subKey];
+          const actionValue = Array.isArray(value) ? value[0] : value;
 
           return map(subKey as any) // `subKey as any` for type compatibility with map()
-            .to(action(valueToPassToAction))
+            .to(action(actionValue))
             .to(escapeActions); // Reset leader mode after executing action
         })
       );
@@ -195,40 +190,51 @@ function rule_leaderKey() {
   ]);
 }
 
+function formatCategoryHint(
+  mapping: Record<string, string | [string, string]>
+): string {
+  return Object.entries(mapping)
+    .map(([key, value]) => {
+      const displayName = Array.isArray(value) ? value[1] : value;
+      return `${key.toUpperCase()}→${displayName}\n`;
+    })
+    .join('  ');
+}
 
-function app_raycast() {
+function createRaycastRules() {
   return rule('Raycast').manipulators([
-    // Easy access to clipboard history
-    // map('v', '›⌘⇧').to(raycastExt('raycast/clipboard-history/clipboard-history')),
+    // Navigation with Hyper + arrows
     withModifier('Hyper')({
       '↑': raycastWin('previous-display'),
       '↓': raycastWin('next-display'),
       '←': raycastWin('previous-desktop'),
       '→': raycastWin('next-desktop'),
     }),
+
+    // Window positioning with Hyper
     withModifier('Hyper')({
-      u: raycastWin('first-third'),
-      i: raycastWin('center-third'),
-      o: raycastWin('last-third'),
-      j: raycastWin('first-two-thirds'),
-      l: raycastWin('last-two-thirds'),
-      n: raycastWin('left-half'),
-      m: raycastWin('right-half'),
+      // Thirds
+      1: raycastWin('first-third'),
+      2: raycastWin('center-third'),
+      3: raycastWin('last-third'),
+      // Two-thirds
+      4: raycastWin('first-two-thirds'),
+      7: raycastWin('last-two-thirds'),
+      // Halves
+      8: raycastWin('left-half'),
+      9: raycastWin('center'),
+      0: raycastWin('right-half'),
+      // Special
+      '-': raycastWin('make-smaller'),
+      '=': raycastWin('make-larger'),
       '`': raycastWin('almost-maximize'),
       '⏎': raycastWin('maximize'),
       '⌫': raycastWin('restore'),
     }),
-    withModifier('Meh')({
-      1: raycastWin('first-fourth'),
-      2: raycastWin('second-fourth'),
-      3: raycastWin('third-fourth'),
-      4: raycastWin('last-fourth'),
-      5: raycastWin('center'),
-      6: raycastWin('center-half'),
-      7: raycastWin('center-two-thirds'),
-    }),
   ])
 }
+
+main()
 
 // TODO: Not working
 // function app_slack() {
@@ -287,5 +293,3 @@ function app_raycast() {
 //     ),
 //   ])
 // }
-
-main()
