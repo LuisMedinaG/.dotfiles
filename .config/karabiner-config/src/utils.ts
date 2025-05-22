@@ -1,11 +1,11 @@
-import { map, SideModifierAlias, to$, ToEvent } from 'karabiner.ts'
+import { map, SideModifierAlias, to$, ToEvent } from 'karabiner.ts';
 
 /** Back/Forward history in most apps. */
 export function historyNavi() {
   return [
     map('h', '⌃').to('[', '⌘'), //
     map('l', '⌃').to(']', '⌘'),
-  ]
+  ];
 }
 
 /** Pre/Next tab in most apps. */
@@ -13,7 +13,7 @@ export function tabNavi() {
   return [
     map('h', '⌥').to('[', '⌘⇧'), //
     map('l', '⌥').to(']', '⌘⇧'),
-  ]
+  ];
 }
 
 /** Pre/Next switcher in most apps. */
@@ -21,7 +21,7 @@ export function switcher() {
   return [
     map('h', '⌘⌥⌃').to('⇥', '⌃⇧'), //
     map('l', '⌘⌥⌃').to('⇥', '⌃'),
-  ]
+  ];
 }
 
 /**
@@ -39,17 +39,17 @@ export const tapModifiers = (
   modifierMappings: Partial<Record<SideModifierAlias | 'fn', ToEvent>>,
 ) => {
   return Object.entries(modifierMappings).map(([modifier, tapAction]) => {
-    const key = modifier as SideModifierAlias | 'fn'
-    return map(key).to(key).toIfAlone(tapAction)
-  })
-}
+    const key = modifier as SideModifierAlias | 'fn';
+    return map(key).to(key).toIfAlone(tapAction);
+  });
+};
 
 export function raycastExt(name: string) {
-  return to$(`open raycast://extensions/${name}`)
+  return to$(`open raycast://extensions/${name}`);
 }
 
 export function raycastWin(name: string) {
-  return to$(`open -g raycast://extensions/raycast/window-management/${name}`)
+  return to$(`open -g raycast://extensions/raycast/window-management/${name}`);
 }
 
 /** @see https://gist.github.com/lancethomps/a5ac103f334b171f70ce2ff983220b4f?permalink_comment_id=4698498#gistcomment-4698498 */
@@ -78,9 +78,9 @@ tell application "System Events"
       end repeat
     end repeat
   end try
-end tell'`)
+end tell'`);
 
 export function toSystemSetting(pane: string) {
-  const path = `/System/Library/PreferencePanes/${pane}.prefPane`
-  return to$(`open -b com.apple.systempreferences ${path}`)
+  const path = `/System/Library/PreferencePanes/${pane}.prefPane`;
+  return to$(`open -b com.apple.systempreferences ${path}`);
 }

@@ -18,55 +18,47 @@ import {
   ifVar,
   withMapper,
   FromKeyParam,
-} from 'karabiner.ts'
+} from 'karabiner.ts';
 
-import {
-  raycastExt,
-  raycastWin,
-  toSystemSetting,
-  // CategoryMappings
-} from './utils'
+import { raycastExt, raycastWin, toSystemSetting } from './utils';
 
 // Constants
-const PROFILE_NAME = 'Default'
-const LEADER_TIMEOUT = 1500 // ms
-const LEADER_VAR = 'leader_mode'
-
-export const APP_IDS = {
+const PROFILE_NAME = 'Default';
+const LEADER_VAR = 'leader_mode';
+const APP_IDS = {
   slack: '^com\\.tinyspeck\\.slackmacgap$',
   vscode: '^com\\.microsoft\\.VSCode$',
   chrome: '^com\\.google\\.Chrome$',
   obsidian: '^md\\.obsidian$',
   iterm: '^com\\.googlecode\\.iterm2$',
-} as const
+};
 
 function main() {
   const rules = [
-    // Core Functionality
     createHyperKeyRule(),
     createLeaderKeyRule(),
-
-    // Application-specific rules
     createRaycastRules(),
-  ]
+  ];
 
   const parameters = {
     'basic.to_if_alone_timeout_milliseconds': 500,
     'basic.to_delayed_action_delay_milliseconds': 500,
-    'leader.timeout_milliseconds': LEADER_TIMEOUT,
+    'leader.timeout_milliseconds': 1500,
     // simultaneous_threshold_milliseconds: 10,
     // 'basic.simultaneous_threshold': 200,
-  }
+  };
 
-  writeToProfile(PROFILE_NAME, rules, parameters)
+  writeToProfile(PROFILE_NAME, rules, parameters);
 }
+
+main();
 
 // --- Hyper Key Definition ---
 function createHyperKeyRule() {
   return rule('Hyper/Meh Key').manipulators([
     map('caps_lock').toHyper().toIfAlone('escape'), // Command + Control + Option + Shift
     map('right_command').toMeh().toIfAlone('escape'), // Control + Option + Shift
-  ])
+  ]);
 }
 
 // --- Home Row Mods Definition ---
@@ -83,14 +75,14 @@ function createHomeRowModsRule() {
     map('k').to('right_option').toIfAlone('k'), // k/⌥
     map('l').to('right_command').toIfAlone('l'), // l/⌘
     map('semicolon').to('right_shift').toIfAlone('semicolon'), // ;/⇧
-  ])
+  ]);
 }
 
 function createLeaderKeyRule() {
   const escapeActions = [
     toUnsetVar(LEADER_VAR),
     toRemoveNotificationMessage(LEADER_VAR),
-  ]
+  ];
 
   const categoryMappings = {
     o: {
@@ -159,13 +151,13 @@ function createLeaderKeyRule() {
     },
   } satisfies {
     [key: string]: {
-      name: string
-      mapping: { [key: string]: string | string[] }
-      action: (v: string) => ToEvent | ToEvent[]
-    }
-  }
+      name: string;
+      mapping: { [key: string]: string | string[] };
+      action: (v: string) => ToEvent | ToEvent[];
+    };
+  };
 
-  return createLeaderSystem(LEADER_VAR, categoryMappings, escapeActions)
+  return createLeaderSystem(LEADER_VAR, categoryMappings, escapeActions);
 }
 
 function formatCategoryHint(
@@ -173,14 +165,14 @@ function formatCategoryHint(
 ): string {
   return Object.entries(mapping)
     .map(([key, value]) => {
-      const displayName = Array.isArray(value) ? value[1] : value
-      return `${key.toUpperCase()}_${displayName}\n`
+      const displayName = Array.isArray(value) ? value[1] : value;
+      return `${key.toUpperCase()}_${displayName}\n`;
     })
-    .join('  ')
+    .join('  ');
 }
 
 function createLeaderSystem(varName: string, mappings, escapeActions) {
-  let categoryKeys = Object.keys(mappings) as FromKeyParam[]
+  let categoryKeys = Object.keys(mappings) as FromKeyParam[];
 
   return rule('Leader Key').manipulators([
     // Part 1: Activate Leader Sub-mode (Inactive -> Category State)
@@ -189,12 +181,12 @@ function createLeaderSystem(varName: string, mappings, escapeActions) {
     // and show the relevant sub-options in the notification.
     withCondition(ifVar(varName, 0))(
       categoryKeys.map((key) => {
-        const category = mappings[key]
-        const hint = formatCategoryHint(category.mapping)
+        const category = mappings[key];
+        const hint = formatCategoryHint(category.mapping);
 
         return map(key, 'Hyper')
           .toVar(varName, key)
-          .toNotificationMessage(varName, `${category.name}:\n  ${hint}`)
+          .toNotificationMessage(varName, `${category.name}:\n  ${hint}`);
       }),
     ),
 
@@ -210,21 +202,21 @@ function createLeaderSystem(varName: string, mappings, escapeActions) {
     // It iterates through each category. If the varName matches the categoryKey,
     // it maps the subKeys of that category to their respective actions.
     ...categoryKeys.map((categoryKey) => {
-      const { mapping, action } = mappings[categoryKey]
-      const actionKeys = Object.keys(mapping) as string[]
+      const { mapping, action } = mappings[categoryKey];
+      const actionKeys = Object.keys(mapping) as string[];
 
       return withCondition(ifVar(varName, categoryKey))(
         actionKeys.map((subKey: string) => {
-          const value = mapping[subKey]
-          const actionValue = Array.isArray(value) ? value[0] : value
+          const value = mapping[subKey];
+          const actionValue = Array.isArray(value) ? value[0] : value;
 
           return map(subKey as any) // `subKey as any` for type compatibility with map()
             .to(action(actionValue))
-            .to(escapeActions) // Reset leader mode after executing action
+            .to(escapeActions); // Reset leader mode after executing action
         }),
-      )
+      );
     }),
-  ])
+  ]);
 }
 
 function createRaycastRules() {
@@ -257,7 +249,7 @@ function createRaycastRules() {
       '⏎': raycastWin('maximize'),
       '⌫': raycastWin('restore'),
     }),
-  ])
+  ]);
 }
 
 // TODO: Not working
@@ -310,5 +302,3 @@ function createRaycastRules() {
 //     ),
 //   ])
 // }
-
-main()
