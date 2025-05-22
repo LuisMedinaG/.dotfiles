@@ -53,7 +53,7 @@ function main() {
     {
       // 'basic.to_if_alone_timeout_milliseconds': 500, // Default is 500
       // 'basic.to_delayed_action_delay_milliseconds': 500, // Default is 500
-      'basic.simultaneous_threshold_milliseconds': 50,
+      // 'basic.simultaneous_threshold_milliseconds': 50,
       // 'leader.timeout_milliseconds': 1500, // Default timeout for leader mode (1 second)
     }
   );
@@ -100,30 +100,27 @@ function rule_leaderKey() {
       name: 'Raycast',
       mapping: {
         c: ['raycast/calendar/my-schedule', 'Calendar'],
-        d: ['raycast/dictionary/define-word', 'Dictionary'],
-        e: ['raycast/emoji-symbols/search-emoji-symbols', 'Emoji'],
         s: ['raycast/snippets/search-snippets', 'Snippets'],
+        f: ['raycast/file-search/search-files', 'Search files'],
+        h: ['raycast/calculator/calculator-history', 'Calculator'],
         v: ['raycast/clipboard-history/clipboard-history', 'Clipboard'],
-            // Dropopver
-          // Calculator History
-          // My Schedule
-          // Clipboard History
-          // Toggle Caffeinate
-          // Search All
-          // Toggle Keyboard Brightness
-          // Toggle Next Layout
-          // Search Menu Items
-          // Chat with Ollama
-          // Create Note
-          // Raycast Notes
-          // Search Notes
-          // Recognize Text
-          // Emmoji
-          // Search files
-          // Toggle Favorite Device #1o
-          // Search Recent Projects
-          // -----
-          // Spotify - like, now playing, etc
+        e: ['raycast/emoji-symbols/search-emoji-symbols', 'Emoji'],
+        '.': ['raycast/raycast-notes/raycast-notes', 'Raycast notes'],
+        '0': ['lucaschultz/input-switcher/toggle', 'Input lang'],
+        '/': ['raycast/navigation/search-menu-items', 'Search menu'],
+        r: ['thomas/visual-studio-code/index', 'Recent projects'],
+        a: ['Codely/google-chrome/search-all', 'Google search all'],
+        d: ['jag-k/dropover/index', 'Add Dropover'],
+        t: ['huzef44/screenocr/recognize-text', 'OCR'],
+        k: ['huzef44/keyboard-brightness/toggle-keyboard-brightness', 'Keyboard ☀︎'],
+        // raycast://extensions/mooxl/coffee/caffeinateToggle
+        // raycast://extensions/massimiliano_pasquini/raycast-ollama/ollama-chat
+        // raycast://extensions/VladCuciureanu/toothpick/toggle-favorite-device-1
+        // raycast://extensions/marcjulian/obsidian/createNoteCommand
+        // -----
+        // raycast://extensions/mattisssa/spotify-player/nowPlaying
+        // raycast://extensions/mattisssa/spotify-player/like
+        // raycast://extensions/mattisssa/spotify-player/addPlayingSongToPlaylist
       },
       action: raycastExt,
     },
@@ -159,7 +156,7 @@ function rule_leaderKey() {
           .map(([subKey, subValue]) => `${subKey}_${Array.isArray(subValue) ? subValue[1] : subValue}`)
           .join(' ');
         return map(key, 'Hyper') // e.g., map('o', 'Hyper')
-          .toVar(_var, key) // Sets _var to 'o', 'l', 'r', or 's'
+          .toVar(_var, key)
           .toNotificationMessage(_var, `${category.name}: ${categoryHint}`);
       })
     ),
@@ -168,7 +165,7 @@ function rule_leaderKey() {
     // If the leader variable is set (i.e., not 0), pressing Escape or Space
     // will unset the variable and clear the notification.
     withCondition(ifVar(_var, 0).unless())([
-      withMapper(['⎋', '⇪' , '␣'])((keyToMap) => map(keyToMap).to(escapeActions)),
+      withMapper(['⎋', '⇪', '␣'])((keyToMap) => map(keyToMap).to(escapeActions)),
     ]),
 
     // Part 3: Execute Action in Leader Sub-mode (Category State -> Action -> Inactive)
@@ -210,15 +207,16 @@ function app_raycast() {
       '→': raycastWin('next-desktop'),
     }),
     withModifier('Hyper')({
-      1: raycastWin('first-third'),
-      2: raycastWin('center-third'),
-      3: raycastWin('last-third'),
-      4: raycastWin('first-two-thirds'),
-      5: raycastWin('last-two-thirds'),
-      9: raycastWin('left-half'),
-      0: raycastWin('right-half'),
-      '⏎': raycastWin('maximize'),
+      u: raycastWin('first-third'),
+      i: raycastWin('center-third'),
+      o: raycastWin('last-third'),
+      j: raycastWin('first-two-thirds'),
+      l: raycastWin('last-two-thirds'),
+      n: raycastWin('left-half'),
+      m: raycastWin('right-half'),
       '`': raycastWin('almost-maximize'),
+      '⏎': raycastWin('maximize'),
+      '⌫': raycastWin('restore'),
     }),
     withModifier('Meh')({
       1: raycastWin('first-fourth'),
