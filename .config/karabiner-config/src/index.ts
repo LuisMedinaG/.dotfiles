@@ -115,7 +115,6 @@ function createLeaderKeyRule() {
         s: ['raycast/snippets/search-snippets', 'Snippets'],
         f: ['raycast/file-search/search-files', 'Search files'],
         h: ['raycast/calculator/calculator-history', 'Calculator'],
-        v: ['raycast/clipboard-history/clipboard-history', 'Clipboard'],
         e: ['raycast/emoji-symbols/search-emoji-symbols', 'Emoji'],
         '.': ['raycast/raycast-notes/raycast-notes', 'Raycast notes'],
         '0': ['lucaschultz/input-switcher/toggle', 'Input lang'],
@@ -221,6 +220,10 @@ function createLeaderSystem(varName: string, mappings, escapeActions) {
 
 function createRaycastRules() {
   return rule('Raycast').manipulators([
+    map('v', ['command', 'shift']).to(
+      raycastExt('raycast/clipboard-history/clipboard-history'),
+    ),
+
     // Navigation with Hyper + arrows
     withModifier('Hyper')({
       '↑': raycastWin('previous-display'),
