@@ -22,6 +22,8 @@ import {
 
 import { raycastExt, raycastWin, toSystemSetting } from './utils';
 
+import linksData from './links.json' with { type: 'json' }; 
+
 // Constants
 const PROFILE_NAME = 'Default';
 const LEADER_VAR = 'leader_mode';
@@ -105,7 +107,7 @@ function createLeaderKeyRule() {
     },
     l: {
       name: 'Link',
-      mapping: require('./links.json') as { [key: string]: string[] },
+      mapping: linksData as { [key: string]: string },
       action: (url) => to$(`open ${url}`),
     },
     r: {
