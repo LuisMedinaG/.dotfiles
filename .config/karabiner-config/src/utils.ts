@@ -52,8 +52,14 @@ export function raycastWin(name: string) {
   return to$(`open -g raycast://extensions/raycast/window-management/${name}`);
 }
 
+export function toSystemSetting(pane: string) {
+  const path = `/System/Library/PreferencePanes/${pane}.prefPane`;
+  return to$(`open -b com.apple.systempreferences ${path}`);
+}
+
 /** @see https://gist.github.com/lancethomps/a5ac103f334b171f70ce2ff983220b4f?permalink_comment_id=4698498#gistcomment-4698498 */
-export const toClearNotifications = to$(`osascript -e '\
+export function toClearNotifications() {
+  return to$(`osascript -e '\
 tell application "System Events"
   try
     repeat
@@ -79,8 +85,15 @@ tell application "System Events"
     end repeat
   end try
 end tell'`);
+}
 
-export function toSystemSetting(pane: string) {
-  const path = `/System/Library/PreferencePanes/${pane}.prefPane`;
-  return to$(`open -b com.apple.systempreferences ${path}`);
+export const systemUtilsActionRegistry: Record<string, ToEvent | ToEvent[]> = {
+  'sys_clear_notifications': toClearNotifications(),
+  'sys_sleep': to$('pmset sleepnow'),
+};
+
+// This actions dont receive any parameters.
+export function genericStaticAction(actionId: string) {
+  // TODO: Check if key exists in registry
+  return systemUtilsActionRegistry[actionId];
 }

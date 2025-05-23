@@ -20,20 +20,13 @@ import {
   FromKeyParam,
 } from 'karabiner.ts';
 
-import { raycastExt, raycastWin, toSystemSetting } from './utils';
+import { genericStaticAction, raycastExt, raycastWin, toSystemSetting } from './utils';
 
-import linksData from './links.json' with { type: 'json' }; 
+import linksData from './links.json' with { type: 'json' };
 
 // Constants
 const PROFILE_NAME = 'Default';
 const LEADER_VAR = 'leader_mode';
-const APP_IDS = {
-  slack: '^com\\.tinyspeck\\.slackmacgap$',
-  vscode: '^com\\.microsoft\\.VSCode$',
-  chrome: '^com\\.google\\.Chrome$',
-  obsidian: '^md\\.obsidian$',
-  iterm: '^com\\.googlecode\\.iterm2$',
-};
 
 function main() {
   const rules = [
@@ -43,11 +36,11 @@ function main() {
   ];
 
   const parameters = {
-    'basic.to_if_alone_timeout_milliseconds': 500,
+    'basic.to_if_alone_timeout_milliseconds': 200,
     'basic.to_delayed_action_delay_milliseconds': 500,
     'leader.timeout_milliseconds': 1500,
-    // simultaneous_threshold_milliseconds: 10,
-    // 'basic.simultaneous_threshold': 200,
+    // 'basic.simultaneous_threshold': 50,
+    // 'simlayer.threshold_milliseconds': 100
   };
 
   writeToProfile(PROFILE_NAME, rules, parameters);
@@ -114,13 +107,13 @@ function createLeaderKeyRule() {
       name: 'Raycast',
       mapping: {
         c: ['raycast/calendar/my-schedule', 'Calendar'],
-        s: ['raycast/snippets/search-snippets', 'Snippets'],
-        f: ['raycast/file-search/search-files', 'Search files'],
         h: ['raycast/calculator/calculator-history', 'Calculator'],
+        f: ['raycast/file-search/search-files', 'Search files'],
+        s: ['raycast/snippets/search-snippets', 'Snippets'],
         e: ['raycast/emoji-symbols/search-emoji-symbols', 'Emoji'],
         '.': ['raycast/raycast-notes/raycast-notes', 'Raycast notes'],
-        '0': ['lucaschultz/input-switcher/toggle', 'Input lang'],
         '/': ['raycast/navigation/search-menu-items', 'Search menu'],
+        '0': ['lucaschultz/input-switcher/toggle', 'Input lang'],
         r: ['thomas/visual-studio-code/index', 'Recent projects'],
         a: ['Codely/google-chrome/search-all', 'Google search all'],
         d: ['jag-k/dropover/index', 'Add Dropover'],
@@ -129,6 +122,8 @@ function createLeaderKeyRule() {
           'huzef44/keyboard-brightness/toggle-keyboard-brightness',
           'Keyboard ☀︎',
         ],
+        g: ['massimiliano_pasquini/raycast-ollama/ollama-fix-spelling-grammar', 'Fix Spell'],
+        p: ['massimiliano_pasquini/raycast-ollama/ollama-professional', 'Profesional'],
         // raycast://extensions/mooxl/coffee/caffeinateToggle
         // raycast://extensions/massimiliano_pasquini/raycast-ollama/ollama-chat
         // raycast://extensions/VladCuciureanu/toothpick/toggle-favorite-device-1
@@ -150,6 +145,15 @@ function createLeaderKeyRule() {
       },
       action: toSystemSetting,
     },
+    u: {
+      name: 'System Utils',
+      mapping: {
+        // [ID, Name]
+        n: ['sys_clear_notifications', 'Clear Notifications'],
+        s: ['sys_sleep', 'Sleep System'],
+      },
+      action: genericStaticAction,
+    }
   } satisfies {
     [key: string]: {
       name: string;
@@ -242,6 +246,8 @@ function createRaycastRules() {
       3: raycastWin('last-third'),
       // Two-thirds
       4: raycastWin('first-two-thirds'),
+      5: raycastWin('top-half'),
+      6: raycastWin('bottom-half'),
       7: raycastWin('last-two-thirds'),
       // Halves
       8: raycastWin('left-half'),
@@ -256,54 +262,3 @@ function createRaycastRules() {
     }),
   ]);
 }
-
-// TODO: Not working
-// function app_slack() {
-//   return rule('Slack', ifApp(APP_IDS.slack)).manipulators([
-//     ...historyNavi(),
-
-//     ...tapModifiers({
-//       '‹⌘': toKey('d', '⌘⇧'), // showHideSideBar
-//       '‹⌥': toKey('f6'), // moveFocusToTheNextSection
-
-//       '›⌘': toKey('.', '⌘'), // hideRightBar
-//       '›⌥': toKey('k', '⌘'), // open
-//     }),
-//   ])
-// }
-
-// TODO: Not working
-// function layer_system() {
-//   return layer('`', 'system').manipulators({
-//     // 1: toMouseCursorPosition({ x: '25%', y: '50%', screen: 0 }),
-//     // 2: toMouseCursorPosition({ x: '50%', y: '50%', screen: 0 }),
-//     // 3: toMouseCursorPosition({ x: '75%', y: '50%', screen: 0 }),
-//     // 4: toMouseCursorPosition({ x: '99%', y: 20, screen: 0 }),
-
-//     // 5: toMouseCursorPosition({ x: '50%', y: '50%', screen: 1 }),
-
-//     // '⏎': toPointingButton('button1'),
-
-//     n: toClearNotifications,
-
-//     '␣': toSleepSystem(),
-
-//     j: toKey('⇥', '⌘'),
-//     k: toKey('⇥', '⌘⇧'),
-//   })
-// }
-
-// TODO: Not working
-// function layer_symbol() {
-//   return layer('z', 'symbols').manipulators([
-//     withMapper(['←', '→', '↑', '↓', '␣', '⏎', '⌫', '⌦'])((k) =>
-//       map(k).toPaste(k),
-//     ),
-
-//     { ',': toPaste('‹'), '.': toPaste('›') },
-
-//     withMapper({ 4: '⇥', 5: '⎋', 6: '⌘', 7: '⌥', 8: '⌃', 9: '⇧', 0: '⇪' })(
-//       (k, v) => map(k).toPaste(v),
-//     ),
-//   ])
-// }
