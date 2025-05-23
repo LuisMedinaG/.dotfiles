@@ -60,3 +60,26 @@ export type CategoryMappings = Record<string, CategoryMapping>;
 //     ),
 //   ])
 // }
+
+// --- Home Row Mods Definition ---
+// TODO: Best with kanata
+// function createHomeRowModsRule() {
+//   const fastTypingParams = {
+//     'basic.to_if_alone_timeout_milliseconds': 130,        // Quick tap threshold
+//     'basic.to_if_held_down_threshold_milliseconds': 140,  // Quick hold threshold - only 10ms gap!
+//   };
+
+//   return rule('Home Row Mods').manipulators([
+//     // Left Hand
+//     map('a').to('left_control', undefined, { lazy: true }).toIfAlone('a').parameters(fastTypingParams), // a/⌃
+//     map('s').to('left_option', undefined, { lazy: true }).toIfAlone('s').parameters(fastTypingParams), // s/⌥
+//     map('d').to('left_command', undefined, { lazy: true }).toIfAlone('d').parameters(fastTypingParams), // d/⌘
+//     map('f').to('left_shift', undefined, { lazy: true }).toIfAlone('f').parameters(fastTypingParams), // f/⇧
+
+//     // Right Hand
+//     map('j').to('right_control', undefined, { lazy: true }).toIfAlone('j').parameters(fastTypingParams), // j/⌃
+//     map('k').to('right_option', undefined, { lazy: true }).toIfAlone('k').parameters(fastTypingParams), // k/⌥
+//     map('l').to('right_command', undefined, { lazy: true }).toIfAlone('l').parameters(fastTypingParams), // l/⌘
+//     map('semicolon').to('right_shift', undefined, { lazy: true }).toIfAlone('semicolon').parameters(fastTypingParams), // ;/⇧
+//   ]);
+// }
