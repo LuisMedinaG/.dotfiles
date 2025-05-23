@@ -33,7 +33,7 @@ function main() {
     createHyperKeyRule(),
     createLeaderKeyRule(),
     createRaycastRules(),
-    createNavigationRules(),
+    // createNavigationRules(),
   ];
 
   const parameters = {
