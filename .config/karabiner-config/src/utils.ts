@@ -57,9 +57,16 @@ export function toSystemSetting(pane: string) {
   return to$(`open -b com.apple.systempreferences ${path}`);
 }
 
+// Helper function for AppleScript commands
+function toAppleScript(script: string) {
+  // Escape single quotes for shell command
+  const escapedScript = script.replace(/'/g, "'\\''");
+  return to$(`osascript -e '${escapedScript}'`);
+}
+
 /** @see https://gist.github.com/lancethomps/a5ac103f334b171f70ce2ff983220b4f?permalink_comment_id=4698498#gistcomment-4698498 */
 export function toClearNotifications() {
-  return to$(`osascript -e '\
+  return toAppleScript(`
 tell application "System Events"
   try
     repeat
@@ -84,12 +91,46 @@ tell application "System Events"
       end repeat
     end repeat
   end try
-end tell'`);
+end tell`)
+}
+
+export function toNightShift(enabled?: boolean, strength?: number) {
+  let commands = [];
+  if (enabled !== undefined) commands.push(`client's setEnabled:${enabled}`);
+  if (strength !== undefined)
+    commands.push(`client's setStrength:${strength} commit:true`);
+
+  const script = `
+use framework "CoreBrightness"
+property CBBlueLightClient : class "CBBlueLightClient"
+set client to CBBlueLightClient's alloc()'s init()
+${commands.join('\n')}`;
+
+  return toAppleScript(script);
+}
+
+export function toToggleNightShift() {
+  const script = `
+use framework "CoreBrightness"
+property CBBlueLightClient : class "CBBlueLightClient"
+set client to CBBlueLightClient's alloc()'s init()
+try
+  set currentStrength to 0.0
+  client's getStrength:(a reference to currentStrength)
+  if currentStrength > 0 then
+    client's setEnabled:false
+  else
+    client's setEnabled:true
+    client's setStrength:0.5 commit:true
+  end if
+end try`;
+
+  return toAppleScript(script);
 }
 
 export const systemUtilsActionRegistry: Record<string, ToEvent | ToEvent[]> = {
-  'sys_clear_notifications': toClearNotifications(),
-  'sys_sleep': to$('pmset sleepnow'),
+  sys_clear_notifications: toClearNotifications(),
+  sys_sleep: to$('pmset sleepnow'),
 };
 
 // This actions dont receive any parameters.

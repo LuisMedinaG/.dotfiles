@@ -20,9 +20,17 @@ import {
   FromKeyParam,
 } from 'karabiner.ts';
 
-import { genericStaticAction, historyNavi, raycastExt, raycastWin, switcher, tabNavi, toSystemSetting } from './utils';
+import {
+  genericStaticAction,
+  historyNavi,
+  raycastExt,
+  raycastWin,
+  switcher,
+  tabNavi,
+  toSystemSetting,
+} from './utils';
 
-import linksData from './links.json' with { type: 'json' };
+import linksData from './links.json';
 
 // Constants
 const PROFILE_NAME = 'Default';
@@ -109,8 +117,14 @@ function createLeaderKeyRule() {
           'huzef44/keyboard-brightness/toggle-keyboard-brightness',
           'Keyboard ☀︎',
         ],
-        g: ['massimiliano_pasquini/raycast-ollama/ollama-fix-spelling-grammar', 'Fix Spell'],
-        p: ['massimiliano_pasquini/raycast-ollama/ollama-professional', 'Profesional'],
+        g: [
+          'massimiliano_pasquini/raycast-ollama/ollama-fix-spelling-grammar',
+          'Fix Spell',
+        ],
+        p: [
+          'massimiliano_pasquini/raycast-ollama/ollama-professional',
+          'Profesional',
+        ],
         // raycast://extensions/mooxl/coffee/caffeinateToggle
         // raycast://extensions/massimiliano_pasquini/raycast-ollama/ollama-chat
         // raycast://extensions/VladCuciureanu/toothpick/toggle-favorite-device-1
@@ -138,9 +152,10 @@ function createLeaderKeyRule() {
         // [ID, Name]
         n: ['sys_clear_notifications', 'Clear Notifications'],
         s: ['sys_sleep', 'Sleep System'],
+        // w: ['night_shift_toggle', 'Toggle Night Shift'],
       },
       action: genericStaticAction,
-    }
+    },
   } satisfies {
     [key: string]: {
       name: string;
@@ -254,10 +269,10 @@ function createNavigationRules() {
   return rule('Navigation Shortcuts').manipulators([
     // History navigation (Ctrl+H/L -> Cmd+[/])
     ...historyNavi(),
-    
+
     // Tab navigation (Opt+H/L -> Cmd+Shift+[/])
     ...tabNavi(),
-    
+
     // App switcher (Cmd+Opt+Ctrl+H/L -> Ctrl+Shift+Tab/Ctrl+Tab)
     ...switcher(),
   ]);

@@ -83,3 +83,24 @@ export type CategoryMappings = Record<string, CategoryMapping>;
 //     map('semicolon').to('right_shift', undefined, { lazy: true }).toIfAlone('semicolon').parameters(fastTypingParams), // ;/⇧
 //   ]);
 // }
+
+// TODO: Not working
+// function app_slack() {
+//   return rule('Slack', ifApp('^com.tinyspeck.slackmacgap$')).manipulators([
+//     ...historyNavi(),
+
+//     ...tapModifiers({
+//       '‹⌘': toKey('d', '⌘⇧'), // showHideSideBar
+//       '‹⌥': toKey('f6'), // moveFocusToTheNextSection
+
+//       '›⌘': toKey('.', '⌘'), // hideRightBar
+//       '›⌥': toKey('k', '⌘'), // open
+//     }),
+
+//     map(1, 'Meh').to(
+//       // After the 1/4 width, leave some space for opening thread in a new window
+//       // before the last 1/4 width
+//       toResizeWindow('Slack', { x: 1263, y: 25 }, { w: 1760, h: 1415 }),
+//     ),
+//   ])
+// }
