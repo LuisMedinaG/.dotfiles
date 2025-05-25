@@ -91,14 +91,13 @@ tell application "System Events"
       end repeat
     end repeat
   end try
-end tell`)
+end tell`);
 }
 
 export function toNightShift(enabled?: boolean, strength?: number) {
   let commands = [];
   if (enabled !== undefined) commands.push(`client's setEnabled:${enabled}`);
-  if (strength !== undefined)
-    commands.push(`client's setStrength:${strength} commit:true`);
+  if (strength !== undefined) commands.push(`client's setStrength:${strength} commit:true`);
 
   const script = `
 use framework "CoreBrightness"

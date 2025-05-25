@@ -69,10 +69,7 @@ function createHyperKeyRule() {
 }
 
 function createLeaderKeyRule() {
-  const escapeActions = [
-    toUnsetVar(LEADER_VAR),
-    toRemoveNotificationMessage(LEADER_VAR),
-  ];
+  const escapeActions = [toUnsetVar(LEADER_VAR), toRemoveNotificationMessage(LEADER_VAR)];
 
   const categoryMappings = {
     o: {
@@ -96,7 +93,7 @@ function createLeaderKeyRule() {
     l: {
       name: 'Link',
       mapping: linksData as { [key: string]: string },
-      action: (url) => to$(`open ${url}`),
+      action: url => to$(`open ${url}`),
     },
     r: {
       name: 'Raycast',
@@ -113,18 +110,9 @@ function createLeaderKeyRule() {
         a: ['Codely/google-chrome/search-all', 'Google search all'],
         d: ['jag-k/dropover/index', 'Add Dropover'],
         t: ['huzef44/screenocr/recognize-text', 'OCR'],
-        k: [
-          'huzef44/keyboard-brightness/toggle-keyboard-brightness',
-          'Keyboard ☀︎',
-        ],
-        g: [
-          'massimiliano_pasquini/raycast-ollama/ollama-fix-spelling-grammar',
-          'Fix Spell',
-        ],
-        p: [
-          'massimiliano_pasquini/raycast-ollama/ollama-professional',
-          'Profesional',
-        ],
+        k: ['huzef44/keyboard-brightness/toggle-keyboard-brightness', 'Keyboard ☀︎'],
+        g: ['massimiliano_pasquini/raycast-ollama/ollama-fix-spelling-grammar', 'Fix Spell'],
+        p: ['massimiliano_pasquini/raycast-ollama/ollama-professional', 'Profesional'],
         // raycast://extensions/mooxl/coffee/caffeinateToggle
         // raycast://extensions/massimiliano_pasquini/raycast-ollama/ollama-chat
         // raycast://extensions/VladCuciureanu/toothpick/toggle-favorite-device-1
@@ -167,9 +155,7 @@ function createLeaderKeyRule() {
   return createLeaderSystem(LEADER_VAR, categoryMappings, escapeActions);
 }
 
-function formatCategoryHint(
-  mapping: Record<string, string | [string, string]>,
-): string {
+function formatCategoryHint(mapping: Record<string, string | [string, string]>): string {
   return Object.entries(mapping)
     .map(([key, value]) => {
       const displayName = Array.isArray(value) ? value[1] : value;
@@ -187,7 +173,7 @@ function createLeaderSystem(varName: string, mappings, escapeActions) {
     // leader variable directly to the category key (e.g., 'o')
     // and show the relevant sub-options in the notification.
     withCondition(ifVar(varName, 0))(
-      categoryKeys.map((key) => {
+      categoryKeys.map(key => {
         const category = mappings[key];
         const hint = formatCategoryHint(category.mapping);
 
@@ -199,16 +185,14 @@ function createLeaderSystem(varName: string, mappings, escapeActions) {
 
     // Part 2: Escape from any active Leader Mode (Category State -> Inactive)
     withCondition(ifVar(varName, 0).unless())([
-      withMapper(['⎋', '⇪', '␣'])((keyToMap) =>
-        map(keyToMap).to(escapeActions),
-      ),
+      withMapper(['⎋', '⇪', '␣'])(keyToMap => map(keyToMap).to(escapeActions)),
     ]),
 
     // Part 3: Execute Action in Leader Sub-mode (Category State -> Action -> Inactive)
     // This part handles the second key press after a leader sub-mode is active.
     // It iterates through each category. If the varName matches the categoryKey,
     // it maps the subKeys of that category to their respective actions.
-    ...categoryKeys.map((categoryKey) => {
+    ...categoryKeys.map(categoryKey => {
       const { mapping, action } = mappings[categoryKey];
       const actionKeys = Object.keys(mapping) as string[];
 
@@ -228,9 +212,7 @@ function createLeaderSystem(varName: string, mappings, escapeActions) {
 
 function createRaycastRules() {
   return rule('Raycast').manipulators([
-    map('v', ['command', 'shift']).to(
-      raycastExt('raycast/clipboard-history/clipboard-history'),
-    ),
+    map('v', ['command', 'shift']).to(raycastExt('raycast/clipboard-history/clipboard-history')),
 
     // Navigation with Hyper + arrows
     withModifier('Hyper')({
