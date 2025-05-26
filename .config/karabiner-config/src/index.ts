@@ -75,14 +75,14 @@ function createLeaderKeyRule() {
     o: {
       name: 'App',
       mapping: {
-        c: 'Cisco Secure Client',
+        v: 'Cisco Secure Client',
         f: 'Finder',
         g: 'Google Chrome',
         i: 'iTerm',
         l: 'Open WebUI',
         o: 'Obsidian',
         s: 'Slack',
-        v: 'Visual Studio Code',
+        c: 'Visual Studio Code',
         w: 'WhatsApp',
         y: 'Spotify',
         z: 'Zoom.us',
