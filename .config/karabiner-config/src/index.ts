@@ -102,7 +102,6 @@ function createLeaderKeyRule() {
         h: ['raycast/calculator/calculator-history', 'Calculator'],
         f: ['raycast/file-search/search-files', 'Search files'],
         s: ['raycast/snippets/search-snippets', 'Snippets'],
-        e: ['raycast/emoji-symbols/search-emoji-symbols', 'Emoji'],
         '.': ['raycast/raycast-notes/raycast-notes', 'Raycast notes'],
         '/': ['raycast/navigation/search-menu-items', 'Search menu'],
         '0': ['lucaschultz/input-switcher/toggle', 'Input lang'],
@@ -244,6 +243,10 @@ function createRaycastRules() {
       '⏎': raycastWin('maximize'),
       '⌫': raycastWin('restore'),
     }),
+
+    withModifier('Hyper')({
+      e: raycastExt('raycast/emoji-symbols/search-emoji-symbols')
+    })
   ]);
 }
 
