@@ -42,17 +42,17 @@ function main() {
     createHyperKeyRule(),
     createLeaderKeyRule(),
     createRaycastRules(),
-    // createNavigationRules(),
-  ]
+    createAppQuickAccessRules(),
+  ];
 
   const parameters = {
     // If keyup event comes within <alone> ms from keydown, the key is not just pressed but held
     'basic.to_if_alone_timeout_milliseconds': 100,
 
-    // If keydown event for two different keys are pressed within :sim ms, the keypresses are considered simultaneous  
-    // 'basic.simultaneous_threshold_milliseconds': 30, 
+    // If keydown event for two different keys are pressed within :sim ms, the keypresses are considered simultaneous
+    // 'basic.simultaneous_threshold_milliseconds': 30,
 
-    // Key is fired twice when :held ms is elapsed 
+    // Key is fired twice when :held ms is elapsed
     'basic.to_if_held_down_threshold_milliseconds': 120,
 
     // After :delay ms, the key press is considered to be delayed (User for double tap hotkey)
@@ -68,9 +68,19 @@ main();
 function createHyperKeyRule() {
   return rule('Hyper/Meh Key').manipulators([
     map('caps_lock')
-      .toIfHeldDown('‹⌘', ['⌃', '⌥', '⇧'])
+      // .toIfHeldDown('‹⌘', ['⌃', '⌥', '⇧'])
+      .toHyper()
       .toIfAlone('⎋'),
     map('right_command').toMeh().toIfAlone('right_command'), // Control + Option + Shift
+  ]);
+}
+
+function createAppQuickAccessRules() {
+  return rule('App Quick Access').manipulators([
+    map('i', 'Hyper').to(toApp('iTerm')),
+    map('g', 'Hyper').to(toApp('Google Chrome')),
+    map('s', 'Hyper').to(toApp('Slack')),
+    map('c', 'Hyper').to(toApp('Visual Studio Code')),
   ]);
 }
 
@@ -83,12 +93,8 @@ function createLeaderKeyRule() {
       mapping: {
         v: 'Cisco Secure Client',
         f: 'Finder',
-        g: 'Google Chrome',
-        i: 'iTerm',
         l: 'Open WebUI',
         o: 'Obsidian',
-        s: 'Slack',
-        c: 'Visual Studio Code',
         w: 'WhatsApp',
         y: 'Spotify',
         z: 'Zoom.us',
@@ -129,7 +135,7 @@ function createLeaderKeyRule() {
       },
       action: raycastExt,
     },
-    s: {
+    ';': {
       name: 'SystemSetting',
       mapping: {
         a: 'Appearance',
@@ -251,8 +257,8 @@ function createRaycastRules() {
     }),
 
     withModifier('Hyper')({
-      e: raycastExt('raycast/emoji-symbols/search-emoji-symbols')
-    })
+      e: raycastExt('raycast/emoji-symbols/search-emoji-symbols'),
+    }),
   ]);
 }
 
