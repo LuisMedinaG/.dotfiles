@@ -20,8 +20,9 @@ alias sz='source ~/.zshrc'
 # Git aliases
 alias g='git'
 alias gpl='git pull'
+alias gau='git add -u'
 alias gpo='git push origin'
-alias ghc='git rev-parse HEAD | pbcopy'
+alias gch='git rev-parse HEAD | pbcopy'
 alias gsc='git branch --show-current | pbcopy'
 alias glu='git ls-files --modified --deleted --other --exclude-standard --deduplicate $(git rev-parse --show-toplevel)'
 alias gls="git status --short | grep '^[A-Z]' | awk '{print $NF}'"
@@ -42,3 +43,5 @@ unset index
 
 # Include custom aliases
 source_if_exists ~/.aliases.local
+
+# echo -e "\nPATH\n\t${PATH//:/$'\n\t'}\n" 
