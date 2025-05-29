@@ -1,7 +1,8 @@
 /* karabiner.ts Configuration
- * Documentation: https://karabiner.ts.evanliu.dev/
- *
  * Based on: https://github.com/evan-liu/karabiner-config
+ *
+ * Documentation: https://karabiner.ts.evanliu.dev/
+ * Required macOS settings: https://karabiner-elements.pqrs.org/docs/manual/misc/required-macos-settings/
  */
 
 import {
@@ -41,18 +42,21 @@ function main() {
     createHyperKeyRule(),
     createLeaderKeyRule(),
     createRaycastRules(),
-    // createNavigationRules(),
+    createAppQuickAccessRules(),
   ];
 
   const parameters = {
-    // Hyper key timing
-    'basic.to_if_alone_timeout_milliseconds': 250,
-    'basic.to_delayed_action_delay_milliseconds': 500,
-    'leader.timeout_milliseconds': 1500,
+    // If keyup event comes within <alone> ms from keydown, the key is not just pressed but held
+    'basic.to_if_alone_timeout_milliseconds': 100,
 
-    // Home row mods timing
-    'basic.to_if_held_down_threshold_milliseconds': 250,
-    'basic.simultaneous_threshold_milliseconds': 50,
+    // If keydown event for two different keys are pressed within :sim ms, the keypresses are considered simultaneous
+    // 'basic.simultaneous_threshold_milliseconds': 30,
+
+    // Key is fired twice when :held ms is elapsed
+    'basic.to_if_held_down_threshold_milliseconds': 120,
+
+    // After :delay ms, the key press is considered to be delayed (User for double tap hotkey)
+    // 'basic.to_delayed_action_delay_milliseconds': 500,
   };
 
   writeToProfile(PROFILE_NAME, rules, parameters);
@@ -63,8 +67,20 @@ main();
 // --- Hyper Key Definition ---
 function createHyperKeyRule() {
   return rule('Hyper/Meh Key').manipulators([
-    map('caps_lock').toHyper().toIfAlone('escape'), // Command + Control + Option + Shift
-    map('right_command').toMeh().toIfAlone('escape'), // Control + Option + Shift
+    map('caps_lock')
+      // .toIfHeldDown('‹⌘', ['⌃', '⌥', '⇧'])
+      .toHyper()
+      .toIfAlone('⎋'),
+    map('right_command').toMeh().toIfAlone('right_command'), // Control + Option + Shift
+  ]);
+}
+
+function createAppQuickAccessRules() {
+  return rule('App Quick Access').manipulators([
+    map('i', 'Hyper').to(toApp('iTerm')),
+    map('g', 'Hyper').to(toApp('Google Chrome')),
+    map('s', 'Hyper').to(toApp('Slack')),
+    map('c', 'Hyper').to(toApp('Visual Studio Code')),
   ]);
 }
 
@@ -77,12 +93,8 @@ function createLeaderKeyRule() {
       mapping: {
         v: 'Cisco Secure Client',
         f: 'Finder',
-        g: 'Google Chrome',
-        i: 'iTerm',
         l: 'Open WebUI',
         o: 'Obsidian',
-        s: 'Slack',
-        c: 'Visual Studio Code',
         w: 'WhatsApp',
         y: 'Spotify',
         z: 'Zoom.us',
@@ -123,7 +135,7 @@ function createLeaderKeyRule() {
       },
       action: raycastExt,
     },
-    s: {
+    ';': {
       name: 'SystemSetting',
       mapping: {
         a: 'Appearance',
@@ -184,7 +196,7 @@ function createLeaderSystem(varName: string, mappings, escapeActions) {
 
     // Part 2: Escape from any active Leader Mode (Category State -> Inactive)
     withCondition(ifVar(varName, 0).unless())([
-      withMapper(['⎋', '⇪', '␣'])(keyToMap => map(keyToMap).to(escapeActions)),
+      withMapper(['⎋', '␣', '⇥'])(keyToMap => map(keyToMap).to(escapeActions)),
     ]),
 
     // Part 3: Execute Action in Leader Sub-mode (Category State -> Action -> Inactive)
@@ -245,8 +257,8 @@ function createRaycastRules() {
     }),
 
     withModifier('Hyper')({
-      e: raycastExt('raycast/emoji-symbols/search-emoji-symbols')
-    })
+      e: raycastExt('raycast/emoji-symbols/search-emoji-symbols'),
+    }),
   ]);
 }
 
