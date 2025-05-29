@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# <https://www.iterm2.com/documentation-escape-codes.html>
+# Do not remember where I found the \ePtmux;\e magic, but it works
+ 
+  printf "\ePtmux;\e"        # tmux ignore following escapes
+    printf "\e]1337;Copy=:"  # iTerm2 copy text to macOS Clipboard
+       base64                # encodes stdin to base64 text
+    printf "\a"              # iTerm2 end of the base64 text
+  printf "\e\\\\"            # tmux stop ignoring escapes
