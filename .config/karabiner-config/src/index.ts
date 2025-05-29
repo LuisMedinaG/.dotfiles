@@ -28,6 +28,7 @@ import {
   raycastWin,
   switcher,
   tabNavi,
+  toPictureInPicture,
   toSystemSetting,
 } from './utils';
 
@@ -68,8 +69,8 @@ main();
 function createHyperKeyRule() {
   return rule('Hyper/Meh Key').manipulators([
     map('caps_lock')
-      // .toIfHeldDown('‹⌘', ['⌃', '⌥', '⇧'])
-      .toHyper()
+      .toIfHeldDown('‹⌘', ['⌃', '⌥', '⇧'])
+      // .toHyper()
       .toIfAlone('⎋'),
     map('right_command').toMeh().toIfAlone('right_command'), // Control + Option + Shift
   ]);
@@ -259,6 +260,14 @@ function createRaycastRules() {
     withModifier('Hyper')({
       e: raycastExt('raycast/emoji-symbols/search-emoji-symbols'),
     }),
+  ]);
+}
+
+function createChromeRules() {
+  return rule('Google Chrome').manipulators([
+    withModifier('Hyper')({
+      p: toPictureInPicture()
+    })
   ]);
 }
 

@@ -127,6 +127,73 @@ end try`;
   return toAppleScript(script);
 }
 
+export function toPictureInPicture() {
+  const script = `
+(* 
+Description: Applescript to open/close picture-in-picture in Safari
+Supported Applications: Safari, IINA
+Author: Daniel Rotärmel
+Source: https://gist.github.com/danielrotaermel/201f549d5755ea886eb78bb660133722
+Instructions: 
+   Assign this to a global keyboard shortcut with better touch tool / hammerspoon etc. - suggested: cmd+ctrl+p. 
+   Make sure "Developer > Allow JavaScript from Apple Events" is enabled in Safari. 
+   Download the BTT preset here -> https://share.folivora.ai/sP/3dd264e3-5d16-425f-8ab3-ce14877ec04f
+*)
+
+set jsStartPip to "document.querySelector('video').webkitSetPresentationMode('picture-in-picture')"
+
+set jsVideoExistsAndInline to "document.querySelector('video') !== null ? (document.querySelector('video').webkitPresentationMode === 'inline' ? 'true' : 'false') : 'false';"
+
+on closePip()
+	tell application "System Events"
+		if exists (window 1 of process "PIPAgent") then
+			-- display dialog "Found window 1"
+			-- get every UI element of (window 1 of process "PIPAgent")
+			click button 3 of (window 1 of process "PIPAgent")
+			-- click button 1 of (window 1 of process "PIPAgent")		
+		end if
+	end tell
+end closePip
+
+-- tell application "Safari" to activate
+-- tell application "IINA" to activate
+
+
+tell application "System Events" to set frontApp to name of first process whose frontmost is true
+
+if frontApp = "Safari" then
+	tell application "Safari"
+		set isVideoInline to do JavaScript jsVideoExistsAndInline in front document
+		if isVideoInline is "true" then
+			do JavaScript jsStartPip in front document
+		else
+			tell application "System Events"
+				if exists (window 1 of process "PIPAgent") then
+					-- display dialog "Found window 1"
+					-- get every UI element of (window 1 of process "PIPAgent")
+					click button 3 of (window 1 of process "PIPAgent")
+					-- click button 1 of (window 1 of process "PIPAgent")		
+				end if
+			end tell
+		end if
+	end tell
+else if (frontApp = "IINA") then
+	tell application "System Events"
+		tell process "IINA"
+			try
+				click menu item "Enter Picture-in-Picture" of menu "Video" of menu bar 1
+			on error
+				click menu item "Exit Picture-in-Picture" of menu "Video" of menu bar 1
+			end try
+		end tell
+	end tell
+else
+	closePip()
+end if`;
+
+  return toAppleScript(script);
+}
+
 export const systemUtilsActionRegistry: Record<string, ToEvent | ToEvent[]> = {
   sys_clear_notifications: toClearNotifications(),
   sys_sleep: to$('pmset sleepnow'),
