@@ -2,36 +2,37 @@
 # ZSH Aliases
 #
 
-# TODO: Use ZSH Abbreviations plugin instead of aliases
 # File operations
+alias l='eza --icons --group-directories-first -lha'
 alias ls='eza --icons --group-directories-first -l'
-alias ll='eza --icons --group-directories-first -lha'
 alias cat='bat'
 alias grep='rg'
 alias vim='nvim'
 
+# ZSH Abbr (https://zsh-abbr.olets.dev)
+# The zsh manager for auto-expanding abbreviations, inspired by fish shell.
+
 # Pretty print the path
-alias path='echo $PATH | tr -s ":" "\n"'
+# abbr path='echo $PATH | tr -s ":" "\n"'
 
 # TODO: Use ZDOTDIR
-alias ez='code ~/.zshrc'
-alias sz='source ~/.zshrc'
+# abbr ez='code ~/.zshrc'
+# abbr sz='source ~/.zshrc'
 
 # Git aliases
-alias g='git'
-alias gpl='git pull'
-alias gau='git add -u'
-alias gpo='git push origin'
-alias gch='git rev-parse HEAD | pbcopy'
-alias gsc='git branch --show-current | pbcopy'
-alias glu='git ls-files --modified --deleted --other --exclude-standard --deduplicate $(git rev-parse --show-toplevel)'
-alias gls="git status --short | grep '^[A-Z]' | awk '{print $NF}'"
+# abbr g='git'
+# abbr gpl='git pull'
+# abbr gau='git add -u'
+# abbr gpo='git push origin'
+# abbr gch='git rev-parse HEAD | pbcopy'
+# abbr gsc='git branch --show-current | pbcopy'
+# abbr glu='git ls-files --modified --deleted --other --exclude-standard --deduplicate $(git rev-parse --show-toplevel)'
+# abbr gss="git status --short | grep '^[A-Z]' | awk '{print $NF}'"
 
 # Navigation
-alias ...='cd ../../'
-alias ....='cd ../../../'
-alias .....='cd ../../../..'
-alias -- -="cd -"
+# abbr '...'='cd ../../'
+# abbr '....'='cd ../../../'
+# abbr '.....'='cd ../../../..'
 
 # Directory stack shortcuts
 # Generate aliases d1, d2, ... for dirs stack
@@ -43,5 +44,3 @@ unset index
 
 # Include custom aliases
 source_if_exists ~/.aliases.local
-
-# echo -e "\nPATH\n\t${PATH//:/$'\n\t'}\n" 

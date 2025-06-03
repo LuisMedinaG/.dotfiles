@@ -6,6 +6,14 @@
 [ -n "$BREW_COMPLETIONS_PATH" ] && fpath=($BREW_COMPLETIONS_PATH/src $fpath)
 zmodload zsh/complist
 
+# https://github.com/olets/zsh-abbr
+# The zsh manager for auto-expanding abbreviations, inspired by fish shell.
+source_if_exists $HOMEBREW_PREFIX/share/zsh-abbr/zsh-abbr.zsh
+
+if type brew &>/dev/null; then
+  FPATH=$HOMEBREW_PREFIX/share/zsh-abbr:$FPATH
+fi
+
 # ───── Optimized Completion System Init ─────
 autoload -U compinit
 
@@ -14,11 +22,11 @@ zcompdump_file="${ZDOTDIR:-$HOME}/.zcompdump"
 
 # Only regenerate completion cache once per day
 if [[ ! -f "$zcompdump_file" || -n "$(find "$zcompdump_file" -mtime +1 2>/dev/null)" ]]; then
-    # Regenerate completion cache
-    compinit -i -d "$zcompdump_file"
+  # Regenerate completion cache
+  compinit -i -d "$zcompdump_file"
 else
-    # Use existing cache
-    compinit -C -i -d "$zcompdump_file"
+  # Use existing cache
+  compinit -C -i -d "$zcompdump_file"
 fi
 _comp_options+=(globdots) # With hidden files
 

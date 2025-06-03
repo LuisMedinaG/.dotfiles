@@ -42,7 +42,7 @@ function main() {
   const rules = [
     createHyperKeyRule(),
     createLeaderKeyRule(),
-    createRaycastRules(),
+    // createRaycastRules(),
     createAppQuickAccessRules(),
   ];
 
@@ -112,6 +112,7 @@ function createLeaderKeyRule() {
       name: 'Raycast',
       mapping: {
         c: ['raycast/calendar/my-schedule', 'Calendar'],
+        e: ['raycast/emoji-symbols/search-emoji-symbols', 'Emoji'],
         h: ['raycast/calculator/calculator-history', 'Calculator'],
         f: ['raycast/file-search/search-files', 'Search files'],
         s: ['raycast/snippets/search-snippets', 'Snippets'],
@@ -255,10 +256,6 @@ function createRaycastRules() {
       '`': raycastWin('almost-maximize'),
       '⏎': raycastWin('maximize'),
       '⌫': raycastWin('restore'),
-    }),
-
-    withModifier('Hyper')({
-      e: raycastExt('raycast/emoji-symbols/search-emoji-symbols'),
     }),
   ]);
 }
