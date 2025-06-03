@@ -1,0 +1,19 @@
+abbr "....."="cd ../../../.."
+abbr "...."="cd ../../../"
+abbr "..."="cd ../../"
+
+abbr "g"="git"
+abbr "gau"="git add -u"
+abbr "gch"="git rev-parse HEAD | pbcopy"
+abbr "glu"="git ls-files --modified --deleted --other --exclude-standard --deduplicate \$(git rev-parse --show-toplevel)"
+abbr "gpl"="git pull"
+abbr "gpo"="git push origin"
+abbr "gsc"="git branch --show-current | pbcopy"
+abbr "gss"="git status --short | grep '^[A-Z]' | awk '{print }'"
+
+abbr "path"="echo \$PATH | tr -s \":\" \"\n\""
+
+abbr "sz"="source ~/.zshrc"
+abbr "ez"="code ~/.zshrc"
+
+abbr "y"="yadm"
