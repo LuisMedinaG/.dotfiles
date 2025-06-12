@@ -10,7 +10,8 @@ alias grep='rg'
 alias vim='nvim'
 
 # ZSH Abbr (https://zsh-abbr.olets.dev)
-# The zsh manager for auto-expanding abbreviations, inspired by fish shell.
+# Auto-expanding abbreviations, inspired by fish shell.
+# Alias commented (using abbr ~/.config/zsh-abbr/user-abbreviations)
 
 # Pretty print the path
 # abbr path='echo $PATH | tr -s ":" "\n"'

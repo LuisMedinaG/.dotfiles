@@ -48,13 +48,13 @@ function main() {
 
   const parameters = {
     // If keyup event comes within <alone> ms from keydown, the key is not just pressed but held
-    'basic.to_if_alone_timeout_milliseconds': 100,
+    // 'basic.to_if_alone_timeout_milliseconds': 100,
 
     // If keydown event for two different keys are pressed within :sim ms, the keypresses are considered simultaneous
     // 'basic.simultaneous_threshold_milliseconds': 30,
 
     // Key is fired twice when :held ms is elapsed
-    'basic.to_if_held_down_threshold_milliseconds': 120,
+    // 'basic.to_if_held_down_threshold_milliseconds': 120,
 
     // After :delay ms, the key press is considered to be delayed (User for double tap hotkey)
     // 'basic.to_delayed_action_delay_milliseconds': 500,
@@ -69,8 +69,8 @@ main();
 function createHyperKeyRule() {
   return rule('Hyper/Meh Key').manipulators([
     map('caps_lock')
-      .toIfHeldDown('‹⌘', ['⌃', '⌥', '⇧'])
-      // .toHyper()
+      // .toIfHeldDown('‹⌘', ['⌃', '⌥', '⇧'])
+      .toHyper()
       .toIfAlone('⎋'),
     map('right_command').toMeh().toIfAlone('right_command'), // Control + Option + Shift
   ]);

@@ -23,10 +23,14 @@ zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 
 # Key bindings
-bindkey "^[[1;3D" backward-word
-bindkey "^[[1;3C" forward-word
-bindkey '^E' end-of-line 
-bindkey '^A' beginning-of-line 
+bindkey "^[b" backward-word          # VSCode Option+Left
+bindkey "^[f" forward-word           # VSCode Option+Right
+bindkey "^[[1;3D" backward-word      # iTerm2 Option+Left
+bindkey "^[[1;3C" forward-word       # iTerm2 Option+Right
+
+bindkey '^E' end-of-line
+bindkey '^A' beginning-of-line
+bindkey "^[[3~" delete-char
 
 # Custom word deletion
 backward_delete_word() {
