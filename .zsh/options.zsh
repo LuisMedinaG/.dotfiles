@@ -22,20 +22,34 @@ autoload -U history-search-end
 zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 
+# Custom word functions
+backward_move_word() {
+  local WORDCHARS='_'
+  zle backward-word
+}
+
+forward_move_word() {
+  local WORDCHARS='_'
+  zle forward-word
+}
+
+backward_delete_word() {
+  local WORDCHARS='_'
+  zle backward-kill-word
+}
+
+# Register functions with ZLE 
+zle -N backward_delete_word
+zle -N backward_move_word
+zle -N forward_move_word
+
 # Key bindings
-bindkey "^[b" backward-word          # VSCode Option+Left
-bindkey "^[f" forward-word           # VSCode Option+Right
-bindkey "^[[1;3D" backward-word      # iTerm2 Option+Left
-bindkey "^[[1;3C" forward-word       # iTerm2 Option+Right
+bindkey "^[b" backward_move_word     # VSCode Option+Left
+bindkey "^[f" forward_move_word      # VSCode Option+Right
+bindkey "^[[1;3D" backward_move_word # iTerm2 Option+Left
+bindkey "^[[1;3C" forward_move_word  # iTerm2 Option+Right
+
+bindkey '^W' backward_delete_word
 
 bindkey '^E' end-of-line
 bindkey '^A' beginning-of-line
-bindkey "^[[3~" delete-char
-
-# Custom word deletion
-backward_delete_word() {
-  local WORDCHARS='_-'
-  zle backward-kill-word
-}
-zle -N backward_delete_word
-bindkey '^W' backward_delete_word
