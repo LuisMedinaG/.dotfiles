@@ -92,10 +92,11 @@ function createLeaderKeyRule() {
     o: {
       name: 'App',
       mapping: {
-        v: 'Cisco Secure Client',
+        c: 'Cisco Secure Client',
         f: 'Finder',
         l: 'Open WebUI',
         o: 'Obsidian',
+        r: 'Reminders',
         w: 'WhatsApp',
         y: 'Spotify',
         z: 'Zoom.us',
@@ -111,25 +112,28 @@ function createLeaderKeyRule() {
     r: {
       name: 'Raycast',
       mapping: {
-        c: ['raycast/calendar/my-schedule', 'Calendar'],
-        e: ['raycast/emoji-symbols/search-emoji-symbols', 'Emoji'],
-        h: ['raycast/calculator/calculator-history', 'Calculator'],
-        f: ['raycast/file-search/search-files', 'Search files'],
-        s: ['raycast/snippets/search-snippets', 'Snippets'],
-        '.': ['raycast/raycast-notes/raycast-notes', 'Raycast notes'],
+        // '0': ['lucaschultz/input-switcher/toggle', 'Input lang'],
+        // '.': ['raycast/raycast-notes/raycast-notes', 'Raycast notes'],
         '/': ['raycast/navigation/search-menu-items', 'Search menu'],
-        '0': ['lucaschultz/input-switcher/toggle', 'Input lang'],
-        r: ['thomas/visual-studio-code/index', 'Recent projects'],
         a: ['Codely/google-chrome/search-all', 'Google search all'],
+        c: ['raycast/calendar/my-schedule', 'Calendar'],
         d: ['jag-k/dropover/index', 'Add Dropover'],
-        t: ['huzef44/screenocr/recognize-text', 'OCR'],
-        k: ['huzef44/keyboard-brightness/toggle-keyboard-brightness', 'Keyboard ☀︎'],
+        e: ['raycast/emoji-symbols/search-emoji-symbols', 'Emoji'],
+        f: ['raycast/file-search/search-files', 'Search files'],
         g: ['massimiliano_pasquini/raycast-ollama/ollama-fix-spelling-grammar', 'Fix Spell'],
+        l: ['koinzhang/copy-path/copy-path', 'Calendar'],
+        k: ['huzef44/keyboard-brightness/toggle-keyboard-brightness', 'Keyboard ☀︎'],
+        n: ['marcjulian/obsidian/createNoteCommand', 'Obsidian Note'],
+        r: ['thomas/visual-studio-code/index', 'Recent projects'],
+        s: ['raycast/snippets/search-snippets', 'Snippets'],
+        t: ['raycast/apple-reminders/my-reminders', 'Reminders'],
+        o: ['huzef44/screenocr/recognize-text', 'OCR'],
         p: ['massimiliano_pasquini/raycast-ollama/ollama-professional', 'Profesional'],
+        
+        
         // raycast://extensions/mooxl/coffee/caffeinateToggle
         // raycast://extensions/massimiliano_pasquini/raycast-ollama/ollama-chat
         // raycast://extensions/VladCuciureanu/toothpick/toggle-favorite-device-1
-        // raycast://extensions/marcjulian/obsidian/createNoteCommand
         // -----
         // raycast://extensions/mattisssa/spotify-player/nowPlaying
         // raycast://extensions/mattisssa/spotify-player/like

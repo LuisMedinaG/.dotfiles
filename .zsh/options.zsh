@@ -42,19 +42,18 @@ my-forward-move-word() {
   zle forward-word
 }
 
-# New default `ctrl+w` command
+# Delete word with `ctrl+w`
 my-backward-delete-word() {
-  
   local WORDCHARS=$(remove-delimiters)
-  # zle <widget-name> will run an existing widget.
   zle backward-kill-word
 }
 
-# This will be our `ctrl+alt+w` command
+# Delete whole word with `ctrl+alt+w`
 my-backward-delete-whole-word() {
   local WORDCHARS=$WORDCHARS
   # Add `:` to WORDCHARS if it's not present
   [[ ! $WORDCHARS == *":"* ]] && WORDCHARS="$WORDCHARS"":"
+  # zle <widget-name> will run an existing widget.
   zle backward-kill-word
 }
 
