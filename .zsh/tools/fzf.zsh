@@ -1,40 +1,85 @@
 # FZF Configuration
 # -----------------
 
-FZF_COLORS="bg+:-1,\
-fg:gray,\
-fg+:white,\
-border:black,\
-spinner:0,\
-hl:yellow,\
-header:blue,\
-info:green,\
-pointer:red,\
-marker:blue,\
-prompt:gray,\
-hl+:red"
+# -----------------------------------------------------------------------------
+# Universal Base Settings (applied to ALL fzf instances)
+# -----------------------------------------------------------------------------
 
-export FZF_DEFAULT_OPTS="--height 60% \
+# Color scheme - dark theme with selective highlighting
+FZF_COLORS="bg+:-1,\
+    fg:gray,\
+    fg+:white,\
+    border:black,\
+    spinner:0,\
+    hl:yellow,\
+    header:blue,\
+    info:green,\
+    pointer:red,\
+    marker:blue,\
+    prompt:gray,\
+    hl+:red"
+
+# Applied to: every fzf call unless explicitly overridden
+export FZF_DEFAULT_OPTS="--height 70% \
 --border sharp \
 --color '$FZF_COLORS' \
 --layout=reverse \
---info=inline --cycle \
+--info=inline \
+--cycle \
 --prompt '∷ ' \
 --pointer=► \
 --marker=✓"
 
-export FZF_COMPLETION_OPTS='--border --info=inline'
-export FZF_COMPLETION_DIR_COMMANDS="cd pushd rmdir tree"
-
+# -----------------------------------------------------------------------------
+# Search Engine (fd for performance)
+# -----------------------------------------------------------------------------
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
-# Search command history
+# -----------------------------------------------------------------------------
+# Key Bindings (Ctrl+T, Ctrl+R, Alt+C)
+# -----------------------------------------------------------------------------
+
+# Ctrl+T: file search
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_OPTS="--walker-skip .git,node_modules,target --preview 'bat -n --style=numbers --color=always {}'\ 
+ --bind shift-up:preview-page-up,shift-down:preview-page-down\
+ --bind 'ctrl-/:toggle-preview'"
+
+# Ctrl+R: history search
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
-# Preview files
-export FZF_CTRL_T_OPTS="--walker-skip .git,node_modules,target --preview 'bat -n --style=numbers --color=always {}' --bind 'ctrl-/:change-preview-window(down|hidden|)' --bind shift-up:preview-page-up,shift-down:preview-page-down"
-# cd into the selected directory
+
+# Alt+G: directory navigation
 export FZF_ALT_C_OPTS="--walker-skip .git,node_modules,target --preview 'tree -C {}'"
+
+# -----------------------------------------------------------------------------
+# Tab Completion Enhancements
+# -----------------------------------------------------------------------------
+
+# Triggers _fzf_compgen_path:
+# vim <TAB>          # Needs files
+# cat <TAB>          # Needs files
+# cp file1 <TAB>     # Second argument needs files
+_fzf_compgen_path() {
+    fd --hidden --follow --exclude ".git" "$1"
+}
+
+_fzf_compgen_dir() {
+    fd --type d --hidden --follow --exclude ".git" "$1"
+}
+
+# Command-specific tab completion (ONLY for commands that benefit) 
+# _fzf_comprun() {
+#     local command=$1
+#     shift
+#     case "$command" in
+#         cd) fzf --height=80% \
+#         --walker-skip .git,node_modules,target \
+#         --preview 'tree -C {}' \
+#         --preview-window=right:35% \
+#         "$@" ;;
+#         *) fzf "$@" ;;
+#     esac
+# }
 
 # Load key bindings and completion from Homebrew installation
 if [[ -n "$HOMEBREW_PREFIX" ]]; then
@@ -45,24 +90,11 @@ if [[ -n "$HOMEBREW_PREFIX" ]]; then
     [[ $- == *i* ]] && source_if_exists "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh"
 fi
 
-# FZF completion function
-_fzf_comprun() {
-    local command=$1
-    shift
-    case "$command" in
-    ls) fzf --preview 'tree -C {} | head -200' "$@" ;;
-    cd) find . -type d | fzf "$@" --preview 'tree -C {} | head -200' ;;
-    export | unset) fzf --preview "eval 'echo \$'{}" "$@" ;;
-    tree) find . -type d | fzf --preview 'tree -C {}' "$@" ;;
-    *) fzf "$@" ;;
-    esac
-}
 
-# Use fd for listing path candidates
-_fzf_compgen_path() {
-    fd --hidden --follow --exclude ".git" "$1"
-}
-
-_fzf_compgen_dir() {
-    fd --type d --hidden --follow --exclude ".git" "$1"
-}
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # Reliable alternative to Alt+C on Mac
+    bindkey "^G" fzf-cd-widget  # Ctrl+G for directory navigation
+    
+    # Try to make Alt+C work (requires terminal Option key configuration)
+    bindkey "^[c" fzf-cd-widget
+fi
