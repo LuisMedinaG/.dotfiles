@@ -30,13 +30,6 @@ source_if_exists $ZSH/plugins/alias-tips/alias-tips.plugin.zsh
 
 # https://github.com/Aloxaf/fzf-tab
 source_if_exists $ZSH/plugins/fzf-tab/fzf-tab.plugin.zsh
-# force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
-zstyle ':completion:*' menu no
-# To make fzf-tab follow FZF_DEFAULT_OPTS.
-# NOTE: This may lead to unexpected behavior since some flags break this plugin. See Aloxaf/fzf-tab#455.
-zstyle ':fzf-tab:*' use-fzf-default-opts yes
-# switch group using `<` and `>`
-zstyle ':fzf-tab:*' switch-group '<' '>'
 
 # https://github.com/ajeetdsouza/zoxide
 # For completions to work, the above line must be added after compinit is called.

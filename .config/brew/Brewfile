@@ -23,6 +23,10 @@ brew "yadm"         # For dotfile management
 brew "broot"        # Navigate directories, find files, and launch commands.
 # brew "maven"        # Java build tool
 
+# brew "pandoc" # Convert files from one format to another.
+# brew "taskwarrior-tui" # ToDo Tool for CLI 
+# brew "ncdu" # Disk usage analyzer
+
 brew "zsh-syntax-highlighting" 
 brew "zsh-completions"          
 brew "zsh-autosuggestions"      
