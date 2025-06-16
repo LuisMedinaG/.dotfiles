@@ -78,13 +78,10 @@ zstyle ':completion:*' file-sort modification
 
 # Formatting
 zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
-zstyle ':completion:*:*:*:*:descriptions' format '%F{blue}-- %D %d --%f'
+# zstyle ':completion:*:*:*:*:descriptions' format '%F{blue}-- %D %d --%f'
 zstyle ':completion:*:*:*:*:messages' format ' %F{purple} -- %d --%f'
 zstyle ':completion:*:*:*:*:warnings' format ' %F{red}-- no matches found --%f'
 # zstyle ':completion:*:default' list-prompt '%S%M matches%s'
-
-# set list-colors to enable filename colorizing
-zstyle ':completion:*:default' list-colors "${(s.:.)LS_COLORS}"
 
 # Only display some tags for the command cd
 zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
@@ -96,18 +93,36 @@ zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 
 
 zstyle ':completion:*' keep-prefix true
 
-### fzf-tab plugin common configuration ###
+# ------------------------------------
+# fzf-tab plugin common configuration 
+# ------------------------------------
+
 # disable sort when completing `git checkout`
 zstyle ':completion:*:git-checkout:*' sort false
 # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
 zstyle ':completion:*' menu no
-# preview directory's content with eza when completing cd
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
-# To make fzf-tab follow FZF_DEFAULT_OPTS.
-# NOTE: This may lead to unexpected behavior since some flags break this plugin. See Aloxaf/fzf-tab#455.
-zstyle ':fzf-tab:*' use-fzf-default-opts yes
-# switch group using `<` and `>`
+# set list-colors to enable filename colorizing
+zstyle ":completion:*" list-colors "${(s.:.)ZLS_COLORS}"
+# set descriptions format to enable options to be grouped into "completion groups"
+zstyle ":completion:*:descriptions" format "[%d]"
+
+# switch between "completion groups" using `<` and `>` keys
 zstyle ':fzf-tab:*' switch-group '<' '>'
+
+# NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default. To do so, set `use-fzf-default-opts` to `yes`
+# This may lead to unexpected behavior since some flags break this plugin. See Aloxaf/fzf-tab#455.
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+
+# FZF_TAB_DEFAULT_FZF_FLAGS=(
+#   "--height=~85%"
+#   "--walker-skip .git,node_modules,target"
+#   "--preview 'tree -C {}'"
+#   "--preview-window=right:35%"
+# )
+# zstyle ":fzf-tab:*" fzf-flags "${FZF_TAB_DEFAULT_FZF_FLAGS[@]}"
+
+# preview directory's content with eza when completing cd
+# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 
 # SSH hosts completion
 # zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
