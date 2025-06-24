@@ -10,7 +10,6 @@ import {
   rule,
   writeToProfile,
   toApp,
-  withModifier,
   toUnsetVar,
   toRemoveNotificationMessage,
   to$,
@@ -23,12 +22,7 @@ import {
 
 import {
   genericStaticAction,
-  historyNavi,
   raycastExt,
-  raycastWin,
-  switcher,
-  tabNavi,
-  toPictureInPicture,
   toSystemSetting,
 } from './utils';
 
@@ -40,9 +34,8 @@ const LEADER_VAR = 'leader_mode';
 
 function main() {
   const rules = [
-    createHyperKeyRule(),
+    createMehKeyRule(),
     createLeaderKeyRule(),
-    // createRaycastRules(),
     createAppQuickAccessRules(),
   ];
 
@@ -63,16 +56,13 @@ function main() {
   writeToProfile(PROFILE_NAME, rules, parameters);
 }
 
-main();
-
-// --- Hyper Key Definition ---
-function createHyperKeyRule() {
+function createMehKeyRule() {
   return rule('Hyper/Meh Key').manipulators([
     map('caps_lock')
-      // .toIfHeldDown('‹⌘', ['⌃', '⌥', '⇧'])
-      .toHyper()
+      // NOTE: When quickly pressed, it is also sendin 'escape', heldDown fix this
+      // .toIfHeldDown('‹⌃', ['⌥', '⇧'])
+      .toMeh()
       .toIfAlone('⎋'),
-    map('right_command').toMeh().toIfAlone('right_command'), // Control + Option + Shift
   ]);
 }
 
@@ -96,6 +86,7 @@ function createLeaderKeyRule() {
         f: 'Finder',
         l: 'Open WebUI',
         o: 'Obsidian',
+        n: 'Notes',
         r: 'Reminders',
         w: 'WhatsApp',
         y: 'Spotify',
@@ -112,13 +103,9 @@ function createLeaderKeyRule() {
     r: {
       name: 'Raycast',
       mapping: {
-        // '0': ['lucaschultz/input-switcher/toggle', 'Input lang'],
-        // '.': ['raycast/raycast-notes/raycast-notes', 'Raycast notes'],
         '/': ['raycast/navigation/search-menu-items', 'Search menu'],
         a: ['Codely/google-chrome/search-all', 'Google search all'],
         c: ['raycast/calendar/my-schedule', 'Calendar'],
-        d: ['jag-k/dropover/index', 'Add Dropover'],
-        e: ['raycast/emoji-symbols/search-emoji-symbols', 'Emoji'],
         f: ['raycast/file-search/search-files', 'Search files'],
         g: ['massimiliano_pasquini/raycast-ollama/ollama-fix-spelling-grammar', 'Fix Spell'],
         l: ['koinzhang/copy-path/copy-path', 'Calendar'],
@@ -129,8 +116,7 @@ function createLeaderKeyRule() {
         t: ['raycast/apple-reminders/my-reminders', 'Reminders'],
         o: ['huzef44/screenocr/recognize-text', 'OCR'],
         p: ['massimiliano_pasquini/raycast-ollama/ollama-professional', 'Profesional'],
-        
-        
+
         // raycast://extensions/mooxl/coffee/caffeinateToggle
         // raycast://extensions/massimiliano_pasquini/raycast-ollama/ollama-chat
         // raycast://extensions/VladCuciureanu/toothpick/toggle-favorite-device-1
@@ -138,6 +124,14 @@ function createLeaderKeyRule() {
         // raycast://extensions/mattisssa/spotify-player/nowPlaying
         // raycast://extensions/mattisssa/spotify-player/like
         // raycast://extensions/mattisssa/spotify-player/addPlayingSongToPlaylist
+
+        // ------- Added in Raycast ----------
+        // This commands are not working properlly, added directly to config.
+        // d: ['jag-k/dropover/index', 'Add Dropover'],
+        // e: ['raycast/emoji-symbols/search-emoji-symbols', 'Emoji'],
+
+        // Changed to Mac system setting keyboard shortcuts.
+        // '0': ['lucaschultz/input-switcher/toggle', 'Input lang'],
       },
       action: raycastExt,
     },
@@ -227,60 +221,4 @@ function createLeaderSystem(varName: string, mappings, escapeActions) {
   ]);
 }
 
-function createRaycastRules() {
-  return rule('Raycast').manipulators([
-    map('v', ['command', 'shift']).to(raycastExt('raycast/clipboard-history/clipboard-history')),
-
-    // Navigation with Hyper + arrows
-    withModifier('Hyper')({
-      '↑': raycastWin('previous-display'),
-      '↓': raycastWin('next-display'),
-      '←': raycastWin('previous-desktop'),
-      '→': raycastWin('next-desktop'),
-    }),
-
-    // Window positioning with Hyper
-    withModifier('Hyper')({
-      // Thirds
-      1: raycastWin('first-third'),
-      2: raycastWin('center-third'),
-      3: raycastWin('last-third'),
-      // Two-thirds
-      4: raycastWin('first-two-thirds'),
-      5: raycastWin('top-half'),
-      6: raycastWin('bottom-half'),
-      7: raycastWin('last-two-thirds'),
-      // Halves
-      8: raycastWin('left-half'),
-      9: raycastWin('center'),
-      0: raycastWin('right-half'),
-      // Special
-      '-': raycastWin('make-smaller'),
-      '=': raycastWin('make-larger'),
-      '`': raycastWin('almost-maximize'),
-      '⏎': raycastWin('maximize'),
-      '⌫': raycastWin('restore'),
-    }),
-  ]);
-}
-
-function createChromeRules() {
-  return rule('Google Chrome').manipulators([
-    withModifier('Hyper')({
-      p: toPictureInPicture()
-    })
-  ]);
-}
-
-function createNavigationRules() {
-  return rule('Navigation Shortcuts').manipulators([
-    // History navigation (Ctrl+H/L -> Cmd+[/])
-    ...historyNavi(),
-
-    // Tab navigation (Opt+H/L -> Cmd+Shift+[/])
-    ...tabNavi(),
-
-    // App switcher (Cmd+Opt+Ctrl+H/L -> Ctrl+Shift+Tab/Ctrl+Tab)
-    ...switcher(),
-  ]);
-}
+main();

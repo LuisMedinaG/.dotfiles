@@ -10,7 +10,11 @@ export interface CategoryMapping {
 
 export type CategoryMappings = Record<string, CategoryMapping>;
 
-// TODO: Not working properly
+
+// ------------------------------------------------------------------------
+// Functionalities not working properly
+// ------------------------------------------------------------------------
+
 // function createSlackRules() {
 //   return rule('Slack', ifApp('^com\\.tinyspeck\\.slackmacgap$')).manipulators([
 //     ...historyNavi(),
@@ -25,7 +29,6 @@ export type CategoryMappings = Record<string, CategoryMapping>;
 //   ])
 // }
 
-// TODO: Not working
 // function layer_system() {
 //   return simlayer('`', 'system').manipulators({
 //     // 1: toMouseCursorPosition({ x: '25%', y: '50%', screen: 0 }),
@@ -46,7 +49,6 @@ export type CategoryMappings = Record<string, CategoryMapping>;
 //   })
 // }
 
-// TODO: Not working
 // function layer_symbol() {
 //   return layer('z', 'symbols').manipulators([
 //     withMapper(['←', '→', '↑', '↓', '␣', '⏎', '⌫', '⌦'])((k) =>
@@ -61,8 +63,87 @@ export type CategoryMappings = Record<string, CategoryMapping>;
 //   ])
 // }
 
+// function app_slack() {
+//   return rule('Slack', ifApp('^com.tinyspeck.slackmacgap$')).manipulators([
+//     ...historyNavi(),
+
+//     ...tapModifiers({
+//       '‹⌘': toKey('d', '⌘⇧'), // showHideSideBar
+//       '‹⌥': toKey('f6'), // moveFocusToTheNextSection
+
+//       '›⌘': toKey('.', '⌘'), // hideRightBar
+//       '›⌥': toKey('k', '⌘'), // open
+//     }),
+
+//     map(1, 'Meh').to(
+//       // After the 1/4 width, leave some space for opening thread in a new window
+//       // before the last 1/4 width
+//       toResizeWindow('Slack', { x: 1263, y: 25 }, { w: 1760, h: 1415 }),
+//     ),
+//   ])
+// }
+
+// function createRaycastRules() {
+//   return rule('Raycast').manipulators([
+//     map('v', ['command', 'shift']).to(raycastExt('raycast/clipboard-history/clipboard-history')),
+
+//     // Yabai
+//     // Navigation with Hyper + arrows
+//     withModifier('Hyper')({
+//       '↑': raycastWin('previous-display'),
+//       '↓': raycastWin('next-display'),
+//       '←': raycastWin('previous-desktop'),
+//       '→': raycastWin('next-desktop'),
+//     }),
+
+//     // Window positioning with Hyper
+//     withModifier('Hyper')({
+//       // Thirds
+//       1: raycastWin('first-third'),
+//       2: raycastWin('center-third'),
+//       3: raycastWin('last-third'),
+//       // Two-thirds
+//       4: raycastWin('first-two-thirds'),
+//       5: raycastWin('top-half'),
+//       6: raycastWin('bottom-half'),
+//       7: raycastWin('last-two-thirds'),
+//       // Halves
+//       8: raycastWin('left-half'),
+//       9: raycastWin('center'),
+//       0: raycastWin('right-half'),
+//       // Special
+//       '-': raycastWin('make-smaller'),
+//       '=': raycastWin('make-larger'),
+//       '`': raycastWin('almost-maximize'),
+//       '⏎': raycastWin('maximize'),
+//       '⌫': raycastWin('restore'),
+//     }),
+//   ]);
+// }
+
+// function createChromeRules() {
+//   return rule('Google Chrome').manipulators([
+//     withModifier('Hyper')({
+//       p: toPictureInPicture()
+//     })
+//   ]);
+// }
+
+// function createNavigationRules() {
+//   return rule('Navigation Shortcuts').manipulators([
+//     // History navigation (Ctrl+H/L -> Cmd+[/])
+//     ...historyNavi(),
+
+//     // Tab navigation (Opt+H/L -> Cmd+Shift+[/])
+//     ...tabNavi(),
+
+//     // App switcher (Cmd+Opt+Ctrl+H/L -> Ctrl+Shift+Tab/Ctrl+Tab)
+//     ...switcher(),
+//   ]);
+// }
+
 // --- Home Row Mods Definition ---
-// TODO: Best with kanata
+// NOTE: Better with kanata
 // function createHomeRowModsRule() {
 //   const fastTypingParams = {
 //     'basic.to_if_alone_timeout_milliseconds': 130,        // Quick tap threshold
@@ -82,25 +163,4 @@ export type CategoryMappings = Record<string, CategoryMapping>;
 //     map('l').to('right_command', undefined, { lazy: true }).toIfAlone('l').parameters(fastTypingParams), // l/⌘
 //     map('semicolon').to('right_shift', undefined, { lazy: true }).toIfAlone('semicolon').parameters(fastTypingParams), // ;/⇧
 //   ]);
-// }
-
-// TODO: Not working
-// function app_slack() {
-//   return rule('Slack', ifApp('^com.tinyspeck.slackmacgap$')).manipulators([
-//     ...historyNavi(),
-
-//     ...tapModifiers({
-//       '‹⌘': toKey('d', '⌘⇧'), // showHideSideBar
-//       '‹⌥': toKey('f6'), // moveFocusToTheNextSection
-
-//       '›⌘': toKey('.', '⌘'), // hideRightBar
-//       '›⌥': toKey('k', '⌘'), // open
-//     }),
-
-//     map(1, 'Meh').to(
-//       // After the 1/4 width, leave some space for opening thread in a new window
-//       // before the last 1/4 width
-//       toResizeWindow('Slack', { x: 1263, y: 25 }, { w: 1760, h: 1415 }),
-//     ),
-//   ])
 // }
