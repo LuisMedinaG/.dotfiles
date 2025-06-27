@@ -40,17 +40,11 @@ function main() {
   ];
 
   const parameters = {
-    // If keyup event comes within <alone> ms from keydown, the key is not just pressed but held
-    // 'basic.to_if_alone_timeout_milliseconds': 100,
+    // How long to hold before "held down" behavior starts (modifiers activate)
+    'basic.to_if_held_down_threshold_milliseconds': 75,
 
-    // If keydown event for two different keys are pressed within :sim ms, the keypresses are considered simultaneous
-    // 'basic.simultaneous_threshold_milliseconds': 30,
-
-    // Key is fired twice when :held ms is elapsed
-    // 'basic.to_if_held_down_threshold_milliseconds': 120,
-
-    // After :delay ms, the key press is considered to be delayed (User for double tap hotkey)
-    // 'basic.to_delayed_action_delay_milliseconds': 500,
+    // How long to wait after key release to decide if it was a "tap" (triggers to_if_alone)
+    'basic.to_if_alone_timeout_milliseconds': 125,
   };
 
   writeToProfile(PROFILE_NAME, rules, parameters);
@@ -60,18 +54,17 @@ function createMehKeyRule() {
   return rule('Hyper/Meh Key').manipulators([
     map('caps_lock')
       // NOTE: When quickly pressed, it is also sendin 'escape', heldDown fix this
-      // .toIfHeldDown('‹⌃', ['⌥', '⇧'])
-      .toMeh()
+      .toIfHeldDown('‹⌃', ['⌥', '⇧'])
+      // .toMeh()
       .toIfAlone('⎋'),
   ]);
 }
 
 function createAppQuickAccessRules() {
   return rule('App Quick Access').manipulators([
-    map('i', 'Hyper').to(toApp('iTerm')),
-    map('g', 'Hyper').to(toApp('Google Chrome')),
-    map('s', 'Hyper').to(toApp('Slack')),
-    map('c', 'Hyper').to(toApp('Visual Studio Code')),
+    
+    map('g', 'Meh').to(toApp('Google Chrome')),
+    map('v', 'Meh').to(toApp('Visual Studio Code')),
   ]);
 }
 
@@ -85,13 +78,17 @@ function createLeaderKeyRule() {
         c: 'Cisco Secure Client',
         f: 'Finder',
         l: 'Open WebUI',
+        i: 'iTerm',
+        g: 'Google Chrome',
         o: 'Obsidian',
         n: 'Notes',
         r: 'Reminders',
+        s: 'Slack',
         w: 'WhatsApp',
         y: 'Spotify',
+        v: 'Visual Studio Code',
         z: 'Zoom.us',
-        ';': 'System Settings',
+        ',': 'System Settings',
       },
       action: toApp,
     },
@@ -108,14 +105,14 @@ function createLeaderKeyRule() {
         c: ['raycast/calendar/my-schedule', 'Calendar'],
         f: ['raycast/file-search/search-files', 'Search files'],
         g: ['massimiliano_pasquini/raycast-ollama/ollama-fix-spelling-grammar', 'Fix Spell'],
-        l: ['koinzhang/copy-path/copy-path', 'Calendar'],
         k: ['huzef44/keyboard-brightness/toggle-keyboard-brightness', 'Keyboard ☀︎'],
+        l: ['koinzhang/copy-path/copy-path', 'Calendar'],
+        m: ['raycast/apple-reminders/my-reminders', 'Reminders'],
         n: ['marcjulian/obsidian/createNoteCommand', 'Obsidian Note'],
+        p: ['massimiliano_pasquini/raycast-ollama/ollama-professional', 'Profesional'],
         r: ['thomas/visual-studio-code/index', 'Recent projects'],
         s: ['raycast/snippets/search-snippets', 'Snippets'],
-        t: ['raycast/apple-reminders/my-reminders', 'Reminders'],
         o: ['huzef44/screenocr/recognize-text', 'OCR'],
-        p: ['massimiliano_pasquini/raycast-ollama/ollama-professional', 'Profesional'],
 
         // raycast://extensions/mooxl/coffee/caffeinateToggle
         // raycast://extensions/massimiliano_pasquini/raycast-ollama/ollama-chat
@@ -135,7 +132,7 @@ function createLeaderKeyRule() {
       },
       action: raycastExt,
     },
-    ';': {
+    ',': {
       name: 'SystemSetting',
       mapping: {
         a: 'Appearance',
@@ -188,7 +185,7 @@ function createLeaderSystem(varName: string, mappings, escapeActions) {
         const category = mappings[key];
         const hint = formatCategoryHint(category.mapping);
 
-        return map(key, 'Hyper')
+        return map(key, 'Meh')
           .toVar(varName, key)
           .toNotificationMessage(varName, `${category.name}:\n  ${hint}`);
       }),
