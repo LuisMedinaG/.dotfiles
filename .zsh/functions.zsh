@@ -91,3 +91,7 @@ cache_eval() {
   # Source the cache file
   source "$cache_file"
 }
+
+validateYaml() {
+    python -c 'import yaml,sys;yaml.safe_load(sys.stdin)' < $1
+}
