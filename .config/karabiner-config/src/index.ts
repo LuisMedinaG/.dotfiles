@@ -20,11 +20,7 @@ import {
   FromKeyParam,
 } from 'karabiner.ts';
 
-import {
-  genericStaticAction,
-  raycastExt,
-  toSystemSetting,
-} from './utils';
+import { genericStaticAction, raycastExt, toSystemSetting } from './utils';
 
 import linksData from './links.json';
 
@@ -33,36 +29,30 @@ const PROFILE_NAME = 'Default';
 const LEADER_VAR = 'leader_mode';
 
 function main() {
-  const rules = [
-    createMehKeyRule(),
-    createLeaderKeyRule(),
-    createAppQuickAccessRules(),
-  ];
+  const rules = [createMehKeyRule(), createLeaderKeyRule(), createAppQuickAccessRules()];
 
   const parameters = {
     // How long to hold before "held down" behavior starts (modifiers activate)
     'basic.to_if_held_down_threshold_milliseconds': 75,
 
     // How long to wait after key release to decide if it was a "tap" (triggers to_if_alone)
-    'basic.to_if_alone_timeout_milliseconds': 125,
+    'basic.to_if_alone_timeout_milliseconds': 150,
+
+    // How long to wait after key release before a delayed action
+    // 'basic.to_delayed_action_delay_milliseconds': 3000,
   };
 
   writeToProfile(PROFILE_NAME, rules, parameters);
 }
 
 function createMehKeyRule() {
-  return rule('Hyper/Meh Key').manipulators([
-    map('caps_lock')
-      // NOTE: When quickly pressed, it is also sendin 'escape', heldDown fix this
-      .toIfHeldDown('‹⌃', ['⌥', '⇧'])
-      // .toMeh()
-      .toIfAlone('⎋'),
+  return rule('Meh Key').manipulators([
+    map('caps_lock', { optional: 'any' }).toIfHeldDown('‹⌃', ['⌥', '⇧']).toIfAlone('⎋'),
   ]);
 }
 
 function createAppQuickAccessRules() {
   return rule('App Quick Access').manipulators([
-    
     map('g', 'Meh').to(toApp('Google Chrome')),
     map('v', 'Meh').to(toApp('Visual Studio Code')),
   ]);
@@ -109,19 +99,14 @@ function createLeaderKeyRule() {
         l: ['koinzhang/copy-path/copy-path', 'Calendar'],
         m: ['raycast/apple-reminders/my-reminders', 'Reminders'],
         n: ['marcjulian/obsidian/createNoteCommand', 'Obsidian Note'],
-        p: ['massimiliano_pasquini/raycast-ollama/ollama-professional', 'Profesional'],
+        o: ['huzef44/screenocr/recognize-text', 'OCR'],
+        q: ['raycast/apple-reminders/quick-add-reminder', 'Quickq Reminder'],
         r: ['thomas/visual-studio-code/index', 'Recent projects'],
         s: ['raycast/snippets/search-snippets', 'Snippets'],
-        o: ['huzef44/screenocr/recognize-text', 'OCR'],
 
         // raycast://extensions/mooxl/coffee/caffeinateToggle
         // raycast://extensions/massimiliano_pasquini/raycast-ollama/ollama-chat
         // raycast://extensions/VladCuciureanu/toothpick/toggle-favorite-device-1
-        // -----
-        // raycast://extensions/mattisssa/spotify-player/nowPlaying
-        // raycast://extensions/mattisssa/spotify-player/like
-        // raycast://extensions/mattisssa/spotify-player/addPlayingSongToPlaylist
-
         // ------- Added in Raycast ----------
         // This commands are not working properlly, added directly to config.
         // d: ['jag-k/dropover/index', 'Add Dropover'],
@@ -145,10 +130,8 @@ function createLeaderKeyRule() {
     u: {
       name: 'System Utils',
       mapping: {
-        // [ID, Name]
         n: ['sys_clear_notifications', 'Clear Notifications'],
         s: ['sys_sleep', 'Sleep System'],
-        // w: ['night_shift_toggle', 'Toggle Night Shift'],
       },
       action: genericStaticAction,
     },
@@ -188,6 +171,10 @@ function createLeaderSystem(varName: string, mappings, escapeActions) {
         return map(key, 'Meh')
           .toVar(varName, key)
           .toNotificationMessage(varName, `${category.name}:\n  ${hint}`);
+        // .toDelayedAction(
+        //   escapeActions, // Actions when timer expires (ifInvoked)
+        //   escapeActions  // Actions when canceled (ifCanceled) - same cleanup
+        // );
       }),
     ),
 
