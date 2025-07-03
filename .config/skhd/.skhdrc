@@ -128,7 +128,7 @@
 # https://notes.alinpanaitiu.com/Keyboard-tricks-from-a-macOS-app-dev
 
 # Edit skhd config
-fn + e : code $HOME/.skhdrc
+# fn + e : code $HOME/.skhdrc
 
 # Easy to use Sleep hotkey
 # fn - q : pmset sleepnow

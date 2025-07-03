@@ -8,9 +8,6 @@
 	colorMoved = zebra
 [format]
 	pretty = oneline
-# [rebase]
-# 	autosquash = true
-# 	instructionFormat = (%an <%ae>) %s
 [pull]
 	rebase = false
 [core]

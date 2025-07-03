@@ -20,8 +20,10 @@ brew "tree"
 brew "eza"
 brew "jq"
 brew "yadm"         # For dotfile management
-brew "broot"        # Navigate directories, find files, and launch commands.
-# brew "maven"        # Java build tool
+
+brew "spaceman"
+# brew "Hidden Bar" # Hide menu bar icons
+# brew "broot"      # Navigate directories, find files, and launch commands.
 
 # brew "pandoc" # Convert files from one format to another.
 # brew "taskwarrior-tui" # ToDo Tool for CLI 
@@ -37,9 +39,9 @@ brew "jenv"         # Java version management
 
 # Applications
 cask "visual-studio-code"
-# cask "rancher"      # Kubernetes management
-
-# Optional - Uncomment if needed
+cask "google-chrome" # Browser
 cask "iterm2"
+cask "homerow"
+
 # cask "docker"
-# cask "rectangle"    # Window management
+# cask "rancher"      # Kubernetes management
