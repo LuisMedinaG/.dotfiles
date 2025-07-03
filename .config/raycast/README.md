@@ -45,22 +45,6 @@ Here are some examples of the custom hotkeys I've configured within Raycast for 
 
 **Note:** Since you are planning to replace these Raycast shortcuts with `skhd`, this section is primarily for reference if you ever need to look up what you *were* using in Raycast before the transition.
 
-* **Open Apple Notes:** `Cmd + Shift + N`
-* **Open Apple Reminders:** `Cmd + Shift + R`
-* **Change Case:** `Cmd + Option + C`
-* **Toggle Do Not Disturb:** `Cmd + Shift + D`
-* **Open Downloads:** `Cmd + Option + J`
-* **Trigger Dropover:** `Ctrl + Option + Space`
-* **Open Google Chrome:** `Cmd + Shift + G`
-* **Search with Google:** `Cmd + Option + G`
-* **Open Obsidian:** `Cmd + Option + O`
-* **Open Ollama AI:** `Cmd + Shift + O`
-* **Start Raytyping:** `Cmd + Option + T`
-* **Set Audio Output:** `Cmd + Shift + A`
-* **Play/Pause Spotify:** `Ctrl + Option + P`
-* **Open Visual Studio Code:** `Cmd + Shift + V`
-* **Open WhatsApp:** `Cmd + Option + W`
-
 **(Add all your other Raycast hotkey configurations here)**
 
 ---

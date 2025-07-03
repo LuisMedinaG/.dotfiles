@@ -56,6 +56,3 @@ if [ -d "/opt/oracle/instantclient_23_3" ]; then
     export DYLD_LIBRARY_PATH="$ORACLE_HOME"
     export PATH="$PATH:$ORACLE_HOME"
 fi
-
-# Source work environment early if it exists
-source_if_exists $ZSH/.zsh/work_environment.zsh
