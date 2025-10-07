@@ -17,9 +17,18 @@ A modern, modular dotfiles configuration for macOS development environments, opt
 
 ## 🔧 System Requirements
 
-- Install Homebrew
-- /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-- Git and [YADM](https://yadm.io/)
+- [Homebrew](https://brew.sh/)
+- Xcode Command Line Tools (will be installed by homebrew)
+
+### Pre-Installation
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+To install yadm temporarily, then clone the .dotfiles repo and bootstrap the system, run the following command:
+
+```bash
+curl -sL https://github.com/marcogreiveldinger/.dotfiles/raw/main/pre_bootstrap.sh | bash
+```
 
 ## 📦 Installation
 
