@@ -17,8 +17,9 @@ A modern, modular dotfiles configuration for macOS development environments, opt
 
 ## 🔧 System Requirements
 
+- Install Homebrew
+- /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 - Git and [YADM](https://yadm.io/)
-- Homebrew
 
 ## 📦 Installation
 
