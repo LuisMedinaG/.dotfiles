@@ -27,7 +27,7 @@ A modern, modular dotfiles configuration for macOS development environments, opt
 To install yadm temporarily, then clone the .dotfiles repo and bootstrap the system, run the following command:
 
 ```bash
-curl -sL https://github.com/marcogreiveldinger/.dotfiles/raw/main/pre_bootstrap.sh | bash
+curl -sL https://github.com/LuisMedinaG/.dotfiles/raw/main/.local/bin/pre_bootstrap.sh | bash
 ```
 
 ## 📦 Installation
