@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+brew install git
+
 # Create directory if it doesn't exist
 mkdir -p ~/.local/bin
 
