@@ -8,7 +8,8 @@ brew install git
 # Create directory if it doesn't exist
 mkdir -p ~/.local/bin
 
-brew install yadm
+# Download yadm
+curl -sfLo ~/.local/bin/yadm https://github.com/TheLocehiliosan/yadm/raw/master/yadm
 
 # Give execute permissions to yadm
 chmod a+x ~/.local/bin/yadm
