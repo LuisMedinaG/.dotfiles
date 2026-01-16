@@ -17,6 +17,8 @@ chmod a+x ~/.local/bin/yadm
 # Clone dotfiles repository
 ~/.local/bin/yadm clone --bootstrap -f https://github.com/LuisMedinaG/.dotfiles.git
 
+chmod +x ~/.config/yadm/bootstrap
+
 # Clean up by removing yadm
 rm -rf ~/.local/bin/yadm
 
