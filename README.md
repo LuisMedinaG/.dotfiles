@@ -1,154 +1,224 @@
-# 🚀 Dotfiles: macOS Development Environment
+# Dotfiles
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)
-![YADM](https://img.shields.io/badge/manager-YADM-red.svg)
+My macOS development environment, managed with [yadm](https://yadm.io/).
 
-A modern, modular dotfiles configuration for macOS development environments, optimized for performance and maintainability. Managed with YADM (Yet Another Dotfiles Manager).
+## Fresh Mac Setup
 
-## ✨ Features
-
-- **Optimized ZSH Configuration**: Modular organization with performance enhancements
-- **Smart Completions**: Intelligent tab completion including SSH hosts
-- **Fast Shell Startup**: Lazy-loading for NVM and other tools
-- **Environment Isolation**: Work vs personal environment separation using YADM classes
-- **Development Tooling**: Configured for Git, Python, Node.js, Java, and more
-- **Terminal Utilities**: FZF integration, convenient aliases, and functions
-
-## 🔧 System Requirements
-
-- [Homebrew](https://brew.sh/)
-- Xcode Command Line Tools (will be installed by homebrew)
-
-### Pre-Installation
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-To install yadm temporarily, then clone the .dotfiles repo and bootstrap the system, run the following command:
+On a brand-new Mac (or after a clean install), run this single command:
 
 ```bash
-curl -sL https://github.com/LuisMedinaG/.dotfiles/raw/main/.local/bin/pre_bootstrap.sh | bash
+curl -sL https://github.com/LuisMedinaG/.dotfiles/raw/main/.local/bin/pre_bootstrap.sh | sh
 ```
 
-## 📦 Installation
+Then open a new terminal.
 
-### Quick Install
+### What that command does
+
+1. Installs **Homebrew** (skips if already installed)
+2. Installs **yadm** via Homebrew
+3. Clones this repo into your home directory via `yadm clone`
+4. Runs the **bootstrap** automatically, which executes three phases:
+
+| Phase | Script | What it does |
+|-------|--------|--------------|
+| 01 | `01-homebrew.sh` | Installs all packages from the [Brewfile](.config/brew/Brewfile) |
+| 02 | `02-dotfiles.sh` | Checks out dotfiles, pulls latest, inits git submodules |
+| 03 | `03-shell.sh` | Installs fzf key bindings, creates required directories |
+
+### After bootstrap
+
+**Apply macOS system preferences** (optional — review the file first):
 
 ```bash
-# Pre-Bootstrap: Sets up Brew and YADM
-~/.config/yadm/pre_bootstrap.sh
+sh ~/.config/yadm/phases/04-macos.sh
+```
 
-# Install YADM if not already installed
-brew install yadm
+This sets developer-friendly defaults: fast key repeat, Finder shows path bar, Dock auto-hides, disable smart quotes, etc. Log out and back in after running.
 
-# Clone the repository
-yadm clone https://github.com/YOUR_USERNAME/dotfiles.git
+---
 
-# Run the bootstrap script
+## Re-running phases
+
+Each phase is independent. Run any one without touching the others:
+
+```bash
+sh ~/.config/yadm/phases/01-homebrew.sh   # update/install packages only
+sh ~/.config/yadm/phases/02-dotfiles.sh   # pull latest dotfiles only
+sh ~/.config/yadm/phases/03-shell.sh      # re-setup fzf and directories only
+sh ~/.config/yadm/phases/04-macos.sh      # re-apply macOS defaults only
+```
+
+Or re-run the full bootstrap (phases 01–03):
+
+```bash
 yadm bootstrap
 ```
 
-## 📂 Directory Structure
+---
 
-```bash
-~/
-├── .zsh/                 # ZSH configuration (modular)
-│   ├── aliases.zsh       # Command aliases
-│   ├── completion.zsh    # Tab completion setup
-│   ├── exports.zsh       # Environment variables 
-│   ├── functions.zsh     # Shell functions
-│   ├── history.zsh       # History configuration
-│   ├── options.zsh       # ZSH options
-│   ├── prompt.zsh        # Shell prompt configuration
-│   ├── plugins/          # ZSH plugins
-│   │   └── init.zsh      # Plugin loader
-│   └── tools/            # Tool configurations
-│       └── fzf.zsh       # FZF integration
-├── .config/              # XDG config directory
-│   ├── brew/             # Homebrew
-│   │   ├── Brewfile      # Package list
-│   │   └── install.sh    # Installer
-│   ├── git/              # Git configuration
-│   ├── kanata/           # Keyboard customization
-│   ├── nvim/             # Neovim config
-│   ├── raycast/          # Raycast settings
-│   ├── skhd/             # Keyboard shortcuts
-│   ├── tmux/             # Terminal multiplexer
-│   └── yadm/             # YADM-specific files
-│       ├── bootstrap     # Main setup script
-│       └── encrypt       # Encryption config
-├── .local/bin/           # Local executable scripts
-├── .zshenv               # ZSH environment loader
-├── .zprofile             # Login shell configuration
-├── .zshrc                # Interactive shell config
-└── .gitconfig            # Git configuration
+## What's included
+
+### Shell (ZSH)
+
+```
+.zshenv            → env vars, EDITOR, source_if_exists helper
+.zprofile          → Homebrew, pyenv, jenv, NVM, Oracle client
+.zshrc             → sources everything below:
+
+.zsh/
+├── options.zsh    → shell options, keybindings
+├── history.zsh    → history settings
+├── completion.zsh → tab completion, fzf-tab config, SSH hosts
+├── functions.zsh  → lazy NVM, take, reload-ssh, cache_eval
+├── aliases.zsh    → ls→eza, cat→bat, grep→rg, vim→nvim
+├── prompt.zsh     → minimal prompt with git branch
+├── plugins/
+│   └── init.zsh   → zinit, zoxide, autosuggestions, syntax-highlighting
+└── tools/
+    └── fzf.zsh    → fzf defaults, key bindings, tab completion
 ```
 
-## 🖥️ Applications & Tools
+### Packages ([Brewfile](.config/brew/Brewfile))
 
-### Core Tools
-- **Shell**: ZSH with custom configuration
-- **Terminal**: iTerm2 or Kitty
-- **Editor**: Visual Studio Code / Neovim
-- **Search**: FZF + Ripgrep
-- **File Manager**: Finder + command line tools
+| CLI tools | Dev tools | Apps |
+|-----------|-----------|------|
+| bat, eza, fd, fzf, ripgrep | pyenv, jenv | VS Code |
+| git, curl, wget, jq, tree | neovim | Chrome |
+| zoxide, zsh-abbr | yadm | iTerm2 |
+| zsh-autosuggestions, zsh-syntax-highlighting, zsh-completions | | Homerow |
 
-# Recommended Applications
+### Other configs
 
-| Category | Applications |
-|----------|--------------|
-| **Productivity** | Raycast, Obsidian, Dropover |
-| **Development** | VS Code, iTerm2/Kitty, Git |
-| **Keyboard** | Kanata (key remapping), skhd (hotkeys) |
-| **Window Management** | Amethyst/Yabai |
-| **Automation** | Hammerspoon |
+| Config | Path | Notes |
+|--------|------|-------|
+| Neovim | `.config/nvim/init.vim` | Beginner-friendly with inline cheat sheet |
+| Git | `.gitconfig` | Global git config |
+| tmux | `.config/tmux/tmux.conf` | Terminal multiplexer |
+| Kanata | `.config/kanata/` | Keyboard remapping daemon |
+| skhd | `.config/skhd/.skhdrc` | macOS hotkey daemon |
+| Karabiner | `.config/karabiner-config/` | Keyboard customization (TypeScript) |
 
-The bootstrap process handles installation and configuration tools & applications:
+### Scripts ([.local/bin/](.local/bin/))
 
-## YADM Usage
+| Script | Usage | What it does |
+|--------|-------|--------------|
+| `rfv` | `rfv [query]` | Fuzzy search file **contents** (ripgrep + fzf) |
+| `rfv -f` | `rfv -f [query] [dir]` | Fuzzy search file **names** (fd + fzf) |
+| `create_dev_folders.sh` | `sh create_dev_folders.sh` | Creates standard project directories |
 
-After the initial setup, you'll interact with your dotfiles using YADM commands:
+---
 
-### Adding New Dotfiles
+## Day-to-day yadm usage
+
+yadm works exactly like git, but tracks files in your home directory:
 
 ```bash
-yadm add ~/.config/some-new-app/config
-yadm commit -m "Add configuration for some-new-app"
+# Add a new config file
+yadm add ~/.config/some-app/config
+yadm commit -m "Add some-app config"
 yadm push
+
+# See what changed
+yadm status
+yadm diff
+
+# Pull updates on another machine
+yadm pull
 ```
 
-### Using Alternate Files for Different Machines
+### Sensitive files
 
-For machine-specific configurations:
+Files listed in `.config/yadm/encrypt` can be encrypted:
 
 ```bash
-# Create a file with machine-specific modifications
-yadm add ~/.zshrc##hostname.work
+yadm encrypt    # encrypt listed files
+yadm decrypt    # decrypt them
+```
 
-# List alternate files
+### Machine-specific configs
+
+Use [yadm alternates](https://yadm.io/docs/alternates) for per-machine overrides:
+
+```bash
+# Create a work-specific zshrc
+yadm add ~/.zshrc##hostname.work-laptop
 yadm alt
 ```
 
-### Encryption for Sensitive Data
-```bash
-# Edit encryption configuration
-yadm encrypt
+---
 
-# Decrypt files
-yadm decrypt
+## Testing
+
+### Locally
+
+```bash
+sh tests/run_all.sh
 ```
 
-## Customization
+Checks ZSH syntax, shell script syntax, ShellCheck, Brewfile validation, and common mistakes. Takes a few seconds, installs nothing.
 
-To customize this setup for your own use:
+### Docker
 
-1. Fork this repository
-2. Modify the configurations as needed
-3. Update the bootstrap script to match your requirements
-4. Update the Brewfile with your preferred applications
+```bash
+docker build -t dotfiles-test -f Dockerfile.test .
+docker run --rm dotfiles-test
+```
 
-## 📜 Credits & Acknowledgments
-This configuration draws inspiration from:
+### CI (GitHub Actions)
 
-- [mathiasbynens/dotfiles](https://github.com/mathiasbynens/dotfiles)
+Every push to `main` runs three jobs automatically:
+
+| Job | Runner | What it checks |
+|-----|--------|----------------|
+| Syntax & Lint | Ubuntu | zsh -n, sh -n, shellcheck, common mistakes |
+| Brewfile Check | macOS | All packages exist in Homebrew |
+| Docker Test | Ubuntu | Builds and runs the test container |
+
+Results at [Actions](../../actions).
+
+---
+
+## Directory structure
+
+```
+~/
+├── .zsh/                      # ZSH config (modular)
+│   ├── aliases.zsh
+│   ├── completion.zsh
+│   ├── functions.zsh
+│   ├── history.zsh
+│   ├── options.zsh
+│   ├── prompt.zsh
+│   ├── plugins/init.zsh       # Plugin manager + plugins
+│   └── tools/fzf.zsh          # FZF configuration
+├── .config/
+│   ├── brew/Brewfile           # All Homebrew packages
+│   ├── kanata/                 # Keyboard remapping
+│   ├── karabiner-config/       # Karabiner (TypeScript)
+│   ├── nvim/init.vim           # Neovim config
+│   ├── skhd/.skhdrc            # Hotkey daemon
+│   ├── tmux/tmux.conf          # tmux config
+│   └── yadm/
+│       ├── bootstrap           # Entry point (calls phases)
+│       ├── encrypt             # Encrypted file list
+│       └── phases/
+│           ├── 01-homebrew.sh  # Install packages
+│           ├── 02-dotfiles.sh  # Checkout + submodules
+│           ├── 03-shell.sh     # fzf + directories
+│           └── 04-macos.sh     # macOS defaults (opt-in)
+├── .local/bin/                 # Scripts (rfv, pre_bootstrap.sh)
+├── .github/workflows/lint.yml  # CI pipeline
+├── tests/run_all.sh            # Test suite
+├── Dockerfile.test             # Docker test container
+├── .zshenv                     # Environment variables
+├── .zprofile                   # Login shell setup
+├── .zshrc                      # Interactive shell config
+└── .gitconfig                  # Git configuration
+```
+
+---
+
+## Credits
+
+- [mathiasbynens/dotfiles](https://github.com/mathiasbynens/dotfiles) — macOS defaults inspiration
 - [thoughtbot/dotfiles](https://github.com/thoughtbot/dotfiles)
