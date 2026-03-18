@@ -109,3 +109,6 @@ hs_err_pid*
 # Be very careful with these. You usually don't want them in dotfiles.
 ############################################
 .cache/
+
+# Claude
+.claude/
