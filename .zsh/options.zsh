@@ -22,29 +22,27 @@ autoload -U history-search-end
 zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 
-# Custom word functions
-remove-delimiters() {
-  # Copy the global WORDCHARS variable to a local variable. 
-  local WORDCHARS=$WORDCHARS
-  WORDCHARS="${WORDCHARS//:}"
+# Custom word functions — treat : / . as word boundaries
+# Inlined to avoid subshell overhead on every keypress
+my-backward-move-word() {
+  local WORDCHARS="${WORDCHARS//:}"
   WORDCHARS="${WORDCHARS//\/}"
   WORDCHARS="${WORDCHARS//.}"
-  echo "$WORDCHARS"
-}
-
-my-backward-move-word() {
-  local WORDCHARS=$(remove-delimiters)
   zle backward-word
 }
 
 my-forward-move-word() {
-  local WORDCHARS=$(remove-delimiters)
+  local WORDCHARS="${WORDCHARS//:}"
+  WORDCHARS="${WORDCHARS//\/}"
+  WORDCHARS="${WORDCHARS//.}"
   zle forward-word
 }
 
 # Delete word with `ctrl+w`
 my-backward-delete-word() {
-  local WORDCHARS=$(remove-delimiters)
+  local WORDCHARS="${WORDCHARS//:}"
+  WORDCHARS="${WORDCHARS//\/}"
+  WORDCHARS="${WORDCHARS//.}"
   zle backward-kill-word
 }
 

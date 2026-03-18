@@ -41,9 +41,7 @@ export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --e
 
 # Ctrl+T: file search
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_CTRL_T_OPTS="--walker-skip .git,node_modules,target --preview 'bat -n --style=numbers --color=always {}'\ 
- --bind shift-up:preview-page-up,shift-down:preview-page-down\
- --bind 'ctrl-/:toggle-preview'"
+export FZF_CTRL_T_OPTS="--walker-skip .git,node_modules,target --preview 'bat -n --style=numbers --color=always {}' --bind shift-up:preview-page-up,shift-down:preview-page-down --bind 'ctrl-/:toggle-preview'"
 
 # Ctrl+R: history search
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"

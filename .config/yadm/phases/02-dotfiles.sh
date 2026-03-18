@@ -16,14 +16,14 @@ if ! command -v yadm >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "Checking out dotfiles..."
-yadm checkout -f
+echo "Ensuring dotfiles are checked out..."
+yadm checkout 2>/dev/null || yadm checkout -f
 
 echo "Pulling latest changes..."
-yadm pull --rebase || echo "Warning: pull failed (maybe no remote set yet)."
+yadm pull --rebase || echo "Warning: pull failed (maybe no remote set yet or first clone)."
 
 echo "Updating submodules..."
-yadm submodule update --init --recursive
+yadm submodule update --init --recursive 2>/dev/null || echo "Warning: no submodules configured."
 
 echo "Setting yadm alternates and permissions..."
 yadm alt

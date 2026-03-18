@@ -13,7 +13,7 @@ if ! command -v brew >/dev/null 2>&1; then
   # Add brew to PATH for the rest of this script
   if [ -d "/opt/homebrew" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
-  elif [ -d "/usr/local/Homebrew" ]; then
+  elif [ -x "/usr/local/bin/brew" ]; then
     eval "$(/usr/local/bin/brew shellenv)"
   fi
 else

@@ -1,22 +1,25 @@
 # Lazy loading NVM for faster shell startup
-nvm() {
-  unfunction nvm
-  [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
-  nvm "$@"
-}
+# Only define wrappers if NVM is actually installed
+if [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ]; then
+  nvm() {
+    unfunction nvm node npm
+    source "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
+    nvm "$@"
+  }
 
-node() {
-  unfunction node
-  [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
-  node "$@"
-}
+  node() {
+    unfunction nvm node npm
+    source "$NVM_DIR/nvm.sh"
+    node "$@"
+  }
 
-npm() {
-  unfunction npm
-  [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
-  npm "$@"
-}
+  npm() {
+    unfunction nvm node npm
+    source "$NVM_DIR/nvm.sh"
+    npm "$@"
+  }
+fi
 
 # Function to reload SSH keys with Yubikey
 reload-ssh() {
@@ -92,5 +95,5 @@ cache_eval() {
 }
 
 validateYaml() {
-    python -c 'import yaml,sys;yaml.safe_load(sys.stdin)' < "$1"
+    python3 -c 'import yaml,sys;yaml.safe_load(sys.stdin)' < "$1"
 }

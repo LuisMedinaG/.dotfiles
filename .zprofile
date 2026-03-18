@@ -11,13 +11,8 @@ export LC_ALL=en_US.UTF-8
 export PATH="$HOME/.local/bin:$PATH"
 
 # ───── Homebrew ─────
-# Support both Apple Silicon (/opt/homebrew) and Intel (/usr/local)
-if [ -d "/opt/homebrew" ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [ -x "/usr/local/bin/brew" ]; then
-    eval "$(/usr/local/bin/brew shellenv)"
-fi
-
+# Homebrew shellenv is loaded in .zshenv so non-login shells get it too.
+# Here we only set paths that depend on HOMEBREW_PREFIX.
 if [ -n "$HOMEBREW_PREFIX" ]; then
     # Path for Homebrew zsh-completions, used in completion.zsh
     export BREW_COMPLETIONS_PATH="$HOMEBREW_PREFIX/share/zsh-completions"

@@ -232,7 +232,7 @@ defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
 ###############################################################################
 
 for app in "Activity Monitor" "Dock" "Finder" "SystemUIServer"; do
-  killall "${app}" &>/dev/null || true
+  killall "${app}" >/dev/null 2>&1 || true
 done
 
 echo "✓ Phase 4 complete. Some changes require a logout/restart."
