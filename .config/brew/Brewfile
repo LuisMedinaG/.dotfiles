@@ -15,6 +15,7 @@ brew "eza"          # Modern ls replacement
 brew "jq"
 brew "yadm"         # Dotfile management
 brew "zoxide"       # Smarter cd
+brew "gh"           # GitHub CLI
 
 brew "spaceman"     # Show spaces in menu bar
 
