@@ -1,5 +1,8 @@
 # Brewfile for Luis Medina's setup
 
+# Taps
+tap "olets/tap"         # For zsh-abbr
+
 # CLI tools
 brew "curl"
 brew "wget"
@@ -17,7 +20,7 @@ brew "yadm"         # Dotfile management
 brew "zoxide"       # Smarter cd
 brew "gh"           # GitHub CLI
 
-brew "spaceman"     # Show spaces in menu bar
+cask "spaceman"     # Show spaces in menu bar
 
 # brew "broot"      # Navigate directories, find files, and launch commands.
 # brew "pandoc"     # Convert files from one format to another.
@@ -27,7 +30,7 @@ brew "spaceman"     # Show spaces in menu bar
 brew "zsh-syntax-highlighting"
 brew "zsh-completions"
 brew "zsh-autosuggestions"
-brew "zsh-abbr"     # Auto-expanding abbreviations
+brew "olets/tap/zsh-abbr"  # Auto-expanding abbreviations (moved to olets/tap)
 
 # Development tools
 brew "pyenv"        # Python version management
