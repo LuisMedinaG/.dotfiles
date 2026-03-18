@@ -3,7 +3,7 @@
 # +---------+
 
 # Load completions
-[ -n "$BREW_COMPLETIONS_PATH" ] && fpath=($BREW_COMPLETIONS_PATH/src $fpath)
+[ -n "$BREW_COMPLETIONS_PATH" ] && fpath=($BREW_COMPLETIONS_PATH $fpath)
 zmodload zsh/complist
 
 # https://github.com/olets/zsh-abbr
@@ -68,7 +68,7 @@ zstyle ':completion:alias-expansion:*' completer _expand_alias
 
 # Use cache for commands which use it
 
-# Allow you to select in a menu
+# Allow you to select in a menu (overridden by fzf-tab below when loaded)
 zstyle ':completion:*' menu select
 
 # Autocomplete options for cd instead of directory stack

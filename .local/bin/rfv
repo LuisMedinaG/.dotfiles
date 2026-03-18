@@ -1,9 +1,58 @@
 #!/usr/bin/env bash
+#
+# rfv — fuzzy file finder with two modes:
+#   rfv           → ripgrep mode (search file contents, toggle to fzf filter)
+#   rfv -f [query] [dir]  → fd mode (search file names)
+#
+# Controls:
+#   Ctrl-R  switch to ripgrep mode (content search only)
+#   Ctrl-F  switch to fzf filter mode
+#   Enter   open selected file in $EDITOR
+#
+set -euo pipefail
 
-# Switch between Ripgrep launcher mode (CTRL-R) and fzf filtering mode (CTRL-F)
+EDITOR="${EDITOR:-vim}"
+
+# ── fd mode: search file names ──
+if [[ "${1:-}" == "-f" ]]; then
+    shift
+    INITIAL_QUERY=""
+    DIRECTORY_QUERY=""
+
+    if [[ $# -eq 1 ]]; then
+        INITIAL_QUERY="$1"
+    elif [[ $# -gt 1 ]]; then
+        # All but the last arg = query, last arg = directory
+        while [[ $# -gt 1 ]]; do
+            INITIAL_QUERY+="$1 "
+            shift
+        done
+        INITIAL_QUERY="${INITIAL_QUERY% }"  # trim trailing space
+        DIRECTORY_QUERY="$1"
+    fi
+
+    CMD_PREFIX='fd --full-path '
+    PREVIEW_CMD='bat --color=always {}'
+
+    IFS=$'\n' read -d '' -ra selected < <(
+      FZF_DEFAULT_COMMAND="$CMD_PREFIX $(printf '%q' "$INITIAL_QUERY") $DIRECTORY_QUERY" \
+      fzf --multi \
+          --ansi \
+          --disabled --query "$INITIAL_QUERY" \
+          --bind "change:reload:sleep 0.1; $CMD_PREFIX {q} $DIRECTORY_QUERY || true" \
+          --preview "$PREVIEW_CMD" \
+          --preview-window 'up,60%,border-bottom,~3'
+    ) || true
+
+    [[ -n "${selected[*]:-}" ]] && "$EDITOR" "${selected[@]}"
+    exit 0
+fi
+
+# ── ripgrep mode: search file contents ──
 rm -f /tmp/rg-fzf-{r,f}
 RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
 INITIAL_QUERY="${*:-}"
+
 fzf --ansi --disabled --query "$INITIAL_QUERY" \
     --bind "start:reload($RG_PREFIX {q})+unbind(ctrl-r)" \
     --bind "change:reload:sleep 0.1; $RG_PREFIX {q} || true" \
@@ -15,4 +64,4 @@ fzf --ansi --disabled --query "$INITIAL_QUERY" \
     --header '╱ CTRL-R (ripgrep mode) ╱ CTRL-F (fzf mode) ╱' \
     --preview 'bat --color=always {1} --highlight-line {2}' \
     --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-    --bind 'enter:become(vim {1} +{2})'
+    --bind "enter:become($EDITOR {1} +{2})"

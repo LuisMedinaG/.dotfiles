@@ -1,12 +1,6 @@
 # Brewfile for Luis Medina's setup
 
-# Taps
-tap "homebrew/bundle"
-tap "homebrew/cask"
-tap "homebrew/core"
-
 # CLI tools
-brew "awk"           # Text processing
 brew "curl"
 brew "wget"
 brew "git"
@@ -17,21 +11,22 @@ brew "bat"          # Cat with syntax highlighting
 brew "neovim"
 brew "ripgrep"      # Search tool
 brew "tree"
-brew "eza"
+brew "eza"          # Modern ls replacement
 brew "jq"
-brew "yadm"         # For dotfile management
+brew "yadm"         # Dotfile management
+brew "zoxide"       # Smarter cd
 
-brew "spaceman"
-# brew "Hidden Bar" # Hide menu bar icons
+brew "spaceman"     # Show spaces in menu bar
+
 # brew "broot"      # Navigate directories, find files, and launch commands.
+# brew "pandoc"     # Convert files from one format to another.
+# brew "ncdu"       # Disk usage analyzer
 
-# brew "pandoc" # Convert files from one format to another.
-# brew "taskwarrior-tui" # ToDo Tool for CLI 
-# brew "ncdu" # Disk usage analyzer
-
-brew "zsh-syntax-highlighting" 
-brew "zsh-completions"          
-brew "zsh-autosuggestions"      
+# ZSH plugins (installed via Homebrew)
+brew "zsh-syntax-highlighting"
+brew "zsh-completions"
+brew "zsh-autosuggestions"
+brew "zsh-abbr"     # Auto-expanding abbreviations
 
 # Development tools
 brew "pyenv"        # Python version management
@@ -39,9 +34,9 @@ brew "jenv"         # Java version management
 
 # Applications
 cask "visual-studio-code"
-cask "google-chrome" # Browser
+cask "google-chrome"
 cask "iterm2"
 cask "homerow"
 
 # cask "docker"
-# cask "rancher"      # Kubernetes management
+# cask "rancher"    # Kubernetes management

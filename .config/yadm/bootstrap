@@ -1,55 +1,47 @@
 #!/bin/sh
 #
-# Bootstrap script for setting up a new OSX machine
+# Bootstrap script for setting up a new macOS machine.
 #
-# This should be idempotent so it can be run multiple times.
+# This is the entry point called by `yadm clone --bootstrap`.
+# Each phase is an independent script that can also be run standalone.
 #
+# Phases:
+#   01-homebrew.sh  — Install Homebrew + Brewfile packages
+#   02-dotfiles.sh  — Checkout dotfiles, init submodules
+#   03-shell.sh     — fzf setup, create required directories
+#   04-macos.sh     — macOS defaults (OPT-IN, not run by default)
+#
+# Usage:
+#   yadm bootstrap              # runs phases 01–03
+#   sh ~/.config/yadm/phases/04-macos.sh   # run macOS defaults manually
+#
+set -e
 
-# Because Git submodule commands cannot operate without a work tree, they must
-# be run from within $HOME (assuming this is the root of your dotfiles)
-cd "$HOME"
+cd "$HOME" || exit 1
 
-echo "Init submodules"
-yadm submodule update --recursive --init
+PHASES_DIR="$HOME/.config/yadm/phases"
 
-# Homebrew bootstrap
-system_type=$(uname -s)
-
-if [ "$system_type" = "Darwin" ]; then
-  echo "Doing OSX install of yadm"
-
-  # install homebrew if it's missing
-  if ! command -v brew >/dev/null 2>&1; then
-    echo "Installing homebrew"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  else
-    echo "Homebrew already installed. Getting updates..."
-    # Make sure we’re using the latest Homebrew.
-    brew update
-    # Upgrade any already-installed formulae.
-    brew upgrade
-    brew doctor
-
-    BREW_PREFIX=$(brew --prefix)
-  fi
-
-  if [ -f "$HOME/.config/brew/.Brewfile" ]; then
-    echo "Updating homebrew bundle"
-    brew bundle install --global --file $HOME/.config/brew/.Brewfile
-  fi
+if [ ! -d "$PHASES_DIR" ]; then
+  echo "Error: phases directory not found at $PHASES_DIR" >&2
+  exit 1
 fi
 
-hash yadm 2>/dev/null || (echo "yadm install failed" && exit 1)
+# Run phases 01–03 (04-macos is opt-in)
+for phase in "$PHASES_DIR"/0[1-3]-*.sh; do
+  if [ -f "$phase" ]; then
+    echo ""
+    echo "▶ Running $(basename "$phase")..."
+    echo "────────────────────────────────────────"
+    sh "$phase"
+    echo ""
+  fi
+done
 
-# always checkout and update
-yadm checkout -f && \
-  yadm pull --rebase && \
-  yadm submodule && \
-  yadm submodule update --init --recursive && \
-  yadm alt && \
-  yadm perms
-
-# To install useful key bindings and fuzzy completion:
-$(brew --prefix)/opt/fzf/install
-
-echo "Bootstrapping complete"
+echo "════════════════════════════════════════"
+echo "✓ Bootstrap complete!"
+echo ""
+echo "Optional: run macOS system defaults with:"
+echo "  sh ~/.config/yadm/phases/04-macos.sh"
+echo ""
+echo "Open a new terminal to pick up all changes."
+echo "════════════════════════════════════════"

@@ -1,0 +1,35 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  Dotfiles Test Container                                       ║
+# ║                                                                ║
+# ║  Tests shell syntax, Brewfile validity, and script logic       ║
+# ║  WITHOUT installing anything on your real machine.             ║
+# ║                                                                ║
+# ║  Build:  docker build -t dotfiles-test -f Dockerfile.test .    ║
+# ║  Run:    docker run --rm dotfiles-test                         ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+FROM zshusers/zsh:5.9
+
+# Install minimal dependencies for testing
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    shellcheck \
+    ruby \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install brew-bundle-check (just validates Brewfile syntax)
+RUN gem install ruby_homebrew_bundler_check 2>/dev/null || true
+
+# Copy dotfiles into the container (simulating $HOME)
+COPY .zshenv   /root/.zshenv
+COPY .zshrc    /root/.zshrc
+COPY .zprofile /root/.zprofile
+COPY .zsh/     /root/.zsh/
+COPY .config/yadm/     /root/.config/yadm/
+COPY .config/brew/     /root/.config/brew/
+COPY .local/bin/       /root/.local/bin/
+COPY tests/            /root/tests/
+
+WORKDIR /root
+
+# Run all tests
+CMD ["sh", "/root/tests/run_all.sh"]

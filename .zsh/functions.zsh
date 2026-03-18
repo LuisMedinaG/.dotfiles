@@ -30,7 +30,7 @@ reload-ssh() {
       return 1
     fi
 
-    cho "Attempting to remove previous card entries for $yubikey_lib..."
+    echo "Attempting to remove previous card entries for $yubikey_lib..."
     ssh-add -e "$yubikey_lib" # Show output for debugging
     if [[ $? -gt 0 ]]; then echo "Failed to remove previous card"; fi
 
@@ -56,8 +56,7 @@ function activate-venv() {
 
 # https://github.com/andrew8088/dotfiles/blob/main/zsh/aliases.zsh
 function take {
-  mkdir -p $1
-  cd $1
+  mkdir -p "$1" && cd "$1"
 }
 
 # https://unix.stackexchange.com/a/282433
@@ -93,5 +92,5 @@ cache_eval() {
 }
 
 validateYaml() {
-    python -c 'import yaml,sys;yaml.safe_load(sys.stdin)' < $1
+    python -c 'import yaml,sys;yaml.safe_load(sys.stdin)' < "$1"
 }

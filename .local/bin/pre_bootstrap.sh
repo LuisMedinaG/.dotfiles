@@ -1,25 +1,31 @@
 #!/bin/sh
+#
+# Pre-bootstrap: run this on a brand-new Mac to kick off dotfiles setup.
+# After this, yadm is installed via Homebrew and manages everything.
+#
+set -e
 
-# Install Homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# 1. Install Homebrew (skip if already present)
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-brew install git
+  # Add brew to PATH for the rest of this script
+  if [ -d "/opt/homebrew" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -d "/usr/local/Homebrew" ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+else
+  echo "Homebrew already installed."
+fi
 
-# Create directory if it doesn't exist
-mkdir -p ~/.local/bin
+# 2. Install yadm via Homebrew (idempotent)
+echo "Installing yadm..."
+brew install yadm
 
-# Download yadm
-curl -sfLo ~/.local/bin/yadm https://github.com/TheLocehiliosan/yadm/raw/master/yadm
+# 3. Clone dotfiles — yadm bootstrap runs automatically
+echo "Cloning dotfiles..."
+yadm clone --bootstrap -f https://github.com/LuisMedinaG/.dotfiles.git
 
-# Give execute permissions to yadm
-chmod a+x ~/.local/bin/yadm
-
-# Clone dotfiles repository
-~/.local/bin/yadm clone --bootstrap -f https://github.com/LuisMedinaG/.dotfiles.git
-
-chmod +x ~/.config/yadm/bootstrap
-
-# Clean up by removing yadm
-rm -rf ~/.local/bin/yadm
-
-echo "Dotfiles setup completed!"
+echo "Done! Open a new terminal to pick up all changes."

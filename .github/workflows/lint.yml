@@ -1,0 +1,119 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  GitHub Actions — Dotfiles CI                                  ║
+# ║                                                                ║
+# ║  HOW THIS WORKS (for beginners):                               ║
+# ║                                                                ║
+# ║  1. Every time you `git push` or open a Pull Request,          ║
+# ║     GitHub spins up a fresh virtual machine (called a           ║
+# ║     "runner") and runs the jobs below.                          ║
+# ║                                                                ║
+# ║  2. Each "job" is an independent task. Jobs under the same      ║
+# ║     workflow run in parallel by default.                        ║
+# ║                                                                ║
+# ║  3. Each job has "steps" — sequential commands. If any step     ║
+# ║     fails (exit code ≠ 0), the job fails and you get a red ✗   ║
+# ║     on your commit/PR.                                         ║
+# ║                                                                ║
+# ║  4. You can see results at:                                     ║
+# ║     github.com/LuisMedinaG/.dotfiles/actions                   ║
+# ║                                                                ║
+# ║  KEY CONCEPTS:                                                  ║
+# ║  - `on:` = what triggers this workflow                          ║
+# ║  - `runs-on:` = what OS the runner uses                        ║
+# ║  - `uses:` = use a pre-built action from the marketplace       ║
+# ║  - `run:` = run a shell command                                 ║
+# ║  - Jobs are independent; steps within a job are sequential     ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+name: Dotfiles CI
+
+# ─── When does this run? ───
+# On every push and on every pull request to main.
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  # ═══════════════════════════════════════
+  # Job 1: Syntax & lint checks (Linux)
+  # ═══════════════════════════════════════
+  # This is fast (~30s) because it only checks syntax — no installs.
+  # Runs on Ubuntu because it's the fastest/cheapest runner.
+  lint:
+    name: Syntax & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Download your repo code into the runner
+      - name: Checkout code
+        uses: actions/checkout@v4
+        # This clones your repo into the runner's workspace.
+        # Without this, the runner has no access to your files.
+        with:
+          submodules: true   # also clone git submodules (fzf-tab, etc.)
+
+      # Step 2: Install zsh and shellcheck on the Ubuntu runner
+      - name: Install test dependencies
+        run: sudo apt-get update && sudo apt-get install -y zsh shellcheck
+
+      # Step 3: Copy dotfiles to $HOME so paths work like a real setup
+      - name: Set up test environment
+        run: |
+          cp -r .zshenv .zshrc .zprofile "$HOME/"
+          cp -r .zsh "$HOME/.zsh"
+          mkdir -p "$HOME/.config/yadm" "$HOME/.config/brew" "$HOME/.local/bin"
+          cp -r .config/yadm/* "$HOME/.config/yadm/"
+          cp -r .config/brew/* "$HOME/.config/brew/"
+          cp -r .local/bin/* "$HOME/.local/bin/"
+          cp -r tests "$HOME/tests" 2>/dev/null || true
+
+      # Step 4: Run the test suite
+      - name: Run tests
+        run: sh tests/run_all.sh
+
+  # ═══════════════════════════════════════
+  # Job 2: Brewfile validation (macOS)
+  # ═══════════════════════════════════════
+  # This runs on a real macOS runner so we can validate the Brewfile
+  # against actual Homebrew. Takes ~2min (Homebrew update is slow).
+  brewfile:
+    name: Brewfile Check
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # `brew bundle check` verifies that every package in your
+      # Brewfile is a real, installable formula/cask — without
+      # actually installing them.
+      - name: Validate Brewfile packages exist
+        run: |
+          brew update
+          echo "── Listing all packages in Brewfile ──"
+          brew bundle list --file .config/brew/Brewfile
+          echo ""
+          echo "── Checking if packages are installable ──"
+          brew bundle check --file .config/brew/Brewfile --verbose || true
+
+  # ═══════════════════════════════════════
+  # Job 3: Docker test (optional)
+  # ═══════════════════════════════════════
+  # Builds and runs the Dockerfile.test to verify the container works.
+  # This mirrors what you'd run locally with `docker build`.
+  docker:
+    name: Docker Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Build and run test container
+        run: |
+          docker build -t dotfiles-test -f Dockerfile.test .
+          docker run --rm dotfiles-test

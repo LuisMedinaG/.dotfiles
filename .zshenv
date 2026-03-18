@@ -5,7 +5,7 @@ export ZSH=$HOME/.zsh
 export ZDOTDIR="$HOME"
 
 # Editor
-export VISUAL=vim
+export VISUAL=nvim
 export EDITOR=$VISUAL
 
 # Source function for other files to use
