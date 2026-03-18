@@ -15,7 +15,7 @@
 #   yadm bootstrap              # runs phases 01–03
 #   sh ~/.config/yadm/phases/04-macos.sh   # run macOS defaults manually
 #
-set -e
+set -eu
 
 cd "$HOME" || exit 1
 
@@ -37,11 +37,26 @@ for phase in "$PHASES_DIR"/0[1-3]-*.sh; do
   fi
 done
 
+# Offer to run macOS system defaults (phase 04)
+if [ -t 0 ]; then
+  printf "Would you like to apply macOS system defaults? [y/N] "
+  read -r answer
+  if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
+    echo ""
+    echo "▶ Running 04-macos.sh..."
+    echo "────────────────────────────────────────"
+    sh "$PHASES_DIR/04-macos.sh"
+    echo ""
+  fi
+fi
+
 echo "════════════════════════════════════════"
 echo "✓ Bootstrap complete!"
 echo ""
-echo "Optional: run macOS system defaults with:"
-echo "  sh ~/.config/yadm/phases/04-macos.sh"
-echo ""
+if [ ! -t 0 ]; then
+  echo "Optional: run macOS system defaults with:"
+  echo "  sh ~/.config/yadm/phases/04-macos.sh"
+  echo ""
+fi
 echo "Open a new terminal to pick up all changes."
 echo "════════════════════════════════════════"

@@ -62,7 +62,7 @@ yadm bootstrap
 
 ```
 .zshenv            → env vars, EDITOR, source_if_exists helper
-.zprofile          → Homebrew, pyenv, jenv, NVM, Oracle client
+.zprofile          → Homebrew, pyenv, jenv, NVM
 .zshrc             → sources everything below:
 
 .zsh/

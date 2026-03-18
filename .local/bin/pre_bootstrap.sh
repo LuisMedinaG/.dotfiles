@@ -3,7 +3,7 @@
 # Pre-bootstrap: run this on a brand-new Mac to kick off dotfiles setup.
 # After this, yadm is installed via Homebrew and manages everything.
 #
-set -e
+set -eu
 
 # 1. Install Homebrew (skip if already present)
 if ! command -v brew >/dev/null 2>&1; then

@@ -5,7 +5,7 @@
 # Run locally:   sh tests/run_all.sh
 # Run in Docker: docker build -t dotfiles-test -f Dockerfile.test . && docker run --rm dotfiles-test
 #
-set -e
+set -eu
 
 PASS=0
 FAIL=0
@@ -193,14 +193,14 @@ done
 echo ""
 
 # ─── Test 7: Bootstrap phases are executable-compatible ───
-echo "▶ Phase scripts have set -e"
+echo "▶ Phase scripts have set -eu"
 
 for file in "$HOME/.config/yadm/phases"/*.sh; do
   if [ -f "$file" ]; then
-    if grep -q "^set -e" "$file"; then
-      pass "$(basename "$file") has set -e"
+    if grep -q "^set -eu" "$file"; then
+      pass "$(basename "$file") has set -eu"
     else
-      fail "$(basename "$file") missing set -e"
+      fail "$(basename "$file") missing set -eu"
     fi
   fi
 done

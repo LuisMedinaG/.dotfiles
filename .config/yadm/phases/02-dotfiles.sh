@@ -4,7 +4,7 @@
 #
 # Run standalone:  sh ~/.config/yadm/phases/02-dotfiles.sh
 #
-set -e
+set -eu
 
 echo "═══ Phase 2: Dotfiles ═══"
 

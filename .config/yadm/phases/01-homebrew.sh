@@ -4,7 +4,7 @@
 #
 # Run standalone:  sh ~/.config/yadm/phases/01-homebrew.sh
 #
-set -e
+set -eu
 
 echo "═══ Phase 1: Homebrew ═══"
 
@@ -35,7 +35,7 @@ fi
 BREWFILE="$HOME/.config/brew/Brewfile"
 if [ -f "$BREWFILE" ]; then
   echo "Installing packages from Brewfile..."
-  brew bundle install --file "$BREWFILE" --no-lock
+  brew bundle install --file "$BREWFILE"
 else
   echo "Warning: Brewfile not found at $BREWFILE" >&2
   exit 1

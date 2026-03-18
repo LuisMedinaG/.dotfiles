@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Define the base directory (you might want to change this)
 BASE_DIR="$HOME"

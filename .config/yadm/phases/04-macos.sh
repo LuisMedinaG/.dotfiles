@@ -10,7 +10,7 @@
 #
 # After running, log out and back in (or restart) for changes to take effect.
 #
-set -e
+set -eu
 
 echo "═══ Phase 4: macOS defaults ═══"
 

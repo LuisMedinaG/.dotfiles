@@ -54,13 +54,3 @@ if command -v jenv >/dev/null; then
         export PATH="$PATH:$M3_HOME/bin"
     fi
 fi
-
-# Oracle Client — auto-detect version instead of hardcoding
-ORACLE_DIR=$(find /opt/oracle/instantclient_* -maxdepth 0 -type d 2>/dev/null | sort -V | tail -1)
-if [ -n "$ORACLE_DIR" ]; then
-    export ORACLE_HOME="$ORACLE_DIR"
-    export NLS_LANG="AMERICAN_AMERICA.UTF8"
-    export DYLD_LIBRARY_PATH="$ORACLE_HOME"
-    export PATH="$PATH:$ORACLE_HOME"
-fi
-unset ORACLE_DIR

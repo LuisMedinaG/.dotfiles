@@ -4,7 +4,7 @@
 #
 # Run standalone:  sh ~/.config/yadm/phases/03-shell.sh
 #
-set -e
+set -eu
 
 echo "═══ Phase 3: Shell setup ═══"
 
