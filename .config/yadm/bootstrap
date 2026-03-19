@@ -57,6 +57,7 @@ fi
 
 echo "════════════════════════════════════════"
 echo "✓ Bootstrap complete!"
+echo "════════════════════════════════════════"
 echo ""
 if [ ! -t 0 ]; then
   echo "Optional: run macOS system defaults with:"
@@ -64,4 +65,29 @@ if [ ! -t 0 ]; then
   echo ""
 fi
 echo "Open a new terminal to pick up all changes."
-echo "════════════════════════════════════════"
+echo ""
+echo "── Manual steps (macOS permissions) ──"
+echo ""
+echo "  System Settings > Privacy & Security > Input Monitoring:"
+echo "    [ ] Karabiner-Elements"
+echo "    [ ] Karabiner-EventViewer"
+kanata_bin="$(command -v kanata 2>/dev/null || echo '/usr/local/bin/kanata')"
+if [ "$DOTFILES_PROFILE" = "personal" ]; then
+  echo "    [ ] kanata ($kanata_bin)"
+  echo ""
+  echo "  System Settings > Privacy & Security > Full Disk Access:"
+  echo "    [ ] kanata ($kanata_bin)"
+  echo ""
+  echo "  System Settings > Privacy & Security > Accessibility:"
+  echo "    [ ] Karabiner-Elements"
+  echo "    [ ] Homerow"
+  echo "    [ ] BetterTouchTool"
+  echo "    [ ] Raycast"
+  echo ""
+  echo "  Post-setup:"
+  echo "    [ ] sh ~/.config/yadm/phases/04-macos.sh  (macOS defaults)"
+  echo "    [ ] mackup restore                        (restore app settings)"
+  echo "    [ ] kanata-reload                         (start kanata daemon)"
+  echo "    [ ] karabiner-build                       (generate karabiner.json)"
+fi
+echo ""

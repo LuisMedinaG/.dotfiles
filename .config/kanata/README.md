@@ -42,6 +42,8 @@ Go to **System Settings → Privacy & Security**:
 
 To find the binary path: `which kanata`
 
+**Tip:** In the Finder dialog, press **⌘⇧G** and paste the path, or run `open -R $(which kanata)` to reveal it in Finder and drag it in.
+
 ### 3. Create log directory
 
 ```sh

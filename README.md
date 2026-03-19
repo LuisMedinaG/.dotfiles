@@ -41,6 +41,16 @@ sh ~/.config/yadm/phases/04-macos.sh
 
 This sets developer-friendly defaults: fast key repeat, Finder shows path bar, Dock auto-hides, disable smart quotes, etc. Log out and back in after running.
 
+**Grant macOS permissions** (required for keyboard tools):
+
+| Setting | Apps |
+|---------|------|
+| Input Monitoring | Karabiner-Elements, Karabiner-EventViewer, kanata |
+| Full Disk Access | kanata |
+| Accessibility | Karabiner-Elements, Homerow, BetterTouchTool, Raycast |
+
+> **Tip:** When the Finder dialog asks you to locate a binary, press **⌘⇧G** and paste the path (e.g. `/usr/local/bin/kanata`), or run `open -R $(which kanata)` to reveal it in Finder and drag it in.
+
 ---
 
 ## Re-running phases
