@@ -14,14 +14,21 @@ autoload -Uz _zinit
 ### End of Zinit's installer chunk
 
 # https://github.com/djui/alias-tips
-source_if_exists $ZSH/plugins/alias-tips/alias-tips.plugin.zsh
+zinit light djui/alias-tips
 
 # https://github.com/wfxr/forgit
 # export FORGIT_INSTALL_DIR="$HOMEBREW_PREFIX/share/forgit"
 # source_if_exists $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
 
 # https://github.com/Aloxaf/fzf-tab
-source_if_exists $ZSH/plugins/fzf-tab/fzf-tab.plugin.zsh
+zinit light Aloxaf/fzf-tab
+
+# Apply fzf-tab config if it loaded successfully
+if (( $+functions[fzf-tab-complete] )); then
+    zstyle ':completion:*' menu no
+    zstyle ':fzf-tab:*' switch-group '<' '>'
+    zstyle ':fzf-tab:*' use-fzf-default-opts yes
+fi
 
 # https://github.com/ajeetdsouza/zoxide
 # For completions to work, the above line must be added after compinit is called.
