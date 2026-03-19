@@ -3,6 +3,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsx src/index.ts",
+    "watch": "tsx watch src/index.ts",
     "update": "npm update karabiner.ts",
     "lint": "eslint src",
     "format": "prettier --write \"**/*.{ts,json}\"",

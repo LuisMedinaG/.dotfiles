@@ -24,6 +24,16 @@ import { genericStaticAction, raycastExt, toSystemSetting } from './utils';
 
 import linksData from './links.json';
 
+function validateStringMap(data: unknown, label: string): { [key: string]: string } {
+  if (typeof data !== 'object' || data === null || Array.isArray(data))
+    throw new Error(`${label} must be a JSON object`);
+  for (const [key, val] of Object.entries(data)) {
+    if (typeof val !== 'string')
+      throw new Error(`${label}: expected string for key "${key}", got ${typeof val}`);
+  }
+  return data as { [key: string]: string };
+}
+
 // Constants
 const PROFILE_NAME = 'Default';
 const LEADER_VAR = 'leader_mode';
@@ -84,7 +94,7 @@ function createLeaderKeyRule() {
     },
     l: {
       name: 'Link',
-      mapping: linksData as { [key: string]: string },
+      mapping: validateStringMap(linksData, 'links.json'),
       action: url => to$(`open ${url}`),
     },
     r: {
@@ -96,11 +106,11 @@ function createLeaderKeyRule() {
         f: ['raycast/file-search/search-files', 'Search files'],
         g: ['massimiliano_pasquini/raycast-ollama/ollama-fix-spelling-grammar', 'Fix Spell'],
         k: ['huzef44/keyboard-brightness/toggle-keyboard-brightness', 'Keyboard ☀︎'],
-        l: ['koinzhang/copy-path/copy-path', 'Calendar'],
+        l: ['koinzhang/copy-path/copy-path', 'Copy Path'],
         m: ['raycast/apple-reminders/my-reminders', 'Reminders'],
         n: ['marcjulian/obsidian/createNoteCommand', 'Obsidian Note'],
         o: ['huzef44/screenocr/recognize-text', 'OCR'],
-        q: ['raycast/apple-reminders/quick-add-reminder', 'Quickq Reminder'],
+        q: ['raycast/apple-reminders/quick-add-reminder', 'Quick Reminder'],
         r: ['thomas/visual-studio-code/index', 'Recent projects'],
         s: ['raycast/snippets/search-snippets', 'Snippets'],
 
@@ -108,7 +118,7 @@ function createLeaderKeyRule() {
         // raycast://extensions/massimiliano_pasquini/raycast-ollama/ollama-chat
         // raycast://extensions/VladCuciureanu/toothpick/toggle-favorite-device-1
         // ------- Added in Raycast ----------
-        // This commands are not working properlly, added directly to config.
+        // These commands are not working properly, added directly to config.
         // d: ['jag-k/dropover/index', 'Add Dropover'],
         // e: ['raycast/emoji-symbols/search-emoji-symbols', 'Emoji'],
 

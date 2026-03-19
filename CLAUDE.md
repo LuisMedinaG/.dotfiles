@@ -1,26 +1,38 @@
 # Dotfiles — CLAUDE.md
 
-This is a macOS dotfiles repository managed by [yadm](https://yadm.io/) (Yet Another Dotfiles Manager).
+macOS dotfiles managed by [yadm](https://yadm.io/).
+
+## Important: Dual-location Setup
+
+yadm's worktree is `$HOME` — files are deployed there. This repo at `Documents/Projects/.dotfiles` is a separate clone. **Changes must be made in both places** or committed via `yadm` from `$HOME`.
 
 ## Quick Reference
 
 - **Run tests:** `sh tests/run_all.sh`
+- **Bootstrap:** `yadm bootstrap` (or `sh ~/.config/yadm/bootstrap`)
 - **Brewfile:** `.config/brew/Brewfile`
-- **Bootstrap entry point:** `.config/yadm/bootstrap`
-- **Bootstrap phases:** `.config/yadm/phases/01-homebrew.sh` through `04-macos.sh`
 
 ## Conventions
 
-- Shell scripts use `#!/bin/sh` with `set -eu` (fail on errors and unset variables)
-- ZSH configuration is modular under `.zsh/` (aliases, completion, functions, history, options, plugins, prompt, tools)
-- Bootstrap is phase-based: phases 01–03 run automatically, phase 04 (macOS defaults) is opt-in
-- All scripts must support both Apple Silicon (`/opt/homebrew`) and Intel (`/usr/local`) Macs
-- Tests validate syntax, ShellCheck, Brewfile format, required files, and `set -eu` usage
+- Shell scripts: `#!/bin/sh` with `set -eu`, no bashisms (`>/dev/null 2>&1` not `&>/dev/null`)
+- Support both Apple Silicon (`/opt/homebrew`) and Intel (`/usr/local`)
+- Brewfile: non-default taps need `tap` directive + fully-qualified name (e.g., `olets/tap/zsh-abbr`)
+- Distinguish `brew` (CLI formulae) vs `cask` (GUI apps) correctly
+
+## ZSH Load Order
+
+`.zshenv` → `.zprofile` (login only) → `.zshrc`
+
+- `.zshenv`: Homebrew shellenv, `$ZSH`, `$EDITOR`, `source_if_exists()` — loaded by ALL shells
+- `.zprofile`: `$PATH` additions, pyenv/jenv init, `BREW_COMPLETIONS_PATH` — login shells only
+- `.zshrc`: sources `.zsh/` modules in order: options, history, completion, functions, aliases, prompt, tools/fzf, plugins/init
+
+**Non-login shells (tmux, nested) skip `.zprofile`** — anything needed everywhere must be in `.zshenv`.
 
 ## Key Directories
 
-- `.zsh/` — modular ZSH configuration files
-- `.config/yadm/phases/` — bootstrap phase scripts
-- `.config/brew/` — Homebrew Brewfile
-- `.local/bin/` — utility scripts (rfv, pre_bootstrap.sh, create_dev_folders.sh)
+- `.zsh/` — modular ZSH config
+- `.config/yadm/phases/` — bootstrap phases (01-03 auto, 04 opt-in)
+- `.config/brew/` — Brewfile
+- `.local/bin/` — utility scripts
 - `tests/` — test suite

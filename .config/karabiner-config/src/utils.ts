@@ -199,8 +199,9 @@ export const systemUtilsActionRegistry: Record<string, ToEvent | ToEvent[]> = {
   sys_sleep: to$('pmset sleepnow'),
 };
 
-// This actions dont receive any parameters.
+// These actions don't receive any parameters.
 export function genericStaticAction(actionId: string) {
-  // TODO: Check if key exists in registry
-  return systemUtilsActionRegistry[actionId];
+  const action = systemUtilsActionRegistry[actionId];
+  if (!action) throw new Error(`Unknown action: ${actionId}`);
+  return action;
 }

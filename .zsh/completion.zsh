@@ -103,18 +103,7 @@ zstyle ':completion:*:git-checkout:*' sort false
 zstyle ":completion:*" list-colors "${(s.:.)ZLS_COLORS}"
 zstyle ":completion:*:descriptions" format "[%d]"
 
-# Only disable standard menu if fzf-tab plugin exists
-if [[ -f "$ZSH/plugins/fzf-tab/fzf-tab.plugin.zsh" ]]; then
-  # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
-  zstyle ':completion:*' menu no
-
-  # switch between "completion groups" using `<` and `>`
-  zstyle ':fzf-tab:*' switch-group '<' '>'
-
-  # NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default. To do so, set `use-fzf-default-opts` to `yes`
-  # This may lead to unexpected behavior since some flags break this plugin. See Aloxaf/fzf-tab#455.
-  zstyle ':fzf-tab:*' use-fzf-default-opts yes
-fi
+# fzf-tab zstyles are applied in plugins/init.zsh after Zinit loads fzf-tab
 
 # FZF_TAB_DEFAULT_FZF_FLAGS=(
 #   "--height=~85%"
