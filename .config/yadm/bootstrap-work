@@ -1,0 +1,57 @@
+#!/bin/sh
+#
+# Bootstrap for restricted work MacBook.
+# CLI-only — no casks, no admin-required tools, no macOS defaults.
+#
+# Usage:
+#   sh ~/.config/yadm/bootstrap-work
+#
+# Or manually run individual phases:
+#   sh ~/.config/yadm/phases/01-homebrew-work.sh
+#   sh ~/.config/yadm/phases/02-dotfiles.sh
+#   sh ~/.config/yadm/phases/03-shell.sh
+#
+set -eu
+
+cd "$HOME" || exit 1
+
+PHASES_DIR="$HOME/.config/yadm/phases"
+
+if [ ! -d "$PHASES_DIR" ]; then
+  echo "Error: phases directory not found at $PHASES_DIR" >&2
+  exit 1
+fi
+
+echo "════════════════════════════════════════"
+echo "  Work MacBook Bootstrap (CLI only)"
+echo "════════════════════════════════════════"
+echo ""
+
+# Phase 1: Homebrew with work-only Brewfile
+echo "▶ Running 01-homebrew-work.sh..."
+echo "────────────────────────────────────────"
+sh "$PHASES_DIR/01-homebrew-work.sh"
+echo ""
+
+# Phase 2: Dotfiles (same as personal)
+echo "▶ Running 02-dotfiles.sh..."
+echo "────────────────────────────────────────"
+sh "$PHASES_DIR/02-dotfiles.sh"
+echo ""
+
+# Phase 3: Shell setup (same as personal)
+echo "▶ Running 03-shell.sh..."
+echo "────────────────────────────────────────"
+sh "$PHASES_DIR/03-shell.sh"
+echo ""
+
+echo "════════════════════════════════════════"
+echo "✓ Work bootstrap complete!"
+echo ""
+echo "Next steps:"
+echo "  1. Open a new terminal to pick up all changes"
+echo "  2. Set your work git identity:"
+echo "     git config --global user.email 'your.work@company.com'"
+echo "     git config --global user.name 'Luis Medina'"
+echo "  3. Or add a gitconfig include for work repos — see WORK.md"
+echo "════════════════════════════════════════"
