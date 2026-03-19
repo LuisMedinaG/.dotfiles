@@ -126,7 +126,7 @@ shell-time() {
   done
 }
 
-# Update everything: Homebrew, Zinit plugins, and yadm
+# Update everything: Homebrew, Zinit plugins, yadm, and app settings
 update-all() {
   echo "── Homebrew ──"
   brew update && brew upgrade && brew cleanup
@@ -138,6 +138,12 @@ update-all() {
   echo ""
   echo "── yadm pull ──"
   yadm pull
+
+  if command -v mackup >/dev/null 2>&1; then
+    echo ""
+    echo "── Mackup (app settings backup) ──"
+    mackup backup --force
+  fi
 }
 
 # Sync dotfiles between yadm worktree ($HOME) and git clone
