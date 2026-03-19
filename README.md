@@ -92,7 +92,7 @@ yadm bootstrap
 |-----------|-----------|------|
 | bat, eza, fd, fzf, ripgrep | pyenv, jenv | VS Code |
 | git, curl, wget, jq, tree | neovim, gh | Chrome |
-| zoxide, zsh-abbr, tmux, mackup | yadm | iTerm2 |
+| zoxide, zsh-abbr, tmux, mackup, kanata | yadm | iTerm2 |
 | zsh-autosuggestions, zsh-syntax-highlighting, zsh-completions | | Homerow, Karabiner, Spaceman, BTT |
 
 ### Other configs
@@ -103,6 +103,7 @@ yadm bootstrap
 | Git | `.gitconfig` | Aliases, rerere, color-moved diffs |
 | tmux | `.config/tmux/tmux.conf` | Prefix: Ctrl+Space, true color, mouse |
 | Karabiner | `.config/karabiner-config/` | Meh key + leader system ([details](.config/karabiner-config/README.md)) |
+| Kanata | `.config/kanata/` | Home-row mods + Fn layer ([details](.config/kanata/README.md)) |
 | skhd | `.config/skhd/.skhdrc` | macOS hotkey daemon |
 | Raycast | `.config/raycast/` | Extensions and config ([details](.config/raycast/README.md)) |
 | Mackup | `.mackup.cfg` + `.mackup/` | Backs up GUI app settings (iTerm2, VS Code, BTT, etc.) |
@@ -124,12 +125,16 @@ Apps tracked: iTerm2, VS Code, Spotify, BetterTouchTool, Homerow, Multitouch, Sw
 | Function | Description |
 |----------|-------------|
 | `shell-time [n]` | Benchmark zsh startup time (default 10 iterations) |
-| `update-all` | Update Homebrew packages, Zinit plugins, and yadm pull |
+| `update-all` | Update Homebrew, Zinit plugins, yadm pull, and mackup backup |
 | `dotfiles-sync <to-clone\|to-yadm>` | Sync changes between yadm worktree and git clone |
 | `karabiner-build` | Build Karabiner config from TypeScript |
+| `kanata-reload` | Reload kanata daemon (auto-setup on first run) |
 | `take <dir>` | mkdir + cd in one command |
 | `activate-venv` | Fuzzy-select a Python virtual environment |
 | `reload-ssh` | Reload Yubikey SSH keys |
+| `validateYaml <file>` | Validate a YAML file |
+| `addToPATH <path>` | Idempotent PATH prepend |
+| `cache_eval <name> <cmd> [days]` | Cache eval output (default 7-day TTL) |
 
 ### Scripts ([.local/bin/](.local/bin/))
 
@@ -242,6 +247,7 @@ Results at [Actions](../../actions).
 │   │   ├── Brewfile           # All Homebrew packages (personal)
 │   │   └── Brewfile.work      # CLI-only packages (work profile)
 │   ├── mackup/backup/         # Mackup app settings storage
+│   ├── kanata/                 # Kanata (home-row mods + Fn layer)
 │   ├── karabiner-config/       # Karabiner (TypeScript → JSON)
 │   ├── nvim/init.vim           # Neovim config
 │   ├── raycast/                # Raycast extensions & config

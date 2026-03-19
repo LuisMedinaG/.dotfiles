@@ -117,6 +117,32 @@ karabiner-build() {
   npm --prefix "$HOME/.config/karabiner-config" run build
 }
 
+# Reload kanata config (restarts the LaunchDaemon)
+# First run: creates log dir, copies plist, and loads the daemon
+# Subsequent runs: just restarts the service
+kanata-reload() {
+  local plist="com.lumedina.kanata.plist"
+  local daemon_path="/Library/LaunchDaemons/$plist"
+  local log_dir="/Library/Logs/Kanata"
+
+  # Create log directory if needed
+  if [ ! -d "$log_dir" ]; then
+    echo "Creating log directory $log_dir..."
+    sudo mkdir -p "$log_dir"
+  fi
+
+  # Load daemon if not already registered
+  if ! sudo launchctl list io.lumedina.kanata >/dev/null 2>&1; then
+    echo "Loading kanata daemon..."
+    sudo cp "$HOME/.config/kanata/$plist" "$daemon_path"
+    sudo launchctl load "$daemon_path"
+  else
+    sudo launchctl stop io.lumedina.kanata
+    sudo launchctl start io.lumedina.kanata
+  fi
+  echo "Kanata reloaded"
+}
+
 # Measure shell startup time
 shell-time() {
   local iterations="${1:-10}"

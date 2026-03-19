@@ -26,8 +26,9 @@ Modular ZSH config sourced by `.zshrc` in this order:
 | `cache_eval <name> <cmd> [days]` | Cache eval output to `~/.cache/zsh/` (default 7-day TTL) |
 | `validateYaml <file>` | Validate YAML via Python |
 | `karabiner-build` | Build Karabiner config from `~/.config/karabiner-config/` |
+| `kanata-reload` | Reload kanata daemon (auto-setup on first run) |
 | `shell-time [n]` | Benchmark zsh startup (default 10 iterations) |
-| `update-all` | Update Homebrew + Zinit plugins + yadm pull |
+| `update-all` | Update Homebrew + Zinit plugins + yadm pull + mackup backup |
 | `dotfiles-sync <to-clone\|to-yadm>` | Sync between yadm worktree and git clone |
 
 ## Adding local overrides

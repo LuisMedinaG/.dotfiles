@@ -10,6 +10,7 @@ setopt autocd # cd into dir without typing 'cd'
 setopt pushdignoredups pushdminus autopushd pushd_silent
 
 # Shell behavior
+setopt NO_BEEP # Disable terminal bell
 setopt correct # Auto-correct minor command misspellings
 setopt interactivecomments
 setopt nocaseglob # Case-insensitive globbing

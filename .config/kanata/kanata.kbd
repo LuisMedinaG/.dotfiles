@@ -13,46 +13,51 @@ sudo launchctl start com.<username>.kanata
 #|
 https://github.com/jtroo/kanata/issues/975
 # Bug: F-row key get override on MacOS
-> It seems that macOS behaves differently when fn is sent from an Apple device 
+> It seems that macOS behaves differently when fn is sent from an Apple device
 versus when it's sent from the virtual keyboard of Karabiner-Elements
 
 # Fixed in Karabiner-Elements v15.0.14
 https://github.com/pqrs-org/Karabiner-Elements/issues/3879
 |#
 
-;; defsrc is still necessary
+;; Caps Lock / Hyper key is handled by Karabiner-Elements (see ../karabiner-config/)
+;; Reference: Hyper key in kanata (disabled, kept for reference):
+;;   hyperkey (tap-hold-press $tap-time $hold-time esc (multi lsft lctl lalt lmet))
+;;   Then in defsrc add `caps` and in base layer use `@hyperkey`
+
 (defcfg
   process-unmapped-keys yes
   concurrent-tap-hold   yes
 )
 
 (defsrc
-  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
-  caps a s d f j k l ;
+  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
+  a    s    d    f    j    k    l    ;
   fn
 )
 
 (defvar
-  tap-time 150
+  tap-time  150
   hold-time 220
 )
 
+;; Home-row mods: CAGS order (Ctrl-Alt-Gui-Shift)
+;; https://precondition.github.io/home-row-mods
 (deflayer base
-  🔅    🔆    mctl  sls   dtn   dnd   ◀◀    ▶⏸    ▶▶    🔇    🔉    🔊
-  @hyperkey @a @s @d @f @j @k @l @;
+  🔅   🔆   mctl  sls  dtn  dnd  ◀◀   ▶⏸   ▶▶   🔇   🔉   🔊
+  @a   @s   @d   @f   @j   @k   @l   @;
   @fn
 )
 
+;; Hold fn to get real F1–F12 instead of media keys
 (deflayer fn
-  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
-  _ _ _ _ _ _ _ _ _
+  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
+  _    _    _    _    _    _    _    _
   fn
 )
 
-;; CAGS/⎈⎇◆⇧
-;; https://precondition.github.io/home-row-mods
 (defalias
-  hyperkey (tap-hold-press $tap-time $hold-time esc (multi lsft lctl lalt lmet))
+  ;; Home-row mods
   a (tap-hold $tap-time $hold-time a lctl)
   s (tap-hold $tap-time $hold-time s lalt)
   d (tap-hold $tap-time $hold-time d lmet)
@@ -61,5 +66,7 @@ https://github.com/pqrs-org/Karabiner-Elements/issues/3879
   k (tap-hold $tap-time $hold-time k rmet)
   l (tap-hold $tap-time $hold-time l ralt)
   ; (tap-hold $tap-time $hold-time ; rctl)
+
+  ;; Fn layer toggle
   fn (tap-hold 200 200 fn (layer-toggle fn))
 )

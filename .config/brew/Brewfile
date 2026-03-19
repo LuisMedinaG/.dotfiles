@@ -21,6 +21,7 @@ brew "zoxide"       # Smarter cd
 brew "gh"           # GitHub CLI
 brew "tmux"         # Terminal multiplexer
 brew "mackup"       # App settings backup
+brew "kanata"       # Keyboard remapping daemon
 
 cask "spaceman"     # Show spaces in menu bar
 
