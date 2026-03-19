@@ -110,5 +110,8 @@ hs_err_pid*
 ############################################
 .cache/
 
+# Karabiner config generated files
+.config/karabiner-config/package-lock.json
+
 # Claude
 .claude/

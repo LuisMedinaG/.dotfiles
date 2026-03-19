@@ -97,3 +97,8 @@ cache_eval() {
 validateYaml() {
     python3 -c 'import yaml,sys;yaml.safe_load(sys.stdin)' < "$1"
 }
+
+# Build karabiner config from anywhere
+karabiner-build() {
+  npm --prefix "$HOME/.config/karabiner-config" run build
+}
