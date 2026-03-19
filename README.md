@@ -7,7 +7,11 @@ My macOS development environment, managed with [yadm](https://yadm.io/).
 On a brand-new Mac (or after a clean install), run this single command:
 
 ```bash
+# Personal (full setup: CLI + GUI apps + mackup)
 curl -sL https://github.com/LuisMedinaG/.dotfiles/raw/main/.local/bin/pre_bootstrap.sh | sh
+
+# Work (minimal: CLI tools only, no casks, no admin needed)
+curl -sL https://github.com/LuisMedinaG/.dotfiles/raw/main/.local/bin/pre_bootstrap.sh | sh -s -- --work
 ```
 
 Then open a new terminal.
@@ -21,9 +25,11 @@ Then open a new terminal.
 
 | Phase | Script | What it does |
 |-------|--------|--------------|
-| 01 | `01-homebrew.sh` | Installs all packages from the [Brewfile](.config/brew/Brewfile) |
+| 01 | `01-homebrew.sh` | Installs packages from [Brewfile](.config/brew/Brewfile) or [Brewfile.work](.config/brew/Brewfile.work) |
 | 02 | `02-dotfiles.sh` | Checks out dotfiles, pulls latest, inits git submodules |
 | 03 | `03-shell.sh` | Installs fzf key bindings, creates required directories |
+
+The `--work` flag selects the minimal `Brewfile.work` (CLI tools only, no casks) and skips mackup setup.
 
 ### After bootstrap
 
@@ -86,8 +92,8 @@ yadm bootstrap
 |-----------|-----------|------|
 | bat, eza, fd, fzf, ripgrep | pyenv, jenv | VS Code |
 | git, curl, wget, jq, tree | neovim, gh | Chrome |
-| zoxide, zsh-abbr, tmux | yadm | iTerm2 |
-| zsh-autosuggestions, zsh-syntax-highlighting, zsh-completions | | Homerow, Karabiner, Spaceman |
+| zoxide, zsh-abbr, tmux, mackup | yadm | iTerm2 |
+| zsh-autosuggestions, zsh-syntax-highlighting, zsh-completions | | Homerow, Karabiner, Spaceman, BTT |
 
 ### Other configs
 
@@ -99,6 +105,19 @@ yadm bootstrap
 | Karabiner | `.config/karabiner-config/` | Meh key + leader system ([details](.config/karabiner-config/README.md)) |
 | skhd | `.config/skhd/.skhdrc` | macOS hotkey daemon |
 | Raycast | `.config/raycast/` | Extensions and config ([details](.config/raycast/README.md)) |
+| Mackup | `.mackup.cfg` + `.mackup/` | Backs up GUI app settings (iTerm2, VS Code, BTT, etc.) |
+
+### Mackup (app settings backup)
+
+[Mackup](https://github.com/lra/mackup) backs up GUI app preferences that live in `~/Library/` — files that are hard to track with yadm directly. Configured to store backups in `.config/mackup/backup/` (git-tracked).
+
+```bash
+mackup backup           # back up app settings
+mackup backup --force   # skip confirmation prompts
+mackup restore          # restore on a new machine
+```
+
+Apps tracked: iTerm2, VS Code, Spotify, BetterTouchTool, Homerow, Multitouch, Swish. Custom app definitions live in `.mackup/`. Runs automatically as part of `update-all`.
 
 ### Custom functions
 
@@ -216,8 +235,13 @@ Results at [Actions](../../actions).
 │   ├── prompt.zsh
 │   ├── plugins/init.zsh       # Plugin manager + plugins
 │   └── tools/fzf.zsh          # FZF configuration
+├── .mackup.cfg                # Mackup config (file_system engine)
+├── .mackup/                   # Custom app definitions for Mackup
 ├── .config/
-│   ├── brew/Brewfile           # All Homebrew packages
+│   ├── brew/
+│   │   ├── Brewfile           # All Homebrew packages (personal)
+│   │   └── Brewfile.work      # CLI-only packages (work profile)
+│   ├── mackup/backup/         # Mackup app settings storage
 │   ├── karabiner-config/       # Karabiner (TypeScript → JSON)
 │   ├── nvim/init.vim           # Neovim config
 │   ├── raycast/                # Raycast extensions & config
