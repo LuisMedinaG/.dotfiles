@@ -23,20 +23,32 @@ if [ -n "$HOMEBREW_PREFIX" ]; then
 fi
 
 # ───── Language/Runtime Environments ─────
-# Python (pyenv)
+# Python (pyenv) — cached for faster login shells
 if command -v pyenv >/dev/null; then
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init -)"
+    _pyenv_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/pyenv_init.zsh"
+    if [ ! -f "$_pyenv_cache" ] || [ -n "$(find "$_pyenv_cache" -mtime +7 -print 2>/dev/null)" ]; then
+        mkdir -p "$(dirname "$_pyenv_cache")"
+        pyenv init - > "$_pyenv_cache"
+    fi
+    source "$_pyenv_cache"
+    unset _pyenv_cache
 fi
 
 # Node.js (NVM setup, but not loading)
 export NVM_DIR="$HOME/.nvm"
 # Actual loading happens via functions.zsh lazy loading
 
-# Java (jenv)
+# Java (jenv) — cached for faster login shells
 if command -v jenv >/dev/null; then
-    eval "$(jenv init -)"
+    _jenv_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/jenv_init.zsh"
+    if [ ! -f "$_jenv_cache" ] || [ -n "$(find "$_jenv_cache" -mtime +7 -print 2>/dev/null)" ]; then
+        mkdir -p "$(dirname "$_jenv_cache")"
+        jenv init - > "$_jenv_cache"
+    fi
+    source "$_jenv_cache"
+    unset _jenv_cache
 
     # Set default Java version (falls back gracefully if Java 17 isn't installed)
     if [ -x /usr/libexec/java_home ]; then

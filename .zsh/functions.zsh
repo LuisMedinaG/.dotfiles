@@ -19,6 +19,20 @@ if [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ]; then
     source "$NVM_DIR/nvm.sh"
     npm "$@"
   }
+
+  # Auto-switch Node version when entering a directory with .nvmrc
+  autoload -U add-zsh-hook
+  _nvm_auto_use() {
+    if [ -f .nvmrc ]; then
+      # Ensure NVM is loaded
+      if ! command -v nvm | grep -q function 2>/dev/null; then
+        unfunction nvm node npm 2>/dev/null
+        source "$NVM_DIR/nvm.sh"
+      fi
+      nvm use 2>/dev/null
+    fi
+  }
+  add-zsh-hook chpwd _nvm_auto_use
 fi
 
 # Function to reload SSH keys with Yubikey
@@ -101,4 +115,57 @@ validateYaml() {
 # Build karabiner config from anywhere
 karabiner-build() {
   npm --prefix "$HOME/.config/karabiner-config" run build
+}
+
+# Measure shell startup time
+shell-time() {
+  local iterations="${1:-10}"
+  echo "Timing zsh startup ($iterations iterations)..."
+  for i in $(seq 1 "$iterations"); do
+    /usr/bin/time zsh -i -c exit 2>&1
+  done
+}
+
+# Update everything: Homebrew, Zinit plugins, and yadm
+update-all() {
+  echo "── Homebrew ──"
+  brew update && brew upgrade && brew cleanup
+
+  echo ""
+  echo "── Zinit plugins ──"
+  zsh -ic "zinit update --all" 2>/dev/null
+
+  echo ""
+  echo "── yadm pull ──"
+  yadm pull
+}
+
+# Sync dotfiles between yadm worktree ($HOME) and git clone
+dotfiles-sync() {
+  local clone_dir="$HOME/Documents/Projects/.dotfiles"
+  if [ ! -d "$clone_dir/.git" ]; then
+    echo "Error: Git clone not found at $clone_dir" >&2
+    return 1
+  fi
+
+  local direction="${1:-}"
+  case "$direction" in
+    to-clone)
+      echo "Syncing yadm → git clone..."
+      yadm diff --name-only | while read -r file; do
+        cp "$HOME/$file" "$clone_dir/$file" 2>/dev/null && echo "  copied $file"
+      done
+      ;;
+    to-yadm)
+      echo "Syncing git clone → yadm..."
+      git -C "$clone_dir" diff --name-only | while read -r file; do
+        cp "$clone_dir/$file" "$HOME/$file" 2>/dev/null && echo "  copied $file"
+      done
+      ;;
+    *)
+      echo "Usage: dotfiles-sync <to-clone|to-yadm>"
+      echo "  to-clone  Copy changed files from \$HOME to git clone"
+      echo "  to-yadm   Copy changed files from git clone to \$HOME"
+      ;;
+  esac
 }

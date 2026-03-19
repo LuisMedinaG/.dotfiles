@@ -23,10 +23,6 @@ brew "tmux"         # Terminal multiplexer
 
 cask "spaceman"     # Show spaces in menu bar
 
-# brew "broot"      # Navigate directories, find files, and launch commands.
-# brew "pandoc"     # Convert files from one format to another.
-# brew "ncdu"       # Disk usage analyzer
-
 # ZSH plugins (installed via Homebrew)
 brew "zsh-syntax-highlighting"
 brew "zsh-completions"
@@ -43,6 +39,3 @@ cask "google-chrome"
 cask "iterm2"
 cask "homerow"
 cask "karabiner-elements"
-
-# cask "docker"
-# cask "rancher"    # Kubernetes management

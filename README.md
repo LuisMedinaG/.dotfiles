@@ -62,14 +62,16 @@ yadm bootstrap
 
 ```
 .zshenv            → env vars, EDITOR, source_if_exists helper
-.zprofile          → Homebrew, pyenv, jenv, NVM
+.zprofile          → Homebrew, pyenv (cached), jenv (cached), NVM
 .zshrc             → sources everything below:
 
 .zsh/
 ├── options.zsh    → shell options, keybindings
 ├── history.zsh    → history settings
 ├── completion.zsh → tab completion, fzf-tab config, SSH hosts
-├── functions.zsh  → lazy NVM, take, reload-ssh, cache_eval
+├── functions.zsh  → lazy NVM, .nvmrc auto-switch, take, reload-ssh,
+│                    cache_eval, shell-time, update-all, dotfiles-sync,
+│                    karabiner-build
 ├── aliases.zsh    → ls→eza, cat→bat, grep→rg, vim→nvim
 ├── prompt.zsh     → minimal prompt with git branch
 ├── plugins/
@@ -83,20 +85,32 @@ yadm bootstrap
 | CLI tools | Dev tools | Apps |
 |-----------|-----------|------|
 | bat, eza, fd, fzf, ripgrep | pyenv, jenv | VS Code |
-| git, curl, wget, jq, tree | neovim | Chrome |
-| zoxide, zsh-abbr | yadm | iTerm2 |
-| zsh-autosuggestions, zsh-syntax-highlighting, zsh-completions | | Homerow |
+| git, curl, wget, jq, tree | neovim, gh | Chrome |
+| zoxide, zsh-abbr, tmux | yadm | iTerm2 |
+| zsh-autosuggestions, zsh-syntax-highlighting, zsh-completions | | Homerow, Karabiner, Spaceman |
 
 ### Other configs
 
 | Config | Path | Notes |
 |--------|------|-------|
 | Neovim | `.config/nvim/init.vim` | Beginner-friendly with inline cheat sheet |
-| Git | `.gitconfig` | Global git config |
-| tmux | `.config/tmux/tmux.conf` | Terminal multiplexer |
-| Kanata | `.config/kanata/` | Keyboard remapping daemon |
+| Git | `.gitconfig` | Aliases, rerere, color-moved diffs |
+| tmux | `.config/tmux/tmux.conf` | Prefix: Ctrl+Space, true color, mouse |
+| Karabiner | `.config/karabiner-config/` | Meh key + leader system ([details](.config/karabiner-config/README.md)) |
 | skhd | `.config/skhd/.skhdrc` | macOS hotkey daemon |
-| Karabiner | `.config/karabiner-config/` | Keyboard customization (TypeScript) |
+| Raycast | `.config/raycast/` | Extensions and config ([details](.config/raycast/README.md)) |
+
+### Custom functions
+
+| Function | Description |
+|----------|-------------|
+| `shell-time [n]` | Benchmark zsh startup time (default 10 iterations) |
+| `update-all` | Update Homebrew packages, Zinit plugins, and yadm pull |
+| `dotfiles-sync <to-clone\|to-yadm>` | Sync changes between yadm worktree and git clone |
+| `karabiner-build` | Build Karabiner config from TypeScript |
+| `take <dir>` | mkdir + cd in one command |
+| `activate-venv` | Fuzzy-select a Python virtual environment |
+| `reload-ssh` | Reload Yubikey SSH keys |
 
 ### Scripts ([.local/bin/](.local/bin/))
 
@@ -108,22 +122,23 @@ yadm bootstrap
 
 ---
 
-## Day-to-day yadm usage
+## Day-to-day usage
 
-yadm works exactly like git, but tracks files in your home directory:
+### yadm (works like git)
 
 ```bash
-# Add a new config file
 yadm add ~/.config/some-app/config
 yadm commit -m "Add some-app config"
 yadm push
+```
 
-# See what changed
-yadm status
-yadm diff
+### Dual-location workflow
 
-# Pull updates on another machine
-yadm pull
+This repo lives in two places: yadm's worktree (`$HOME`) and a git clone at `~/Documents/Projects/.dotfiles`. Use the sync helper to keep them aligned:
+
+```bash
+dotfiles-sync to-clone   # copy yadm changes → git clone
+dotfiles-sync to-yadm    # copy git clone changes → yadm worktree
 ```
 
 ### Sensitive files
@@ -144,6 +159,16 @@ Use [yadm alternates](https://yadm.io/docs/alternates) for per-machine overrides
 yadm add ~/.zshrc##hostname.work-laptop
 yadm alt
 ```
+
+---
+
+## Performance
+
+pyenv and jenv init output is cached in `~/.cache/zsh/` with a 7-day TTL. NVM is lazy-loaded (only sourced on first `nvm`/`node`/`npm` call). `.nvmrc` files are auto-detected on `cd`.
+
+Clear caches: `rm ~/.cache/zsh/pyenv_init.zsh ~/.cache/zsh/jenv_init.zsh`
+
+Benchmark: `shell-time` (or `shell-time 50` for more iterations)
 
 ---
 
@@ -193,9 +218,9 @@ Results at [Actions](../../actions).
 │   └── tools/fzf.zsh          # FZF configuration
 ├── .config/
 │   ├── brew/Brewfile           # All Homebrew packages
-│   ├── kanata/                 # Keyboard remapping
-│   ├── karabiner-config/       # Karabiner (TypeScript)
+│   ├── karabiner-config/       # Karabiner (TypeScript → JSON)
 │   ├── nvim/init.vim           # Neovim config
+│   ├── raycast/                # Raycast extensions & config
 │   ├── skhd/.skhdrc            # Hotkey daemon
 │   ├── tmux/tmux.conf          # tmux config
 │   └── yadm/

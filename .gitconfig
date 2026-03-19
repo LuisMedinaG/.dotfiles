@@ -1,6 +1,6 @@
 [user]
 	name = Luis Medina
-	email = your@email.com
+	email = luis.hmedinag@gmail.com
 
 [alias]
 	undo = reset --soft HEAD^

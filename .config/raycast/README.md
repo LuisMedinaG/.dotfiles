@@ -39,14 +39,6 @@ You can import my Raycast preferences after installing the application:
 3.  Click on **Import Settings & Data...**.
 4.  Select the `.rayconfig` file that you have included in this repository (e.g., in a `raycast_backup` subfolder).
 
-## Custom Hotkeys (Example - You'll need to fill in your actual hotkeys)
+## Hotkeys
 
-Here are some examples of the custom hotkeys I've configured within Raycast for these extensions. You can find and configure these in Raycast's Preferences under "Extensions" and then selecting the specific extension.
-
-**Note:** Since you are planning to replace these Raycast shortcuts with `skhd`, this section is primarily for reference if you ever need to look up what you *were* using in Raycast before the transition.
-
-**(Add all your other Raycast hotkey configurations here)**
-
----
-
-**Important Note:** As you transition to using `skhd` for your hotkeys (including those that currently launch applications via Raycast), you will eventually want to *disable* these corresponding hotkeys within Raycast to avoid conflicts. The goal is to have `skhd` be your single source of truth for keyboard shortcuts.
+Raycast extensions are triggered via the Karabiner leader key system (`Meh + r`). See the [Karabiner config](../karabiner-config/README.md) for the full mapping.
