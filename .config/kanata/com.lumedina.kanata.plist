@@ -10,6 +10,7 @@
         <string>/usr/local/bin/kanata</string>
         <string>-c</string>
         <string>/Users/lumedina/.config/kanata/kanata.kbd</string>
+        <string>--nodelay</string>
     </array>
 
     <key>RunAtLoad</key>
