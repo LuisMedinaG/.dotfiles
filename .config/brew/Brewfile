@@ -42,6 +42,7 @@ cask "visual-studio-code"
 cask "google-chrome"
 cask "iterm2"
 cask "homerow"
+cask "karabiner-elements"
 
 # cask "docker"
 # cask "rancher"    # Kubernetes management
