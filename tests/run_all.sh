@@ -54,26 +54,21 @@ for candidate in /bin/zsh /usr/bin/zsh /opt/homebrew/bin/zsh /usr/local/bin/zsh;
 done
 
 if [ -n "$ZSH_BIN" ]; then
-  for file in \
-    "$HOME/.zshenv" \
-    "$HOME/.zshrc" \
-    "$HOME/.zsh/options.zsh" \
-    "$HOME/.zsh/history.zsh" \
-    "$HOME/.zsh/completion.zsh" \
-    "$HOME/.zsh/functions.zsh" \
-    "$HOME/.zsh/aliases.zsh" \
-    "$HOME/.zsh/prompt.zsh" \
-    "$HOME/.zsh/tools/fzf.zsh" \
-    "$HOME/.zsh/plugins/init.zsh"
-  do
+  # Check root zsh files + all .zsh files under ~/.zsh/
+  for file in "$HOME/.zshenv" "$HOME/.zshrc" "$HOME/.zprofile"; do
     if [ -f "$file" ]; then
       if $ZSH_BIN -n "$file" 2>/dev/null; then
         pass "$(basename "$file")"
       else
         fail "$(basename "$file") — syntax error"
       fi
+    fi
+  done
+  find "$HOME/.zsh" -name '*.zsh' -type f 2>/dev/null | sort | while read -r file; do
+    if $ZSH_BIN -n "$file" 2>/dev/null; then
+      pass "$(basename "$file")"
     else
-      warn "$(basename "$file") — not found, skipped"
+      fail "$(basename "$file") — syntax error"
     fi
   done
 else
@@ -82,70 +77,56 @@ fi
 
 echo ""
 
-# ─── Test 2: Shell script syntax (sh -n) ───
-echo "▶ Shell script syntax check (sh -n)"
+# ─── Test 2: Script syntax check (auto-detect shebang) ───
+# Collects all scripts, checks sh scripts with sh -n, bash scripts with bash -n
+SH_SCRIPTS=""
+BASH_SCRIPTS=""
 
 for file in \
   "$HOME/.config/yadm/bootstrap" \
-  "$HOME/.config/yadm/phases/01-homebrew.sh" \
-  "$HOME/.config/yadm/phases/02-dotfiles.sh" \
-  "$HOME/.config/yadm/phases/03-shell.sh" \
-  "$HOME/.config/yadm/phases/04-macos.sh" \
-  "$HOME/.local/bin/pre_bootstrap.sh"
+  "$HOME/.config/yadm/phases"/*.sh \
+  "$HOME/.local/bin"/*
 do
-  if [ -f "$file" ]; then
-    if sh -n "$file" 2>/dev/null; then
-      pass "$(basename "$file")"
-    else
-      fail "$(basename "$file") — syntax error"
-    fi
+  [ -f "$file" ] || continue
+  shebang=$(head -1 "$file" 2>/dev/null)
+  case "$shebang" in
+    *bash*) BASH_SCRIPTS="$BASH_SCRIPTS $file" ;;
+    *sh*)   SH_SCRIPTS="$SH_SCRIPTS $file" ;;
+  esac
+done
+
+echo "▶ Shell script syntax check (sh -n)"
+for file in $SH_SCRIPTS; do
+  if sh -n "$file" 2>/dev/null; then
+    pass "$(basename "$file")"
   else
-    warn "$(basename "$file") — not found, skipped"
+    fail "$(basename "$file") — syntax error"
   fi
 done
 
 echo ""
-
-# ─── Test 3: Bash script syntax ───
 echo "▶ Bash script syntax check (bash -n)"
-
-for file in \
-  "$HOME/.local/bin/rfv" \
-  "$HOME/.local/bin/create_dev_folders.sh"
-do
-  if [ -f "$file" ]; then
-    if bash -n "$file" 2>/dev/null; then
-      pass "$(basename "$file")"
-    else
-      fail "$(basename "$file") — syntax error"
-    fi
+for file in $BASH_SCRIPTS; do
+  if bash -n "$file" 2>/dev/null; then
+    pass "$(basename "$file")"
   else
-    warn "$(basename "$file") — not found, skipped"
+    fail "$(basename "$file") — syntax error"
   fi
 done
 
 echo ""
 
-# ─── Test 4: ShellCheck (if available) ───
+# ─── Test 3: ShellCheck (if available) ───
 echo "▶ ShellCheck (static analysis)"
 
 if command -v shellcheck >/dev/null 2>&1; then
-  for file in \
-    "$HOME/.config/yadm/bootstrap" \
-    "$HOME/.config/yadm/phases/01-homebrew.sh" \
-    "$HOME/.config/yadm/phases/02-dotfiles.sh" \
-    "$HOME/.config/yadm/phases/03-shell.sh" \
-    "$HOME/.local/bin/pre_bootstrap.sh" \
-    "$HOME/.local/bin/rfv"
-  do
-    if [ -f "$file" ]; then
-      # SC1091: Can't follow sourced files (expected in dotfiles)
-      # SC2312: Consider invoking separately to check exit status
-      if shellcheck --exclude=SC1091,SC2312 --severity=warning "$file" 2>/dev/null; then
-        pass "$(basename "$file")"
-      else
-        fail "$(basename "$file") — shellcheck warnings"
-      fi
+  # SC1091: Can't follow sourced files (expected in dotfiles)
+  # SC2312: Consider invoking separately to check exit status
+  for file in $SH_SCRIPTS $BASH_SCRIPTS; do
+    if shellcheck --exclude=SC1091,SC2312 --severity=warning "$file" 2>/dev/null; then
+      pass "$(basename "$file")"
+    else
+      fail "$(basename "$file") — shellcheck warnings"
     fi
   done
 else
@@ -154,22 +135,19 @@ fi
 
 echo ""
 
-# ─── Test 5: Brewfile syntax ───
+# ─── Test 4: Brewfile syntax ───
 echo "▶ Brewfile validation"
 
-BREWFILE="$HOME/.config/brew/Brewfile"
-if [ -f "$BREWFILE" ]; then
-  # Check that every line is a valid Brewfile directive or comment
-  INVALID_LINES=$(grep -nvE '^\s*(#|$|tap |brew |cask |mas |vscode |whalebrew )' "$BREWFILE" 2>/dev/null || true)
+for brewfile in "$HOME/.config/brew"/Brewfile*; do
+  [ -f "$brewfile" ] || continue
+  INVALID_LINES=$(grep -nvE '^\s*(#|$|tap |brew |cask |mas |vscode |whalebrew )' "$brewfile" 2>/dev/null || true)
   if [ -z "$INVALID_LINES" ]; then
-    pass "Brewfile syntax valid"
+    pass "$(basename "$brewfile") syntax valid"
   else
-    fail "Brewfile has invalid lines:"
+    fail "$(basename "$brewfile") has invalid lines:"
     echo "$INVALID_LINES" | head -5
   fi
-else
-  warn "Brewfile not found"
-fi
+done
 
 echo ""
 
@@ -217,11 +195,17 @@ else
   pass "No .Brewfile references"
 fi
 
-# Check for deprecated Homebrew taps
-if [ -f "$BREWFILE" ] && grep -qE 'tap "homebrew/(core|cask|bundle)"' "$BREWFILE" 2>/dev/null; then
-  fail "Brewfile contains deprecated default taps"
-else
-  pass "No deprecated taps in Brewfile"
+# Check for deprecated Homebrew taps in all Brewfiles
+DEPRECATED_TAPS=false
+for brewfile in "$HOME/.config/brew"/Brewfile*; do
+  [ -f "$brewfile" ] || continue
+  if grep -qE 'tap "homebrew/(core|cask|bundle)"' "$brewfile" 2>/dev/null; then
+    fail "$(basename "$brewfile") contains deprecated default taps"
+    DEPRECATED_TAPS=true
+  fi
+done
+if [ "$DEPRECATED_TAPS" = false ]; then
+  pass "No deprecated taps in Brewfiles"
 fi
 
 # Check for hardcoded /opt/homebrew without fallback in bootstrap scripts
