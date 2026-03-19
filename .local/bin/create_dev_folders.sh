@@ -4,7 +4,7 @@ set -eu
 # Define the base directory (you might want to change this)
 BASE_DIR="$HOME"
 
-# Define the folder structure based on your provided structure
+# Define the folder structure
 FOLDERS=(
   "$BASE_DIR/Archives"
   "$BASE_DIR/Books"
@@ -25,15 +25,9 @@ FOLDERS=(
   "$BASE_DIR/Work/work-notes"
 )
 
-# Create the folders
 echo "Creating base folders..."
 for folder in "${FOLDERS[@]}"; do
-  mkdir -p "$folder"
-  if [ $? -eq 0 ]; then
-    echo "Created: $folder"
-  else
-    echo "Error creating: $folder"
-  fi
+  mkdir -p "$folder" && echo "Created: $folder" || echo "Error creating: $folder"
 done
 
 echo "Base folder structure created."
