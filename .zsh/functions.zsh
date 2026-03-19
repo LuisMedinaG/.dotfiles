@@ -143,6 +143,12 @@ kanata-reload() {
   echo "Kanata reloaded"
 }
 
+# Stop kanata daemon
+kanata-stop() {
+  sudo launchctl stop io.lumedina.kanata
+  echo "Kanata stopped"
+}
+
 # Measure shell startup time
 shell-time() {
   local iterations="${1:-10}"

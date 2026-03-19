@@ -208,6 +208,16 @@ if [ "$DEPRECATED_TAPS" = false ]; then
   pass "No deprecated taps in Brewfiles"
 fi
 
+# Check that Brewfile.work has no casks (work profile = CLI only)
+WORK_BREWFILE="$HOME/.config/brew/Brewfile.work"
+if [ -f "$WORK_BREWFILE" ]; then
+  if grep -q '^cask ' "$WORK_BREWFILE"; then
+    fail "Brewfile.work contains casks (work profile should be CLI-only)"
+  else
+    pass "Brewfile.work has no casks (CLI-only)"
+  fi
+fi
+
 # Check for hardcoded /opt/homebrew without fallback in bootstrap scripts
 for file in "$HOME/.config/yadm/phases"/*.sh "$HOME/.config/yadm/bootstrap"; do
   if [ -f "$file" ] && grep -q '/opt/homebrew' "$file" && ! grep -q '/usr/local' "$file"; then
