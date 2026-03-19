@@ -31,10 +31,15 @@ else
   brew upgrade
 fi
 
-# Install packages from Brewfile
-BREWFILE="$HOME/.config/brew/Brewfile"
+# Pick Brewfile based on profile
+if [ "${DOTFILES_PROFILE:-personal}" = "work" ]; then
+  BREWFILE="$HOME/.config/brew/Brewfile.work"
+else
+  BREWFILE="$HOME/.config/brew/Brewfile"
+fi
+
 if [ -f "$BREWFILE" ]; then
-  echo "Installing packages from Brewfile..."
+  echo "Installing packages from $(basename "$BREWFILE")..."
   brew bundle install --file "$BREWFILE"
 else
   echo "Warning: Brewfile not found at $BREWFILE" >&2

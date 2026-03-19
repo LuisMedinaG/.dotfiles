@@ -29,6 +29,9 @@ echo "Creating required directories..."
 mkdir -p "$HOME/.local/state/nvim/undo"   # neovim persistent undo
 mkdir -p "$HOME/.cache/zsh"               # zsh completion cache
 mkdir -p "$HOME/.venv"                    # python virtualenvs
-mkdir -p "$HOME/.config/mackup/backup"    # mackup app settings storage
+
+if [ "${DOTFILES_PROFILE:-personal}" != "work" ]; then
+  mkdir -p "$HOME/.config/mackup/backup"  # mackup app settings storage
+fi
 
 echo "✓ Phase 3 complete."

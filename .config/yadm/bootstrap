@@ -19,6 +19,11 @@ set -eu
 
 cd "$HOME" || exit 1
 
+# Profile: "personal" (default) or "work" (minimal, no casks)
+DOTFILES_PROFILE="${DOTFILES_PROFILE:-personal}"
+export DOTFILES_PROFILE
+echo "Profile: $DOTFILES_PROFILE"
+
 PHASES_DIR="$HOME/.config/yadm/phases"
 
 if [ ! -d "$PHASES_DIR" ]; then
