@@ -31,9 +31,9 @@ name: Dotfiles CI
 # On every push and on every pull request to main.
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
 
 jobs:
   # ═══════════════════════════════════════
@@ -48,7 +48,7 @@ jobs:
     steps:
       # Step 1: Download your repo code into the runner
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         # This clones your repo into the runner's workspace.
         # Without this, the runner has no access to your files.
         with:
@@ -84,7 +84,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # `brew bundle check` verifies that every package in your
       # Brewfile is a real, installable formula/cask — without
@@ -92,11 +92,13 @@ jobs:
       - name: Validate Brewfile packages exist
         run: |
           brew update
-          echo "── Listing all packages in Brewfile ──"
+          echo "── Brewfile (personal) ──"
           brew bundle list --file .config/brew/Brewfile
-          echo ""
-          echo "── Checking if packages are installable ──"
           brew bundle check --file .config/brew/Brewfile --verbose || true
+          echo ""
+          echo "── Brewfile.work (minimal) ──"
+          brew bundle list --file .config/brew/Brewfile.work
+          brew bundle check --file .config/brew/Brewfile.work --verbose || true
 
   # ═══════════════════════════════════════
   # Job 3: Docker test (optional)
@@ -109,7 +111,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
 

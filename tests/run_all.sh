@@ -91,8 +91,7 @@ for file in \
   "$HOME/.config/yadm/phases/02-dotfiles.sh" \
   "$HOME/.config/yadm/phases/03-shell.sh" \
   "$HOME/.config/yadm/phases/04-macos.sh" \
-  "$HOME/.local/bin/pre_bootstrap.sh" \
-  "$HOME/.local/bin/create_dev_folders.sh"
+  "$HOME/.local/bin/pre_bootstrap.sh"
 do
   if [ -f "$file" ]; then
     if sh -n "$file" 2>/dev/null; then
@@ -111,7 +110,8 @@ echo ""
 echo "▶ Bash script syntax check (bash -n)"
 
 for file in \
-  "$HOME/.local/bin/rfv"
+  "$HOME/.local/bin/rfv" \
+  "$HOME/.local/bin/create_dev_folders.sh"
 do
   if [ -f "$file" ]; then
     if bash -n "$file" 2>/dev/null; then

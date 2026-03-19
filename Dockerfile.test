@@ -8,16 +8,13 @@
 # ║  Run:    docker run --rm dotfiles-test                         ║
 # ╚══════════════════════════════════════════════════════════════╝
 
-FROM zshusers/zsh:5.9
+FROM debian:bookworm-slim
 
 # Install minimal dependencies for testing
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    zsh \
     shellcheck \
-    ruby \
     && rm -rf /var/lib/apt/lists/*
-
-# Install brew-bundle-check (just validates Brewfile syntax)
-RUN gem install ruby_homebrew_bundler_check 2>/dev/null || true
 
 # Copy dotfiles into the container (simulating $HOME)
 COPY .zshenv   /root/.zshenv
