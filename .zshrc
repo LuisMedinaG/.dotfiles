@@ -14,3 +14,6 @@ source_if_exists $ZSH/prompt.zsh
 # Load tools/plugin configurations
 source_if_exists $ZSH/tools/fzf.zsh
 source_if_exists $ZSH/plugins/init.zsh
+
+# Local overrides (machine-specific aliases, functions, etc.)
+source_if_exists ~/.zshrc.local

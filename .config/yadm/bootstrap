@@ -6,6 +6,7 @@
 # Each phase is an independent script that can also be run standalone.
 #
 # Phases:
+#   00-backup.sh    — Backup existing dotfiles before overwriting
 #   01-homebrew.sh  — Install Homebrew + Brewfile packages
 #   02-dotfiles.sh  — Checkout dotfiles, init submodules
 #   03-shell.sh     — fzf setup, create required directories
@@ -29,6 +30,15 @@ PHASES_DIR="$HOME/.config/yadm/phases"
 if [ ! -d "$PHASES_DIR" ]; then
   echo "Error: phases directory not found at $PHASES_DIR" >&2
   exit 1
+fi
+
+# Phase 00: Backup existing files before overwriting
+if [ -f "$PHASES_DIR/00-backup.sh" ]; then
+  echo ""
+  echo "▶ Running 00-backup.sh..."
+  echo "────────────────────────────────────────"
+  sh "$PHASES_DIR/00-backup.sh"
+  echo ""
 fi
 
 # Run phases 01–03 (04-macos is opt-in)
@@ -62,6 +72,22 @@ echo ""
 if [ ! -t 0 ]; then
   echo "Optional: run macOS system defaults with:"
   echo "  sh ~/.config/yadm/phases/04-macos.sh"
+  echo ""
+fi
+LATEST_BACKUP="$(ls -dt "$HOME/.config/yadm/backup"/*/ 2>/dev/null | head -1)"
+if [ -n "$LATEST_BACKUP" ]; then
+  echo "── Backup ──"
+  echo ""
+  echo "  Your previous config files were saved to:"
+  echo "  $LATEST_BACKUP"
+  echo ""
+  echo "  Review and merge what you need into .local files:"
+  echo "    ~/.zshenv.local   (env vars, PATH — all shells)"
+  echo "    ~/.zprofile.local (login-shell setup)"
+  echo "    ~/.zshrc.local    (aliases, functions, interactive)"
+  echo ""
+  echo "  Quick diff example:"
+  echo "    diff ~/.zshrc ${LATEST_BACKUP}.zshrc"
   echo ""
 fi
 echo "Open a new terminal to pick up all changes."

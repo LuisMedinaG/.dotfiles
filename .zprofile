@@ -61,3 +61,6 @@ if command -v jenv >/dev/null; then
         export PATH="$PATH:$M3_HOME/bin"
     fi
 fi
+
+# Local overrides (machine-specific login-shell config)
+source_if_exists ~/.zprofile.local
