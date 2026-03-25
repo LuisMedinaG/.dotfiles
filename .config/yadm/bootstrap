@@ -65,6 +65,23 @@ if [ -t 0 ]; then
   fi
 fi
 
+# Offer to restore app settings via mackup (personal profile only)
+if [ -t 0 ] && [ "${DOTFILES_PROFILE}" != "work" ] && command -v mackup >/dev/null 2>&1; then
+  MACKUP_BACKUP_DIR="$HOME/.config/mackup/backup"
+  if [ -d "$MACKUP_BACKUP_DIR" ] && [ -n "$(ls -A "$MACKUP_BACKUP_DIR" 2>/dev/null)" ]; then
+    printf "Would you like to restore app settings via mackup? [y/N] "
+    read -r answer
+    if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
+      echo ""
+      echo "▶ Restoring app settings with mackup..."
+      echo "────────────────────────────────────────"
+      mackup restore --force
+      echo "✓ mackup restore complete."
+      echo ""
+    fi
+  fi
+fi
+
 echo "════════════════════════════════════════"
 echo "✓ Bootstrap complete!"
 echo "════════════════════════════════════════"
@@ -112,7 +129,6 @@ if [ "$DOTFILES_PROFILE" = "personal" ]; then
   echo ""
   echo "  Post-setup:"
   echo "    [ ] sh ~/.config/yadm/phases/04-macos.sh  (macOS defaults)"
-  echo "    [ ] mackup restore                        (restore app settings)"
   echo "    [ ] kanata-reload                         (start kanata daemon)"
   echo "    [ ] karabiner-build                       (generate karabiner.json)"
 fi
