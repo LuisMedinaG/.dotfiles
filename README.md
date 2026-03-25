@@ -21,17 +21,35 @@ Then open a new terminal.
 1. Installs **Homebrew** (skips if already installed)
 2. Installs **yadm** via Homebrew
 3. Clones this repo into your home directory via `yadm clone`
-4. Runs the **bootstrap** automatically, which executes three phases:
+4. Runs the **bootstrap** automatically, which prompts for a profile and executes phases:
 
 | Phase | Script | What it does |
 |-------|--------|--------------|
+| 00 | `00-backup.sh` | Backs up existing dotfiles before overwriting |
 | 01 | `01-homebrew.sh` | Installs packages from [Brewfile](.config/brew/Brewfile) or [Brewfile.work](.config/brew/Brewfile.work) |
 | 02 | `02-dotfiles.sh` | Checks out dotfiles, pulls latest, inits git submodules |
 | 03 | `03-shell.sh` | Installs fzf key bindings, creates required directories |
 
-The `--work` flag selects the minimal `Brewfile.work` (CLI tools only, no casks) and skips mackup setup.
+The bootstrap asks you to choose a profile (`personal` or `work`). You can also pre-set it with `DOTFILES_PROFILE=work yadm bootstrap` or use the `--work` flag with `pre_bootstrap.sh`.
+
+The `work` profile selects the minimal `Brewfile.work` (CLI tools only, no casks — no kanata, BetterTouchTool, Spaceman, Lunar, etc.) and skips mackup setup.
 
 ### After bootstrap
+
+**Merge your previous config** (if the backup phase saved files):
+
+The backup is saved to `~/.config/yadm/backup/<timestamp>/`. Diff your old files against the new ones and move machine-specific config into `.local` files:
+
+| File | Loaded by | Use for |
+|------|-----------|---------|
+| `~/.zshenv.local` | All shells (incl. tmux) | Env vars, PATH additions |
+| `~/.zprofile.local` | Login shells only | pyenv/jenv overrides, login-only PATH |
+| `~/.zshrc.local` | Interactive shells | Aliases, functions, company-specific config |
+
+```bash
+# Example: diff your old .zshrc against the new one
+diff ~/.zshrc ~/.config/yadm/backup/<timestamp>/.zshrc
+```
 
 **Apply macOS system preferences** (optional — review the file first):
 
@@ -77,9 +95,9 @@ yadm bootstrap
 ### Shell (ZSH)
 
 ```
-.zshenv            → env vars, EDITOR, source_if_exists helper
-.zprofile          → Homebrew, pyenv (cached), jenv (cached), NVM
-.zshrc             → sources everything below:
+.zshenv            → env vars, EDITOR, source_if_exists helper → .zshenv.local
+.zprofile          → Homebrew, pyenv (cached), jenv (cached), NVM → .zprofile.local
+.zshrc             → sources everything below → .zshrc.local:
 
 .zsh/
 ├── options.zsh    → shell options, keybindings
@@ -186,10 +204,17 @@ yadm decrypt    # decrypt them
 
 ### Machine-specific configs
 
-Use [yadm alternates](https://yadm.io/docs/alternates) for per-machine overrides:
+**Preferred:** Use `.local` files for machine-specific overrides (not tracked by yadm):
 
 ```bash
-# Create a work-specific zshrc
+~/.zshenv.local      # env vars, PATH — loaded by ALL shells
+~/.zprofile.local    # login-shell overrides
+~/.zshrc.local       # aliases, functions, interactive config
+```
+
+**Alternative:** Use [yadm alternates](https://yadm.io/docs/alternates) for tracked per-machine overrides:
+
+```bash
 yadm add ~/.zshrc##hostname.work-laptop
 yadm alt
 ```
@@ -266,7 +291,9 @@ Results at [Actions](../../actions).
 │   └── yadm/
 │       ├── bootstrap           # Entry point (calls phases)
 │       ├── encrypt             # Encrypted file list
+│       ├── backup/              # Timestamped backups of overwritten files
 │       └── phases/
+│           ├── 00-backup.sh    # Backup existing dotfiles
 │           ├── 01-homebrew.sh  # Install packages
 │           ├── 02-dotfiles.sh  # Checkout + submodules
 │           ├── 03-shell.sh     # fzf + directories

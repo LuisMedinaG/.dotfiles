@@ -20,8 +20,22 @@ set -eu
 
 cd "$HOME" || exit 1
 
-# Profile: "personal" (default) or "work" (minimal, no casks)
-DOTFILES_PROFILE="${DOTFILES_PROFILE:-personal}"
+# Profile: "personal" (full setup) or "work" (CLI only, no casks)
+if [ -z "${DOTFILES_PROFILE:-}" ] && [ -t 0 ]; then
+  echo ""
+  echo "Select profile:"
+  echo "  1) personal — Full setup: CLI + GUI apps + mackup"
+  echo "  2) work     — Minimal: CLI tools only, no casks"
+  echo ""
+  printf "Profile [1/2]: "
+  read -r profile_choice
+  case "$profile_choice" in
+    2|work)  DOTFILES_PROFILE="work" ;;
+    *)       DOTFILES_PROFILE="personal" ;;
+  esac
+else
+  DOTFILES_PROFILE="${DOTFILES_PROFILE:-personal}"
+fi
 export DOTFILES_PROFILE
 echo "Profile: $DOTFILES_PROFILE"
 
