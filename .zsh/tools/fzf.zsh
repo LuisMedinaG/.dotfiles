@@ -39,15 +39,15 @@ export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --e
 # Key Bindings (Ctrl+T, Ctrl+R, Alt+C)
 # -----------------------------------------------------------------------------
 
-# Ctrl+T: file search
+# Ctrl+T: file search (fd handles excludes, not --walker-skip)
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_CTRL_T_OPTS="--walker-skip .git,node_modules,target --preview 'bat -n --style=numbers --color=always {}' --bind shift-up:preview-page-up,shift-down:preview-page-down --bind 'ctrl-/:toggle-preview'"
+export FZF_CTRL_T_OPTS="--preview 'bat -n --style=numbers --color=always {}' --bind shift-up:preview-page-up,shift-down:preview-page-down --bind 'ctrl-/:toggle-preview'"
 
-# Ctrl+R: history search
-export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
+# Ctrl+R: history search with syntax-highlighted preview
+export FZF_CTRL_R_OPTS="--preview 'echo {} | bat -l bash --color=always -pp' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 
-# Alt+G: directory navigation
-export FZF_ALT_C_OPTS="--walker-skip .git,node_modules,target --preview 'tree -C {}'"
+# Alt+G / Ctrl+G: directory navigation with eza tree preview
+export FZF_ALT_C_OPTS="--walker-skip .git,node_modules,target --preview 'eza --tree --icons --color=always --level=2 {}'"
 
 # -----------------------------------------------------------------------------
 # Tab Completion Enhancements

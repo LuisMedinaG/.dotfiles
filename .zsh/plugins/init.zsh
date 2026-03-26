@@ -28,6 +28,14 @@ if (( $+functions[fzf-tab-complete] )); then
     zstyle ':completion:*' menu no
     zstyle ':fzf-tab:*' switch-group '<' '>'
     zstyle ':fzf-tab:*' use-fzf-default-opts yes
+
+    # Previews — make tab completion visual
+    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --icons --color=always $realpath'
+    zstyle ':fzf-tab:complete:*:*' fzf-preview \
+      'if [ -d $realpath ]; then eza -1 --icons --color=always $realpath; elif [ -f $realpath ]; then bat -n --color=always --line-range :50 $realpath 2>/dev/null || cat $realpath; fi'
+    zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
+      '[[ $group == "[process ID]" ]] && ps -p $word -o pid,user,%cpu,%mem,command'
+    zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags '--preview-window=down:3:wrap'
 fi
 
 # https://github.com/ajeetdsouza/zoxide

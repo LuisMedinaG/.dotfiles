@@ -71,5 +71,12 @@ bindkey "^[[1;3C" my-forward-move-word  # iTerm2 Option+Right
 bindkey '^W' my-backward-delete-word
 # bindkey '^[^W' my-backward-delete-whole-word
 
+# History search: type partial command, then Up/Down to search history
+bindkey '^[[A' history-beginning-search-backward-end  # Up arrow
+bindkey '^[[B' history-beginning-search-forward-end   # Forward arrow
+
 bindkey '^E' end-of-line
 bindkey '^A' beginning-of-line
+# Home/End keys (broader terminal support)
+bindkey '^[[H' beginning-of-line
+bindkey '^[[F' end-of-line

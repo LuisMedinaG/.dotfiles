@@ -10,7 +10,7 @@ zmodload zsh/complist
 # The zsh manager for auto-expanding abbreviations, inspired by fish shell.
 source_if_exists $HOMEBREW_PREFIX/share/zsh-abbr/zsh-abbr.zsh
 
-if type brew &>/dev/null; then
+if type brew >/dev/null 2>&1; then
   FPATH=$HOMEBREW_PREFIX/share/zsh-abbr:$FPATH
 fi
 
@@ -78,10 +78,9 @@ zstyle ':completion:*' file-sort modification
 
 # Formatting
 zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
-# zstyle ':completion:*:*:*:*:descriptions' format '%F{blue}-- %D %d --%f'
+zstyle ':completion:*:*:*:*:descriptions' format '%F{blue}-- %d --%f'
 zstyle ':completion:*:*:*:*:messages' format ' %F{purple} -- %d --%f'
 zstyle ':completion:*:*:*:*:warnings' format ' %F{red}-- no matches found --%f'
-# zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 
 # Only display some tags for the command cd
 zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
@@ -100,7 +99,7 @@ zstyle ':completion:*' keep-prefix true
 
 # These settings are safe regardless of fzf-tab
 zstyle ':completion:*:git-checkout:*' sort false
-zstyle ":completion:*" list-colors "${(s.:.)ZLS_COLORS}"
+zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"
 zstyle ":completion:*:descriptions" format "[%d]"
 
 # fzf-tab zstyles are applied in plugins/init.zsh after Zinit loads fzf-tab
@@ -113,8 +112,7 @@ zstyle ":completion:*:descriptions" format "[%d]"
 # )
 # zstyle ":fzf-tab:*" fzf-flags "${FZF_TAB_DEFAULT_FZF_FLAGS[@]}"
 
-# preview directory's content with eza when completing cd
-# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+# fzf-tab preview zstyles live in plugins/init.zsh (after fzf-tab is loaded)
 
 # SSH hosts completion
 # zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
@@ -122,8 +120,8 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts '
   reply=(
     ${=${${(f)"$(
       {
-        # Get hosts from SSH config files
-        command cat ~/.ssh/config ~/.ssh/config-oneview ~/.ssh/config-hivemind /etc/ssh/ssh_config 2>/dev/null |
+        # Get hosts from SSH config files (main + any config-* fragments)
+        command cat ~/.ssh/config ~/.ssh/config-*(N) /etc/ssh/ssh_config 2>/dev/null |
         command grep -i "^\\s*Host\\s" | command awk "{print \$2}" | 
         command grep -v "\\*" ;
         

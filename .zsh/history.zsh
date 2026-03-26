@@ -1,7 +1,7 @@
 # ───── History ─────
 [ -z "$HISTFILE" ] && export HISTFILE="$HOME/.zsh_history"
-export HISTSIZE=10000
-export SAVEHIST=10000
+export HISTSIZE=50000
+export SAVEHIST=50000
 
 # History management
 setopt appendhistory        # Append to history, don't overwrite

@@ -1,24 +1,17 @@
 # Lazy loading NVM for faster shell startup
 # Only define wrappers if NVM is actually installed
 if [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ]; then
-  nvm() {
-    unfunction nvm node npm
+  # Helper to load NVM and remove lazy wrappers
+  _nvm_load() {
+    unfunction nvm node npm npx 2>/dev/null
     source "$NVM_DIR/nvm.sh"
     [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
-    nvm "$@"
   }
 
-  node() {
-    unfunction nvm node npm
-    source "$NVM_DIR/nvm.sh"
-    node "$@"
-  }
-
-  npm() {
-    unfunction nvm node npm
-    source "$NVM_DIR/nvm.sh"
-    npm "$@"
-  }
+  nvm() { _nvm_load; nvm "$@" }
+  node() { _nvm_load; node "$@" }
+  npm() { _nvm_load; npm "$@" }
+  npx() { _nvm_load; npx "$@" }
 
   # Auto-switch Node version when entering a directory with .nvmrc
   autoload -U add-zsh-hook
@@ -26,8 +19,7 @@ if [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ]; then
     if [ -f .nvmrc ]; then
       # Ensure NVM is loaded
       if ! command -v nvm | grep -q function 2>/dev/null; then
-        unfunction nvm node npm 2>/dev/null
-        source "$NVM_DIR/nvm.sh"
+        _nvm_load
       fi
       nvm use 2>/dev/null
     fi
@@ -48,8 +40,9 @@ reload-ssh() {
     fi
 
     echo "Attempting to remove previous card entries for $yubikey_lib..."
-    ssh-add -e "$yubikey_lib" # Show output for debugging
-    if [[ $? -gt 0 ]]; then echo "Failed to remove previous card"; fi
+    if ! ssh-add -e "$yubikey_lib"; then
+      echo "Failed to remove previous card"
+    fi
 
     echo "Attempting to add card: $yubikey_lib..."
     ssh-add -s "$yubikey_lib"
@@ -154,7 +147,9 @@ shell-time() {
   local iterations="${1:-10}"
   echo "Timing zsh startup ($iterations iterations)..."
   for i in $(seq 1 "$iterations"); do
-    /usr/bin/time zsh -i -c exit 2>&1
+    # Use zsh's built-in time for cleaner, parseable output
+    TIMEFMT='  %E total (%U user, %S system)'
+    { time zsh -i -c exit } 2>&1
   done
 }
 

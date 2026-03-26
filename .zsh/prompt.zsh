@@ -11,17 +11,19 @@ setopt prompt_subst
 add-zsh-hook precmd vcs_info
 
 zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:git*' formats '%b%u%c'
-# Format when the repo is in an action (merge, rebase, etc)
-# zstyle ':vcs_info:git*' actionformats '%F{14}⏱ %*%f'
+# Distinct colors: branch (magenta), unstaged (yellow), staged (green)
+zstyle ':vcs_info:git*' formats '%F{magenta}%b%F{yellow}%u%F{green}%c%f'
+# Show current action during rebase, merge, cherry-pick, etc.
+zstyle ':vcs_info:git*' actionformats '%F{magenta}%b%f %F{red}(%a)%f%F{yellow}%u%F{green}%c%f'
 zstyle ':vcs_info:git*' unstagedstr '*'
 zstyle ':vcs_info:git*' stagedstr '+'
 # This enables %u and %c (unstaged/staged changes) to work
 zstyle ':vcs_info:*:*' check-for-changes true
 
-# Prompt: <last two directory components> <Git info> <user indicator>
-PROMPT=' %{$fg[cyan]%}%2~%f %F{blue}${vcs_info_msg_0_}%f %# '
-RPROMPT='%F{8}⎇ %F{7}⏱ %*%f'
+# Prompt: exit-status arrow, directory, git info
+# ❯ is cyan on success, red on failure
+PROMPT='%(?.%F{cyan}.%F{red})❯%f %F{blue}%2~%f ${vcs_info_msg_0_} '
+RPROMPT='%F{8}%*%f'
 
 # Oh My Posh:
 # eval "$(oh-my-posh init zsh)"
