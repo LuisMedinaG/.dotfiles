@@ -7,11 +7,18 @@ export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
+# After macOS path_helper (/etc/zprofile): put Apple Silicon Homebrew first.
+# .zshenv already ran brew shellenv; avoid eval twice — prepend + dedupe PATH only.
+if [ "$(uname -m)" = arm64 ] && [ -x /opt/homebrew/bin/brew ]; then
+  PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+  export PATH
+  typeset -U path PATH
+fi
+
 # Local bin
 export PATH="$HOME/.local/bin:$PATH"
 
 # ───── Homebrew ─────
-# Homebrew shellenv is loaded in .zshenv so non-login shells get it too.
 # Here we only set paths that depend on HOMEBREW_PREFIX.
 if [ -n "$HOMEBREW_PREFIX" ]; then
     # Path for Homebrew zsh-completions, used in completion.zsh
