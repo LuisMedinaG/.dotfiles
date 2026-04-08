@@ -14,11 +14,13 @@ source_if_exists() {
 }
 
 # ───── Homebrew ─────
-# Must be in .zshenv (not .zprofile) so non-login shells (tmux, nested) get it too
-if [ -z "$HOMEBREW_PREFIX" ]; then
-  if [ -d "/opt/homebrew" ]; then
+# arm64: always Apple brew shellenv (/opt/homebrew before /usr/local; Go/Delve arch).
+if [ "$(uname -m)" = arm64 ] && [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -z "$HOMEBREW_PREFIX" ]; then
+  if [ -x /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
-  elif [ -x "/usr/local/bin/brew" ]; then
+  elif [ -x /usr/local/bin/brew ]; then
     eval "$(/usr/local/bin/brew shellenv)"
   fi
 fi
