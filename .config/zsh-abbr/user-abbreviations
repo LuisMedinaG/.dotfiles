@@ -1,17 +1,29 @@
-abbr "....."="cd ../../../.."
-abbr "...."="cd ../../../"
-abbr "..."="cd ../../"
+# zsh-abbr user abbreviations
+# Format: `abbr NAME='EXPANSION'` (canonical zsh-abbr syntax)
+# Reload: `abbr load` (or open a new shell)
 
-abbr "ga"="git add"
-abbr "gp"="git push"
-abbr "gu"="git pull"
-abbr "gc"="git commit"
-abbr "gh"="git rev-parse HEAD"
-abbr "gb"="git branch --show-current"
-abbr "gl"="git ls-files --modified --deleted --other --exclude-standard --deduplicate \$(git rev-parse --show-toplevel)"
-abbr "gs"="git status --short | grep '^[A-Z]' | awk '{print }'"
+# Directory navigation
+abbr ...='cd ../../'
+abbr ....='cd ../../../'
+abbr .....='cd ../../../..'
 
-abbr "path"="echo \$PATH | tr -s \":\" \"\n\""
+# Git — keep names that don't shadow real commands.
+# (Do NOT reuse `gh` — that is the GitHub CLI binary.)
+abbr ga='git add'
+abbr gp='git push'
+abbr gu='git pull'
+abbr gc='git commit'
+abbr gco='git checkout'
+abbr gst='git status'
+abbr gsw='git switch'
+abbr gd='git diff'
+abbr glo='git log --oneline --graph --decorate -20'
+abbr gbr='git branch --show-current'
+abbr ghash='git rev-parse HEAD'
+abbr gls="git ls-files --modified --deleted --other --exclude-standard --deduplicate"
+abbr gss="git status --short"
 
-abbr "sz"="source ~/.zshrc"
-abbr "ez"="code ~/.zshrc"
+# Shell helpers
+abbr path='echo $PATH | tr ":" "\n"'
+abbr sz='source ~/.zshrc'
+abbr ez='${EDITOR:-nvim} ~/.zshrc'

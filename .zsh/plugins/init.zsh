@@ -40,8 +40,17 @@ fi
 
 # https://github.com/ajeetdsouza/zoxide
 # For completions to work, the above line must be added after compinit is called.
+# Cache `zoxide init` output (it's static) to avoid forking zoxide each shell.
 if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init zsh --cmd cd)"
+  _zoxide_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zoxide_init.zsh"
+  # Regen if missing/empty, or older than 7 days. (N.mh+168) = mtime > 168h ago.
+  _zoxide_stale=( ${_zoxide_cache}(N.mh+168) )
+  if [[ ! -s $_zoxide_cache || -n $_zoxide_stale ]]; then
+    mkdir -p "${_zoxide_cache:h}"
+    zoxide init zsh --cmd cd > "$_zoxide_cache"
+  fi
+  source "$_zoxide_cache"
+  unset _zoxide_cache _zoxide_stale
 fi
 
 # https://github.com/zsh-users/zsh-autosuggestions

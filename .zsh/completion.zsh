@@ -20,14 +20,14 @@ autoload -U compinit
 # Define zcompdump file location
 zcompdump_file="${ZDOTDIR:-$HOME}/.zcompdump"
 
-# Only regenerate completion cache once per day
-if [[ ! -f "$zcompdump_file" || -n "$(find "$zcompdump_file" -mtime +1 2>/dev/null)" ]]; then
-  # Regenerate completion cache
-  compinit -i -d "$zcompdump_file"
+# Only regenerate completion cache once per day.
+# Native zsh glob (N.mh-24) avoids forking `find` on every shell startup.
+if [[ -n "$zcompdump_file"(#qN.mh-24) ]]; then
+  compinit -C -i -d "$zcompdump_file"   # use existing cache, fast path
 else
-  # Use existing cache
-  compinit -C -i -d "$zcompdump_file"
+  compinit -i -d "$zcompdump_file"      # stale or missing → regenerate
 fi
+unset zcompdump_file
 _comp_options+=(globdots) # With hidden files
 
 # +---------+

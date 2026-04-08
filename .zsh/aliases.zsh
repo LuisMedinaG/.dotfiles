@@ -12,7 +12,21 @@ alias vim='nvim'
 
 # ZSH Abbr (https://zsh-abbr.olets.dev)
 # Auto-expanding abbreviations, inspired by fish shell.
-# Alias commented (using abbr ~/.config/zsh-abbr/user-abbreviations)
+# Defined in: ~/.config/zsh-abbr/user-abbreviations
+#
+# Fallback aliases — used only if zsh-abbr is NOT loaded (e.g. brew package
+# missing on a fresh machine). When zsh-abbr is active these are no-ops because
+# the abbreviation expands the typed word before the alias is even consulted.
+if ! (( $+functions[abbr] )); then
+  alias ga='git add'
+  alias gp='git push'
+  alias gu='git pull'
+  alias gc='git commit'
+  alias gco='git checkout'
+  alias gst='git status'
+  alias gd='git diff'
+  alias glo='git log --oneline --graph --decorate -20'
+fi
 
 # Directory stack shortcuts
 # Generate aliases d1, d2, ... for dirs stack

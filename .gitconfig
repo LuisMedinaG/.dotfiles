@@ -4,6 +4,21 @@
 
 [alias]
 	undo = reset --soft HEAD^
+	st = status
+	s  = status --short --branch
+	co = checkout
+	sw = switch
+	br = branch
+	ci = commit
+	cm = commit -m
+	ca = commit --amend --no-edit
+	d  = diff
+	ds = diff --staged
+	lg = log --oneline --graph --decorate --all -20
+	last = log -1 HEAD --stat
+	hash = rev-parse HEAD
+	uncommit = reset --mixed HEAD^
+	aliases = config --get-regexp ^alias\\.
 [diff]
 	colorMoved = zebra
 [format]

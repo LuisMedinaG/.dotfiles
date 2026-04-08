@@ -8,8 +8,7 @@ If Homebrew and yadm are already installed:
 
 ```bash
 yadm clone https://github.com/LuisMedinaG/.dotfiles.git --bootstrap
-# When prompted, run:
-sh ~/.config/yadm/bootstrap-work
+# When prompted "Profile [1/2]:", choose 2 (work)
 ```
 
 If starting from scratch:
@@ -21,9 +20,14 @@ If starting from scratch:
 # 2. Install yadm
 brew install yadm
 
-# 3. Clone and bootstrap
-yadm clone https://github.com/LuisMedinaG/.dotfiles.git --no-bootstrap
-sh ~/.config/yadm/bootstrap-work
+# 3. Clone and bootstrap (pick "work" at the prompt)
+yadm clone https://github.com/LuisMedinaG/.dotfiles.git --bootstrap
+```
+
+Or run non-interactively:
+
+```bash
+DOTFILES_PROFILE=work yadm bootstrap
 ```
 
 ## What gets installed

@@ -62,11 +62,23 @@ zle -N my-forward-move-word
 zle -N my-backward-delete-word
 zle -N my-backward-delete-whole-word
 
-# Key bindings
-bindkey "^[b" my-backward-move-word     # VSCode Option+Left
-bindkey "^[f" my-forward-move-word      # VSCode Option+Right
-bindkey "^[[1;3D" my-backward-move-word # iTerm2 Option+Left
-bindkey "^[[1;3C" my-forward-move-word  # iTerm2 Option+Right
+# Word-movement key bindings — covers Terminal.app, iTerm2, VS Code, Ghostty,
+# Warp, and tmux passthrough. Different terminals send different escape
+# sequences for Option+Left/Right; bind them all so it Just Works.
+#
+# REQUIREMENT for Terminal.app: enable
+#   Settings → Profiles → Keyboard → "Use Option as Meta key"
+# Without that, the keys never reach zsh and no binding can help.
+bindkey "^[b"      my-backward-move-word  # Meta+b (Option-as-Meta)
+bindkey "^[f"      my-forward-move-word   # Meta+f
+bindkey "^[[1;3D"  my-backward-move-word  # CSI 1;3D — iTerm2/Terminal.app
+bindkey "^[[1;3C"  my-forward-move-word   # CSI 1;3C
+bindkey "^[[1;9D"  my-backward-move-word  # CSI 1;9D — alt mac mapping
+bindkey "^[[1;9C"  my-forward-move-word
+bindkey "^[^[[D"   my-backward-move-word  # ESC ESC [D — older Terminal.app
+bindkey "^[^[[C"   my-forward-move-word
+bindkey "^[OD"     my-backward-move-word  # Application cursor mode
+bindkey "^[OC"     my-forward-move-word
 
 bindkey '^W' my-backward-delete-word
 # bindkey '^[^W' my-backward-delete-whole-word
