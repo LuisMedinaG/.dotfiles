@@ -7,9 +7,12 @@ export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
-# After macOS path_helper; same arm64 Homebrew precedence as .zshenv.
+# After macOS path_helper (/etc/zprofile): put Apple Silicon Homebrew first.
+# .zshenv already ran brew shellenv; avoid eval twice — prepend + dedupe PATH only.
 if [ "$(uname -m)" = arm64 ] && [ -x /opt/homebrew/bin/brew ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
+  PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+  export PATH
+  typeset -U path PATH
 fi
 
 # Local bin
