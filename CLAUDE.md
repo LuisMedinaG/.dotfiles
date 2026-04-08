@@ -2,9 +2,22 @@
 
 macOS dotfiles managed by [yadm](https://yadm.io/).
 
-## Important: Dual-location Setup
+## Important: Repo-only Workflow
 
-yadm's worktree is `$HOME` — files are deployed there. This repo at `Documents/Projects/.dotfiles` is a separate clone. **Changes must be made in both places** or committed via `yadm` from `$HOME`.
+yadm's worktree is `$HOME`, but **this repo at `~/Documents/Projects/.dotfiles` is the source of truth**. All edits happen here. Do **not** edit files directly in `$HOME` — those are treated as deployed artifacts and may be reset.
+
+Workflow:
+
+1. Edit files in this repo (`~/Documents/Projects/.dotfiles/...`).
+2. Commit and push from the repo.
+3. Deploy to `$HOME` with `yadm pull` (on this machine or any other).
+
+If the yadm worktree in `$HOME` has drifted from HEAD, reset it:
+
+```sh
+yadm restore .    # discard local changes in $HOME
+yadm pull         # fast-forward to latest
+```
 
 ## Quick Reference
 
