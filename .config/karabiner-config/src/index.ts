@@ -65,6 +65,8 @@ function createAppQuickAccessRules() {
   return rule('App Quick Access').manipulators([
     map('g', 'Meh').to(toApp('Google Chrome')),
     map('v', 'Meh').to(toApp('Visual Studio Code')),
+    map('i', 'Meh').to(toApp('iTerm')),
+    // map('v', 'Meh').to(toApp('Visual Studio Code')),
   ]);
 }
 
