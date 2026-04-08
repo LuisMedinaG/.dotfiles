@@ -79,6 +79,8 @@ bindkey "^[^[[D"   my-backward-move-word  # ESC ESC [D — older Terminal.app
 bindkey "^[^[[C"   my-forward-move-word
 bindkey "^[OD"     my-backward-move-word  # Application cursor mode
 bindkey "^[OC"     my-forward-move-word
+bindkey "^[D"      my-backward-move-word  # ESC+D — Terminal.app default profile
+bindkey "^[C"      my-forward-move-word   # ESC+C
 
 bindkey '^W' my-backward-delete-word
 # bindkey '^[^W' my-backward-delete-whole-word
