@@ -9,4 +9,3 @@ export interface CategoryMapping {
 }
 
 export type CategoryMappings = Record<string, CategoryMapping>;
-

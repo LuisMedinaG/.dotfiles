@@ -21,6 +21,7 @@ import {
 } from 'karabiner.ts';
 
 import { genericStaticAction, raycastExt, toSystemSetting } from './utils';
+import type { CategoryMapping } from './types';
 
 import linksData from './links.json';
 
@@ -35,21 +36,23 @@ function validateStringMap(data: unknown, label: string): { [key: string]: strin
 }
 
 // Constants
+// Profile configuration
 const PROFILE_NAME = 'Default';
 const LEADER_VAR = 'leader_mode';
+
+// Karabiner parameter thresholds (milliseconds)
+const HELD_DOWN_THRESHOLD_MS = 75;
+const ALONE_TIMEOUT_MS = 150;
 
 function main() {
   const rules = [createMehKeyRule(), createLeaderKeyRule(), createAppQuickAccessRules()];
 
   const parameters = {
     // How long to hold before "held down" behavior starts (modifiers activate)
-    'basic.to_if_held_down_threshold_milliseconds': 75,
+    'basic.to_if_held_down_threshold_milliseconds': HELD_DOWN_THRESHOLD_MS,
 
     // How long to wait after key release to decide if it was a "tap" (triggers to_if_alone)
-    'basic.to_if_alone_timeout_milliseconds': 150,
-
-    // How long to wait after key release before a delayed action
-    // 'basic.to_delayed_action_delay_milliseconds': 3000,
+    'basic.to_if_alone_timeout_milliseconds': ALONE_TIMEOUT_MS,
   };
 
   writeToProfile(PROFILE_NAME, rules, parameters);
@@ -66,7 +69,7 @@ function createAppQuickAccessRules() {
     map('g', 'Meh').to(toApp('Google Chrome')),
     map('v', 'Meh').to(toApp('Visual Studio Code')),
     map('i', 'Meh').to(toApp('iTerm')),
-    // map('v', 'Meh').to(toApp('Visual Studio Code')),
+    map('c', 'Meh').to(toApp('Claude')),
   ]);
 }
 
@@ -102,26 +105,13 @@ function createLeaderKeyRule() {
         a: ['Codely/google-chrome/search-all', 'Google search all'],
         c: ['raycast/calendar/my-schedule', 'Calendar'],
         f: ['raycast/file-search/search-files', 'Search files'],
-        // g: ['massimiliano_pasquini/raycast-ollama/ollama-fix-spelling-grammar', 'Fix Spell'],
         k: ['huzef44/keyboard-brightness/toggle-keyboard-brightness', 'Keyboard ☀︎'],
         l: ['koinzhang/copy-path/copy-path', 'Copy Path'],
         m: ['raycast/apple-reminders/my-reminders', 'Reminders'],
-        // n: ['marcjulian/obsidian/createNoteCommand', 'Obsidian Note'],
         o: ['huzef44/screenocr/recognize-text', 'OCR'],
         q: ['raycast/apple-reminders/quick-add-reminder', 'Quick Reminder'],
         r: ['thomas/visual-studio-code/index', 'Recent projects'],
         s: ['raycast/snippets/search-snippets', 'Snippets'],
-
-        // raycast://extensions/mooxl/coffee/caffeinateToggle
-        // raycast://extensions/massimiliano_pasquini/raycast-ollama/ollama-chat
-        // raycast://extensions/VladCuciureanu/toothpick/toggle-favorite-device-1
-        // ------- Added in Raycast ----------
-        // These commands are not working properly, added directly to config.
-        // d: ['jag-k/dropover/index', 'Add Dropover'],
-        // e: ['raycast/emoji-symbols/search-emoji-symbols', 'Emoji'],
-
-        // Changed to Mac system setting keyboard shortcuts.
-        // '0': ['lucaschultz/input-switcher/toggle', 'Input lang'],
       },
       action: raycastExt,
     },
@@ -154,7 +144,7 @@ function createLeaderKeyRule() {
   return createLeaderSystem(LEADER_VAR, categoryMappings, escapeActions);
 }
 
-function formatCategoryHint(mapping: Record<string, string | [string, string]>): string {
+function formatCategoryHint(mapping: Record<string, string | string[]>): string {
   return Object.entries(mapping)
     .map(([key, value]) => {
       const displayName = Array.isArray(value) ? value[1] : value;
@@ -163,8 +153,8 @@ function formatCategoryHint(mapping: Record<string, string | [string, string]>):
     .join('  ');
 }
 
-function createLeaderSystem(varName: string, mappings, escapeActions) {
-  let categoryKeys = Object.keys(mappings) as FromKeyParam[];
+function createLeaderSystem(varName: string, mappings: CategoryMapping, escapeActions: ToEvent[]) {
+  const categoryKeys = Object.keys(mappings) as FromKeyParam[];
 
   return rule('Leader Key').manipulators([
     // Part 1: Activate Leader Sub-mode (Inactive -> Category State)
@@ -204,7 +194,7 @@ function createLeaderSystem(varName: string, mappings, escapeActions) {
           const value = mapping[subKey];
           const actionValue = Array.isArray(value) ? value[0] : value;
 
-          return map(subKey as any) // `subKey as any` for type compatibility with map()
+          return map(subKey as FromKeyParam)
             .to(action(actionValue))
             .to(escapeActions); // Reset leader mode after executing action
         }),

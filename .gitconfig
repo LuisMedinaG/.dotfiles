@@ -21,6 +21,7 @@
 	aliases = config --get-regexp ^alias\\.
 [diff]
 	colorMoved = zebra
+	tool = vscode
 [format]
 	pretty = oneline
 [pull]
@@ -31,3 +32,5 @@
 	enabled = true
 [init]
 	defaultBranch = main
+[difftool "vscode"]
+	cmd = code --wait --diff $LOCAL $REMOTE
