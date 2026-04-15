@@ -17,6 +17,3 @@ source_if_exists $ZSH/plugins/init.zsh
 
 # Local overrides (machine-specific aliases, functions, etc.)
 source_if_exists ~/.zshrc.local
-
-# zoxide initialization — must be at end of zshrc
-eval "$(zoxide init zsh)"
