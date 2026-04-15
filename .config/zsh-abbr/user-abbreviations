@@ -1,29 +1,20 @@
-# zsh-abbr user abbreviations
-# Format: `abbr NAME='EXPANSION'` (canonical zsh-abbr syntax)
-# Reload: `abbr load` (or open a new shell)
-
-# Directory navigation
-abbr ...='cd ../../'
-abbr ....='cd ../../../'
-abbr .....='cd ../../../..'
-
-# Git — keep names that don't shadow real commands.
-# (Do NOT reuse `gh` — that is the GitHub CLI binary.)
-abbr ga='git add'
-abbr gp='git push'
-abbr gu='git pull'
-abbr gc='git commit'
-abbr gco='git checkout'
-abbr gst='git status'
-abbr gsw='git switch'
-abbr gd='git diff'
-abbr glo='git log --oneline --graph --decorate -20'
-abbr gbr='git branch --show-current'
-abbr ghash='git rev-parse HEAD'
-abbr gls="git ls-files --modified --deleted --other --exclude-standard --deduplicate"
-abbr gss="git status --short"
-
-# Shell helpers
-abbr path='echo $PATH | tr ":" "\n"'
-abbr sz='source ~/.zshrc'
-abbr ez='${EDITOR:-nvim} ~/.zshrc'
+abbr "....."="cd ../../../.."
+abbr "...."="cd ../../../"
+abbr "..."="cd ../../"
+abbr "c"="claude"
+abbr "ez"="\${EDITOR:-nvim} ~/.zshrc"
+abbr "ga"="git add"
+abbr "gbr"="git branch --show-current"
+abbr "gc"="git commit"
+abbr "gco"="git checkout"
+abbr "gd"="git diff"
+abbr "ghash"="git rev-parse HEAD"
+abbr "glo"="git log --oneline --graph --decorate -20"
+abbr "gls"="git ls-files --modified --deleted --other --exclude-standard --deduplicate"
+abbr "gp"="git push"
+abbr "gss"="git status --short"
+abbr "gst"="git status"
+abbr "gsw"="git switch"
+abbr "gu"="git pull"
+abbr "path"="echo \$PATH | tr \":\" \"\n\""
+abbr "sz"="source ~/.zshrc"
