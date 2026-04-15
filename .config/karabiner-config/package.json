@@ -5,11 +5,12 @@
     "build": "tsx src/index.ts",
     "watch": "tsx watch src/index.ts",
     "update": "npm update karabiner.ts",
-    "lint": "eslint src",
+    "lint": "tsc --noEmit",
     "format": "prettier --write \"**/*.{ts,json}\"",
     "validate": "npm run lint && npm run format && npm run build"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^22.15.21",
     "eslint": "^9.27.0",
     "karabiner.ts": "latest",
