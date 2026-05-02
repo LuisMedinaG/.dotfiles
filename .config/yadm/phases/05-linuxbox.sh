@@ -51,6 +51,20 @@ http://deb.gierens.de stable main" \
   sudo apt-get install -y --no-install-recommends eza
 fi
 
+# ─── pipx + shell-ai ─────────────────────────────────────────────────────────
+
+if ! command -v pipx >/dev/null 2>&1; then
+  echo "Installing pipx..."
+  sudo apt-get install -y --no-install-recommends pipx
+fi
+
+if ! pipx list 2>/dev/null | grep -q shell-ai; then
+  echo "Installing shell-ai..."
+  pipx install shell-ai
+else
+  echo "shell-ai already installed."
+fi
+
 # ─── required directories (mirrors 03-shell.sh for Linux) ────────────────────
 
 mkdir -p "$HOME/.local/state/nvim/undo"

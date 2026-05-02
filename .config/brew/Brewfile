@@ -27,6 +27,7 @@ cask "spaceman"     # Show spaces in menu bar
 # Development tools
 brew "pyenv"        # Python version management
 brew "jenv"         # Java version management
+brew "pipx"         # Install Python CLI tools in isolated envs
 
 # Applications
 cask "visual-studio-code"

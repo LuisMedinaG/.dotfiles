@@ -34,4 +34,20 @@ if [ "${DOTFILES_PROFILE:-personal}" = "personal" ]; then
   mkdir -p "$HOME/.config/mackup/backup"  # mackup app settings storage
 fi
 
+# shell-ai: AI-powered shell commands (personal + linuxbox only, not work)
+# Requires OPENAI_API_KEY in ~/.zshenv.local (or configure another provider)
+# https://github.com/ricklamers/shell-ai
+if [ "${DOTFILES_PROFILE:-personal}" != "work" ]; then
+  if command -v pipx >/dev/null 2>&1; then
+    if ! pipx list 2>/dev/null | grep -q shell-ai; then
+      echo "Installing shell-ai..."
+      pipx install shell-ai
+    else
+      echo "shell-ai already installed."
+    fi
+  else
+    echo "Warning: pipx not found, skipping shell-ai install." >&2
+  fi
+fi
+
 echo "✓ Phase 3 complete."
