@@ -153,12 +153,14 @@ shell-time() {
   done
 }
 
-# Update everything: Homebrew, Zinit plugins, yadm, and app settings
+# Update everything: Homebrew (if present), Zinit plugins, yadm, and app settings
 update-all() {
-  echo "── Homebrew ──"
-  brew update && brew upgrade && brew cleanup
+  if command -v brew >/dev/null 2>&1; then
+    echo "── Homebrew ──"
+    brew update && brew upgrade && brew cleanup
+    echo ""
+  fi
 
-  echo ""
   echo "── Zinit plugins ──"
   zsh -ic "zinit update --all" 2>/dev/null
 
@@ -175,7 +177,13 @@ update-all() {
 
 # Sync dotfiles between yadm worktree ($HOME) and git clone
 dotfiles-sync() {
-  local clone_dir="$HOME/Documents/Projects/.dotfiles"
+  # macOS: ~/Documents/Projects/.dotfiles  Linux: ~/projects/.dotfiles
+  local clone_dir
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    clone_dir="$HOME/Documents/Projects/.dotfiles"
+  else
+    clone_dir="$HOME/projects/.dotfiles"
+  fi
   if [ ! -d "$clone_dir/.git" ]; then
     echo "Error: Git clone not found at $clone_dir" >&2
     return 1

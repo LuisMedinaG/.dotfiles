@@ -1,22 +1,24 @@
 # Dotfiles
 
-My macOS development environment, managed with [yadm](https://yadm.io/).
+Cross-platform development environment (macOS personal, macOS work, Linux devbox) managed with [yadm](https://yadm.io/). All three share the same ZSH config — differences are handled by runtime guards and bootstrap profiles.
 
-## Fresh Mac Setup
+## Setup
 
-On a brand-new Mac (or after a clean install), run this single command:
+### macOS (personal or work)
+
+On a brand-new Mac (or after a clean install):
 
 ```bash
 # Personal (full setup: CLI + GUI apps + mackup)
 curl -sL https://github.com/LuisMedinaG/.dotfiles/raw/main/.local/bin/pre_bootstrap.sh | sh
 
-# Work (minimal: CLI tools only, no casks, no admin needed)
+# Work (CLI tools only, no casks, no admin needed)
 curl -sL https://github.com/LuisMedinaG/.dotfiles/raw/main/.local/bin/pre_bootstrap.sh | sh -s -- --work
 ```
 
 Then open a new terminal.
 
-### What that command does
+**What that command does:**
 
 1. Installs **Homebrew** (skips if already installed)
 2. Installs **yadm** via Homebrew
@@ -26,19 +28,49 @@ Then open a new terminal.
 | Phase | Script | What it does |
 |-------|--------|--------------|
 | 00 | `00-backup.sh` | Backs up existing dotfiles before overwriting |
-| 01 | `01-homebrew.sh` | Installs packages from [Brewfile](.config/brew/Brewfile) or [Brewfile.work](.config/brew/Brewfile.work) |
+| 01 | `01-homebrew.sh` | Installs packages from Brewfile or Brewfile.work |
 | 02 | `02-dotfiles.sh` | Checks out dotfiles, pulls latest, inits git submodules |
 | 03 | `03-shell.sh` | Installs fzf key bindings, creates required directories |
 
-The bootstrap asks you to choose a profile (`personal` or `work`). You can also pre-set it with `DOTFILES_PROFILE=work yadm bootstrap` or use the `--work` flag with `pre_bootstrap.sh`.
+The `work` profile selects `Brewfile.work` (CLI tools only, no casks — no kanata, BetterTouchTool, Spaceman, Lunar, etc.) and skips mackup setup.
 
-The `work` profile selects the minimal `Brewfile.work` (CLI tools only, no casks — no kanata, BetterTouchTool, Spaceman, Lunar, etc.) and skips mackup setup.
+### Linux devbox
 
-### After bootstrap
+On a fresh Ubuntu/Debian machine (assumes `git` and `curl` are available):
 
-**Merge your previous config** (if the backup phase saved files):
+```bash
+# 1. Install yadm
+sudo apt install yadm
 
-The backup is saved to `~/.config/yadm/backup/<timestamp>/`. Diff your old files against the new ones and move machine-specific config into `.local` files:
+# 2. Clone and bootstrap
+DOTFILES_PROFILE=linuxbox yadm clone --bootstrap https://github.com/LuisMedinaG/.dotfiles.git
+```
+
+Or if yadm isn't in apt:
+
+```bash
+curl -fLo /usr/local/bin/yadm https://github.com/TheLocehiliosan/yadm/raw/master/yadm && chmod a+x /usr/local/bin/yadm
+DOTFILES_PROFILE=linuxbox yadm clone --bootstrap https://github.com/LuisMedinaG/.dotfiles.git
+```
+
+The `linuxbox` bootstrap runs phases 00–03, then phase 05 which installs via apt:
+- **neovim** (editor)
+- **zoxide** (smart `cd`)
+- **eza** (from deb.gierens.de — not in Ubuntu main)
+
+Plugins (autosuggestions, syntax-highlighting, fzf-tab, etc.) are installed by Zinit from GitHub on first shell start — no apt packages needed.
+
+After cloning, open a new terminal and run `exec zsh` to trigger Zinit's first-run install.
+
+### After bootstrap (all platforms)
+
+**Merge your previous config** — the backup is saved to `~/.config/yadm/backup/<timestamp>/`:
+
+```bash
+diff ~/.zshrc ~/.config/yadm/backup/<timestamp>/.zshrc
+```
+
+Move machine-specific config into `.local` files (not tracked by yadm):
 
 | File | Loaded by | Use for |
 |------|-----------|---------|
@@ -46,20 +78,15 @@ The backup is saved to `~/.config/yadm/backup/<timestamp>/`. Diff your old files
 | `~/.zprofile.local` | Login shells only | pyenv/jenv overrides, login-only PATH |
 | `~/.zshrc.local` | Interactive shells | Aliases, functions, company-specific config |
 
-```bash
-# Example: diff your old .zshrc against the new one
-diff ~/.zshrc ~/.config/yadm/backup/<timestamp>/.zshrc
-```
+**macOS personal — additional steps:**
 
-**Apply macOS system preferences** (optional — review the file first):
+Apply macOS system preferences (optional — review the file first):
 
 ```bash
 sh ~/.config/yadm/phases/04-macos.sh
 ```
 
-This sets developer-friendly defaults: fast key repeat, Finder shows path bar, Dock auto-hides, disable smart quotes, etc. Log out and back in after running.
-
-**Grant macOS permissions** (required for keyboard tools):
+Grant permissions for keyboard tools:
 
 | Setting | Apps |
 |---------|------|
@@ -68,6 +95,30 @@ This sets developer-friendly defaults: fast key repeat, Finder shows path bar, D
 | Accessibility | Karabiner-Elements, Homerow, BetterTouchTool, Raycast |
 
 > **Tip:** When the Finder dialog asks you to locate a binary, press **⌘⇧G** and paste the path (e.g. `/usr/local/bin/kanata`), or run `open -R $(which kanata)` to reveal it in Finder and drag it in.
+
+---
+
+## Environment comparison
+
+| | macOS personal | macOS work | Linux devbox |
+|---|---|---|---|
+| **Bootstrap profile** | `personal` | `work` | `linuxbox` |
+| **Package manager** | Homebrew | Homebrew | apt |
+| **Packages** | [Brewfile](.config/brew/Brewfile) | [Brewfile.work](.config/brew/Brewfile.work) | phase 05 (apt) |
+| **GUI apps** | VS Code, Chrome, iTerm2, BTT, Homerow, Karabiner, Spaceman, Lunar | none | none |
+| **Keyboard remapping** | kanata + karabiner-elements | none | none |
+| **App settings backup** | mackup | none | none |
+| **macOS defaults phase** | opt-in (phase 04) | none | none |
+| **ZSH config** | shared | shared | shared |
+| **Zinit plugins** | shared (GitHub) | shared (GitHub) | shared (GitHub) |
+| **fzf key bindings** | Homebrew prefix | Homebrew prefix | `/usr/share/doc/fzf/examples/` |
+| **Core CLI tools** | shared | shared (subset) | shared (via apt) |
+
+**Core CLI tools present on all three:** `bat`, `eza`, `fd`, `fzf`, `ripgrep`, `neovim`, `git`, `curl`, `jq`, `gh`, `tmux`, `zoxide`
+
+**Work omits** (not in Brewfile.work): `kanata`, `mackup`, `pyenv`, `jenv` — add to `~/.zshrc.local` as needed.
+
+**Linux omits** (phase 05 doesn't install): `bat`, `ripgrep` — install via `apt install bat ripgrep` and the `cat`/`grep` aliases will activate automatically.
 
 ---
 
@@ -114,14 +165,20 @@ yadm bootstrap
     └── fzf.zsh    → fzf defaults, key bindings, tab completion
 ```
 
-### Packages ([Brewfile](.config/brew/Brewfile))
+### Packages
 
-| CLI tools | Dev tools | Apps |
-|-----------|-----------|------|
-| bat, eza, fd, fzf, ripgrep | pyenv, jenv | VS Code |
-| git, curl, wget, jq, tree | neovim, gh | Chrome |
-| zoxide, zsh-abbr, tmux, mackup, kanata | yadm | iTerm2 |
-| zsh-autosuggestions, zsh-syntax-highlighting, zsh-completions | | Homerow, Karabiner, Spaceman, BTT |
+**Shared core** (all three environments):
+
+| CLI | Dev |
+|-----|-----|
+| bat, eza, fd, fzf, ripgrep | neovim, gh |
+| git, curl, wget, jq, tree | tmux, zoxide |
+
+**macOS personal adds** ([Brewfile](.config/brew/Brewfile)): `kanata`, `mackup`, `pyenv`, `jenv`, and GUI casks (VS Code, Chrome, iTerm2, Homerow, Karabiner-Elements, BetterTouchTool, Multitouch, Spaceman, Lunar).
+
+**macOS work** ([Brewfile.work](.config/brew/Brewfile.work)): core CLI only, no casks, no keyboard tools.
+
+**Linux devbox** (phase 05 apt): `neovim`, `eza`, `zoxide`. Install `bat` and `ripgrep` via apt to enable their aliases.
 
 ### Other configs
 
@@ -297,7 +354,8 @@ Results at [Actions](../../actions).
 │           ├── 01-homebrew.sh  # Install packages
 │           ├── 02-dotfiles.sh  # Checkout + submodules
 │           ├── 03-shell.sh     # fzf + directories
-│           └── 04-macos.sh     # macOS defaults (opt-in)
+│           ├── 04-macos.sh     # macOS defaults (opt-in)
+│           └── 05-linuxbox.sh  # Linux apt installs (linuxbox profile)
 ├── .local/bin/                 # Scripts (rfv, pre_bootstrap.sh)
 ├── .github/workflows/lint.yml  # CI pipeline
 ├── tests/run_all.sh            # Test suite
