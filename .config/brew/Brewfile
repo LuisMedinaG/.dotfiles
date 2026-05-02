@@ -1,8 +1,5 @@
 # Brewfile for Luis Medina's setup
 
-# Taps
-tap "olets/tap"         # For zsh-abbr
-
 # CLI tools
 brew "curl"
 brew "wget"
@@ -25,11 +22,7 @@ brew "kanata"       # Keyboard remapping daemon
 
 cask "spaceman"     # Show spaces in menu bar
 
-# ZSH plugins (installed via Homebrew)
-brew "zsh-syntax-highlighting"
-brew "zsh-completions"
-brew "zsh-autosuggestions"
-brew "olets/tap/zsh-abbr"  # Auto-expanding abbreviations (moved to olets/tap)
+# ZSH plugins are managed by Zinit (plugins/init.zsh) — no Homebrew packages needed
 
 # Development tools
 brew "pyenv"        # Python version management

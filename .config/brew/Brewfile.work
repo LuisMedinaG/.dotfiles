@@ -3,9 +3,6 @@
 #
 # Usage: brew bundle install --file ~/.config/brew/Brewfile.work
 
-# Taps
-tap "olets/tap"         # For zsh-abbr
-
 # Core CLI tools
 brew "curl"
 brew "wget"
@@ -26,11 +23,7 @@ brew "eza"          # Modern ls replacement
 brew "zoxide"       # Smarter cd
 brew "neovim"
 
-# ZSH plugins (installed via Homebrew)
-brew "zsh-syntax-highlighting"
-brew "zsh-completions"
-brew "zsh-autosuggestions"
-brew "olets/tap/zsh-abbr"
+# ZSH plugins are managed by Zinit (plugins/init.zsh) — no Homebrew packages needed
 
 # Development tools (add as needed — these don't require admin)
 # brew "pyenv"

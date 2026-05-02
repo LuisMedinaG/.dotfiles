@@ -17,10 +17,8 @@ if [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ]; then
   autoload -U add-zsh-hook
   _nvm_auto_use() {
     if [ -f .nvmrc ]; then
-      # Ensure NVM is loaded
-      if ! command -v nvm | grep -q function 2>/dev/null; then
-        _nvm_load
-      fi
+      # NVM_BIN is set by nvm.sh on load; absence means the lazy stub is still active
+      [ -z "${NVM_BIN:-}" ] && _nvm_load
       nvm use 2>/dev/null
     fi
   }
@@ -56,9 +54,9 @@ reload-ssh() {
 # Activate Python virtual environments
 # https://seb.jambor.dev/posts/improving-shell-workflows-with-fzf/
 function activate-venv() {
+  [[ -d ~/.venv ]] || { echo "No ~/.venv directory found." >&2; return 1; }
   local selected_env
   selected_env=$(ls ~/.venv/ | fzf)
-
   if [ -n "$selected_env" ]; then
     source "$HOME/.venv/$selected_env/bin/activate"
   fi

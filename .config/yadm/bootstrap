@@ -78,7 +78,7 @@ if [ "${DOTFILES_PROFILE}" = "linuxbox" ] && [ -f "$PHASES_DIR/05-linuxbox.sh" ]
 fi
 
 # Offer to run macOS system defaults (phase 04)
-if [ -t 0 ]; then
+if [ -t 0 ] && [ "$(uname -s)" = "Darwin" ]; then
   printf "Would you like to apply macOS system defaults? [y/N] "
   read -r answer
   if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
