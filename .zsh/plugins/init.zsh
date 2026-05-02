@@ -53,11 +53,14 @@ if command -v zoxide >/dev/null 2>&1; then
   unset _zoxide_cache _zoxide_stale
 fi
 
-# https://github.com/zsh-users/zsh-autosuggestions
-source_if_exists $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# https://github.com/olets/zsh-abbr — must come before syntax-highlighting
+zinit light olets/zsh-abbr
 
-# See: https://github.com/zsh-users/zsh-syntax-highlighting
-source_if_exists $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# https://github.com/zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-autosuggestions
+
+# https://github.com/zsh-users/zsh-syntax-highlighting — must be last
+zinit light zsh-users/zsh-syntax-highlighting
 
 # See: https://iterm2.com/documentation-shell-integration.html
 source_if_exists "${HOME}/.iterm2_shell_integration.zsh"

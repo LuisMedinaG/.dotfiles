@@ -79,20 +79,19 @@ _fzf_compgen_dir() {
 #     esac
 # }
 
-# Load key bindings and completion from Homebrew installation
+# Load key bindings and completion
 if [[ -n "$HOMEBREW_PREFIX" ]]; then
-    # Key bindings
     source_if_exists "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
-
-    # Auto-completion
     [[ $- == *i* ]] && source_if_exists "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh"
+elif [[ "$(uname -s)" == "Linux" ]]; then
+    # apt-installed fzf ships examples here
+    source_if_exists "/usr/share/doc/fzf/examples/key-bindings.zsh"
+    [[ $- == *i* ]] && source_if_exists "/usr/share/doc/fzf/examples/completion.zsh"
 fi
 
-
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    # Reliable alternative to Alt+C on Mac
-    bindkey "^G" fzf-cd-widget  # Ctrl+G for directory navigation
-    
-    # Try to make Alt+C work (requires terminal Option key configuration)
-    bindkey "^[c" fzf-cd-widget
+    bindkey "^G" fzf-cd-widget   # Ctrl+G: directory navigation (reliable Alt+C alternative)
+    bindkey "^[c" fzf-cd-widget  # Alt+C: requires Option-as-Meta in terminal settings
+elif [[ "$(uname -s)" == "Linux" ]]; then
+    bindkey "^G" fzf-cd-widget   # Ctrl+G: directory navigation (VS Code / tmux safe)
 fi

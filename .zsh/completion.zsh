@@ -6,13 +6,7 @@
 [ -n "$BREW_COMPLETIONS_PATH" ] && fpath=($BREW_COMPLETIONS_PATH $fpath)
 zmodload zsh/complist
 
-# https://github.com/olets/zsh-abbr
-# The zsh manager for auto-expanding abbreviations, inspired by fish shell.
-source_if_exists $HOMEBREW_PREFIX/share/zsh-abbr/zsh-abbr.zsh
-
-if type brew >/dev/null 2>&1; then
-  FPATH=$HOMEBREW_PREFIX/share/zsh-abbr:$FPATH
-fi
+# zsh-abbr is loaded via Zinit in plugins/init.zsh (works on macOS + Linux)
 
 # ───── Optimized Completion System Init ─────
 autoload -U compinit

@@ -24,14 +24,16 @@ cd "$HOME" || exit 1
 if [ -z "${DOTFILES_PROFILE:-}" ] && [ -t 0 ]; then
   echo ""
   echo "Select profile:"
-  echo "  1) personal — Full setup: CLI + GUI apps + mackup"
-  echo "  2) work     — Minimal: CLI tools only, no casks"
+  echo "  1) personal  — Full setup: CLI + GUI apps + mackup"
+  echo "  2) work      — Minimal: CLI tools only, no casks"
+  echo "  3) linuxbox  — Linux dev box: CLI tools, no macOS-specific software"
   echo ""
-  printf "Profile [1/2]: "
+  printf "Profile [1/2/3]: "
   read -r profile_choice
   case "$profile_choice" in
-    2|work)  DOTFILES_PROFILE="work" ;;
-    *)       DOTFILES_PROFILE="personal" ;;
+    2|work)     DOTFILES_PROFILE="work" ;;
+    3|linuxbox) DOTFILES_PROFILE="linuxbox" ;;
+    *)          DOTFILES_PROFILE="personal" ;;
   esac
 else
   DOTFILES_PROFILE="${DOTFILES_PROFILE:-personal}"
@@ -66,6 +68,15 @@ for phase in "$PHASES_DIR"/0[1-3]-*.sh; do
   fi
 done
 
+# Run linuxbox phase (Linux-specific tooling, opt-in via profile)
+if [ "${DOTFILES_PROFILE}" = "linuxbox" ] && [ -f "$PHASES_DIR/05-linuxbox.sh" ]; then
+  echo ""
+  echo "▶ Running 05-linuxbox.sh..."
+  echo "────────────────────────────────────────"
+  sh "$PHASES_DIR/05-linuxbox.sh"
+  echo ""
+fi
+
 # Offer to run macOS system defaults (phase 04)
 if [ -t 0 ]; then
   printf "Would you like to apply macOS system defaults? [y/N] "
@@ -80,7 +91,7 @@ if [ -t 0 ]; then
 fi
 
 # Offer to restore app settings via mackup (personal profile only)
-if [ -t 0 ] && [ "${DOTFILES_PROFILE}" != "work" ] && command -v mackup >/dev/null 2>&1; then
+if [ -t 0 ] && [ "${DOTFILES_PROFILE}" = "personal" ] && command -v mackup >/dev/null 2>&1; then
   MACKUP_BACKUP_DIR="$HOME/.config/mackup/backup"
   if [ -d "$MACKUP_BACKUP_DIR" ] && [ -n "$(ls -A "$MACKUP_BACKUP_DIR" 2>/dev/null)" ]; then
     printf "Would you like to restore app settings via mackup? [y/N] "
@@ -123,6 +134,7 @@ if [ -n "$LATEST_BACKUP" ]; then
 fi
 echo "Open a new terminal to pick up all changes."
 echo ""
+if [ "$(uname -s)" = "Darwin" ]; then
 echo "── Manual steps (macOS permissions) ──"
 echo ""
 echo "  System Settings > Privacy & Security > Input Monitoring:"
@@ -147,3 +159,4 @@ if [ "$DOTFILES_PROFILE" = "personal" ]; then
   echo "    [ ] karabiner-build                       (generate karabiner.json)"
 fi
 echo ""
+fi  # end Darwin-only manual steps
