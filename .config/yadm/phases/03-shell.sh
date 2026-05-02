@@ -30,7 +30,7 @@ mkdir -p "$HOME/.local/state/nvim/undo"   # neovim persistent undo
 mkdir -p "$HOME/.cache/zsh"               # zsh completion cache
 mkdir -p "$HOME/.venv"                    # python virtualenvs
 
-if [ "${DOTFILES_PROFILE:-personal}" != "work" ]; then
+if [ "${DOTFILES_PROFILE:-personal}" = "personal" ]; then
   mkdir -p "$HOME/.config/mackup/backup"  # mackup app settings storage
 fi
 

@@ -3,12 +3,14 @@
 #
 
 # File operations
-alias l='eza --icons --group-directories-first -lha'
-alias ls='eza --icons --group-directories-first -l'
+if command -v eza >/dev/null 2>&1; then
+  alias l='eza --icons --group-directories-first -lha'
+  alias ls='eza --icons --group-directories-first -l'
+fi
 alias cat='bat --paging=never --plain'
 alias grep='rg'
 # Note: 'grep' alias uses ripgrep syntax. Use \grep or command grep for POSIX grep.
-alias vim='nvim'
+command -v nvim >/dev/null 2>&1 && alias vim='nvim'
 
 # ZSH Abbr (https://zsh-abbr.olets.dev)
 # Auto-expanding abbreviations, inspired by fish shell.
