@@ -57,6 +57,9 @@ fi
 zinit light olets/zsh-abbr
 
 # https://github.com/zsh-users/zsh-autosuggestions
+# my-forward-move-word is bound to the right arrow (^[OC) in options.zsh,
+# so it must be in the partial-accept list or the suggestion is never accepted.
+ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS+=(my-forward-move-word)
 zinit light zsh-users/zsh-autosuggestions
 
 # https://github.com/zsh-users/zsh-syntax-highlighting — must be last
