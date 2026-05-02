@@ -7,8 +7,8 @@ if command -v eza >/dev/null 2>&1; then
   alias l='eza --icons --group-directories-first -lha'
   alias ls='eza --icons --group-directories-first -l'
 fi
-alias cat='bat --paging=never --plain'
-alias grep='rg'
+command -v bat >/dev/null 2>&1 && alias cat='bat --paging=never --plain'
+command -v rg >/dev/null 2>&1 && alias grep='rg'
 # Note: 'grep' alias uses ripgrep syntax. Use \grep or command grep for POSIX grep.
 command -v nvim >/dev/null 2>&1 && alias vim='nvim'
 
