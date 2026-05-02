@@ -34,3 +34,5 @@
 	defaultBranch = main
 [difftool "vscode"]
 	cmd = code --wait --diff $LOCAL $REMOTE
+[safe]
+	directory = /opt/devbox
