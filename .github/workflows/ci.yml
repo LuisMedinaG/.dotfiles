@@ -24,13 +24,19 @@ jobs:
 
       - uses: ludeeus/action-shellcheck@master
         env:
+          # SC1090,SC1091: can't follow non-constant `source` (sourced files
+          # are machine-local); SC2312: subshell return masking (used for
+          # cache checks).
           SHELLCHECK_OPTS: >-
             --severity=warning
-            --exclude=SC1090,SC1091
+            --exclude=SC1090,SC1091,SC2312
         with:
+          # ShellCheck has no zsh support, so .zsh* files are validated by
+          # `zsh -n` in the zsh-syntax job instead. Only auto-detected `.sh`
+          # files (and any explicit shebangs) are scanned here.
           scandir: '.'
-          additional_files: '.zshenv .zprofile .zshrc'
-          ignore_paths: '.git tests/e2e'
+          ignore_paths: '.git tests/e2e .zsh'
+          ignore_names: '.zshenv .zprofile .zshrc'
 
   # ─── Job 2: ZSH syntax + full test suite ─────────────────────────────────────
   zsh-syntax:
@@ -87,12 +93,27 @@ jobs:
           restore-keys: |
             zinit-${{ runner.os }}-
 
-      - name: Warm caches (download Zinit + plugins on cache miss)
+      # Explicitly clone Zinit + every plugin. Relying on `zsh -i -c exit`
+      # for first-time bootstrap fails because turbo-deferred plugins never
+      # fire (no first-prompt event in `-c exit`).
+      - name: Pre-install Zinit and plugins (cache miss path)
+        if: steps.zinit-cache.outputs.cache-hit != 'true'
         run: |
-          # Two interactive runs guarantee Zinit clones itself, then loads
-          # plugins (turbo plugins fire on first-prompt event).
-          timeout 90 zsh -i -c 'sleep 1; exit 0' >/dev/null 2>&1 || true
-          timeout 60 zsh -i -c 'sleep 1; exit 0' >/dev/null 2>&1 || true
+          set -e
+          ZHOME="$HOME/.local/share/zinit"
+          mkdir -p "$ZHOME/plugins"
+          [ -d "$ZHOME/zinit.git" ] || \
+            git clone --depth=1 https://github.com/zdharma-continuum/zinit "$ZHOME/zinit.git"
+          for plugin in \
+              djui---alias-tips \
+              Aloxaf---fzf-tab \
+              olets---zsh-abbr \
+              zsh-users---zsh-autosuggestions \
+              zsh-users---zsh-syntax-highlighting; do
+            owner_repo=${plugin//---//}
+            target="$ZHOME/plugins/$plugin"
+            [ -d "$target" ] || git clone --depth=1 "https://github.com/$owner_repo" "$target"
+          done
 
       - name: Benchmark startup (5 runs, mean must be < 400ms)
         run: |
@@ -177,7 +198,34 @@ jobs:
         run: |
           cp .zshenv .zshrc .zprofile "$HOME/"
           cp -r .zsh "$HOME/.zsh"
-          mkdir -p "$HOME/.cache/zsh" "$HOME/.local/share/zinit"
+          mkdir -p "$HOME/.cache/zsh" "$HOME/.local/share/zinit/plugins"
+
+      - uses: actions/cache@v4
+        id: zinit-cache
+        with:
+          path: ~/.local/share/zinit
+          key: zinit-${{ runner.os }}-${{ hashFiles('.zsh/plugins/init.zsh') }}
+          restore-keys: |
+            zinit-${{ runner.os }}-
+
+      - name: Pre-install Zinit and plugins (cache miss path)
+        if: steps.zinit-cache.outputs.cache-hit != 'true'
+        run: |
+          set -e
+          ZHOME="$HOME/.local/share/zinit"
+          mkdir -p "$ZHOME/plugins"
+          [ -d "$ZHOME/zinit.git" ] || \
+            git clone --depth=1 https://github.com/zdharma-continuum/zinit "$ZHOME/zinit.git"
+          for plugin in \
+              djui---alias-tips \
+              Aloxaf---fzf-tab \
+              olets---zsh-abbr \
+              zsh-users---zsh-autosuggestions \
+              zsh-users---zsh-syntax-highlighting; do
+            owner_repo=${plugin//---//}
+            target="$ZHOME/plugins/$plugin"
+            [ -d "$target" ] || git clone --depth=1 "https://github.com/$owner_repo" "$target"
+          done
 
       - name: Run BATS e2e tests
         env:

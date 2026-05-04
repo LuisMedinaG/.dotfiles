@@ -22,7 +22,7 @@ yadm checkout 2>/dev/null || yadm checkout -f
 echo "Pulling latest changes..."
 # Abort any in-progress rebase before pulling to avoid a half-rebased $HOME state.
 yadm rebase --abort 2>/dev/null || true
-if ! yadm pull --rebase 2>&1; then
+if ! yadm pull --rebase; then
   echo "Error: yadm pull --rebase failed." >&2
   echo "Resolve conflicts in \$HOME, then run: yadm rebase --continue" >&2
   echo "Or discard local changes with:        yadm restore ." >&2
