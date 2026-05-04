@@ -24,8 +24,11 @@ osascript -e 'tell application "System Settings" to quit' 2>/dev/null || true
 
 # Ask for sudo upfront
 sudo -v
-# Keep sudo alive for the duration of the script
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+# Keep sudo alive; trap ensures the background loop is killed on exit.
+_sudo_keepalive() { while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done; }
+_sudo_keepalive &
+_SUDO_PID=$!
+trap 'kill "$_SUDO_PID" 2>/dev/null; wait "$_SUDO_PID" 2>/dev/null' EXIT INT TERM
 
 ###############################################################################
 # General UI/UX                                                               #

@@ -36,3 +36,10 @@
 	cmd = code --wait --diff $LOCAL $REMOTE
 [safe]
 	directory = /opt/devbox
+
+# Machine-specific git identity. Create ~/.gitconfig-work / ~/.gitconfig-linux
+# with [user] email override. These files are NOT tracked by yadm.
+[includeIf "gitdir:~/work/"]
+	path = ~/.gitconfig-work
+[includeIf "gitdir:~/Documents/Projects/work/"]
+	path = ~/.gitconfig-work

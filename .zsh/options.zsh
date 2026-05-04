@@ -5,6 +5,10 @@
 # Set up Zsh options. There are many of these that can be tweaked!
 # See: https://zsh.sourceforge.io/Doc/Release/Options.html
 
+# Enable extended glob qualifiers: needed for (N.mh-24) syntax used in
+# completion.zsh and plugins/init.zsh to check file mtime without forking find.
+setopt extendedglob
+
 # Directory navigation
 setopt autocd # cd into dir without typing 'cd'
 setopt pushdignoredups pushdminus autopushd pushd_silent

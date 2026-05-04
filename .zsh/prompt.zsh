@@ -7,8 +7,29 @@ autoload -Uz add-zsh-hook vcs_info
 # Set prompt substitution so we can use the vcs_info_message variable
 setopt prompt_subst
 
-# Run the `vcs_info` hook to grab git info before displaying the prompt
-add-zsh-hook precmd vcs_info
+# Guard: only call vcs_info when actually inside a git repo.
+# Walk $PWD upward checking for .git — filesystem only, no subprocess.
+# This avoids forking git on every prompt render when outside a repo
+# (e.g. large NFS mounts, home dir, non-project dirs).
+_in_git_repo() {
+  local dir="$PWD"
+  while [[ "$dir" != "/" ]]; do
+    # .git is a dir for normal repos, a file for worktrees
+    [[ -d "$dir/.git" || -f "$dir/.git" ]] && return 0
+    dir="${dir:h}"
+  done
+  return 1
+}
+
+_vcs_info_precmd() {
+  if _in_git_repo; then
+    vcs_info
+  else
+    vcs_info_msg_0_=""
+  fi
+}
+
+add-zsh-hook precmd _vcs_info_precmd
 
 zstyle ':vcs_info:*' enable git
 # Distinct colors: branch (magenta), unstaged (yellow), staged (green)

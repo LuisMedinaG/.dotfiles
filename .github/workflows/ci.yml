@@ -1,0 +1,222 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ─── Job 1: ShellCheck static analysis ───────────────────────────────────────
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: recursive }
+
+      - uses: ludeeus/action-shellcheck@master
+        env:
+          SHELLCHECK_OPTS: >-
+            --severity=warning
+            --exclude=SC1090,SC1091
+        with:
+          scandir: '.'
+          additional_files: '.zshenv .zprofile .zshrc'
+          ignore_paths: '.git tests/e2e'
+
+  # ─── Job 2: ZSH syntax + full test suite ─────────────────────────────────────
+  zsh-syntax:
+    name: ZSH syntax & test suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: recursive }
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y zsh shellcheck
+
+      - name: Stage dotfiles into $HOME
+        run: |
+          set -euo pipefail
+          cp .zshenv .zshrc .zprofile "$HOME/"
+          cp -r .zsh "$HOME/.zsh"
+          mkdir -p "$HOME/.config" "$HOME/.local/bin"
+          cp -r .config/yadm "$HOME/.config/yadm"
+          cp -r .config/brew "$HOME/.config/brew"
+          [ -d .local/bin ] && cp -r .local/bin/. "$HOME/.local/bin/"
+
+      - name: Run test suite
+        run: sh tests/run_all.sh
+
+  # ─── Job 3: Shell startup time budget ────────────────────────────────────────
+  # Fails if mean zsh -i -c exit time exceeds 400ms.
+  # Acts as a regression gate: any PR that re-introduces a synchronous eval
+  # will show up here before it lands on main.
+  startup-perf:
+    name: Startup time budget
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: recursive }
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y zsh
+          # Install hyperfine via cargo (not in default apt)
+          curl -fsSL https://github.com/sharkdp/hyperfine/releases/download/v1.18.0/hyperfine_1.18.0_amd64.deb \
+            -o /tmp/hyperfine.deb
+          sudo dpkg -i /tmp/hyperfine.deb
+
+      - name: Stage dotfiles into $HOME
+        run: |
+          cp .zshenv .zshrc .zprofile "$HOME/"
+          cp -r .zsh "$HOME/.zsh"
+          mkdir -p "$HOME/.cache/zsh" "$HOME/.local/share/zinit"
+
+      - name: Warm caches (first run downloads Zinit, generates compinit)
+        run: zsh -i -c exit || true
+
+      - name: Benchmark interactive startup (10 runs)
+        run: |
+          hyperfine --warmup 2 --runs 10 --export-json bench.json 'zsh -i -c exit'
+          mean_ms=$(python3 -c '
+          import json, sys
+          data = json.load(open("bench.json"))
+          ms = int(data["results"][0]["mean"] * 1000)
+          print(ms)
+          ')
+          echo "Mean startup: ${mean_ms} ms"
+          echo "Budget: 400 ms"
+          if [ "$mean_ms" -ge 400 ]; then
+            echo "FAIL: startup time ${mean_ms}ms exceeds 400ms budget."
+            echo "Run: ZPROF=1 zsh -i -c exit   to identify the bottleneck."
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: startup-bench
+          path: bench.json
+
+  # ─── Job 4: E2E (linuxbox profile in Docker) ─────────────────────────────────
+  e2e-linuxbox:
+    name: E2E linuxbox
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: recursive }
+
+      - name: Run existing test container
+        run: |
+          docker build -t dotfiles-test -f Dockerfile.test .
+          docker run --rm -e DOTFILES_PROFILE=linuxbox dotfiles-test
+
+      - name: E2E assertions in fresh container
+        run: |
+          docker run --rm -e DOTFILES_PROFILE=linuxbox \
+            -v "$PWD:/repo:ro" debian:bookworm-slim bash -euxc '
+              apt-get update -qq
+              apt-get install -qq -y zsh git curl
+              cp /repo/.zshenv /repo/.zshrc /repo/.zprofile /root/
+              cp -r /repo/.zsh /root/.zsh
+              mkdir -p /root/.cache/zsh /root/.local/share/zinit
+
+              # Shell must reach a ready state without error
+              zsh -i -c "
+                set -e
+                # source_if_exists defined in .zshenv
+                type source_if_exists >/dev/null
+                # take() defined in functions.zsh
+                type take >/dev/null
+                # HISTFILE set by history.zsh
+                [[ -n \$HISTFILE ]] || { echo FAIL: HISTFILE not set; exit 1; }
+                echo OK: shell initialised cleanly
+              "
+            '
+
+  # ─── Job 5: BATS e2e test suite ──────────────────────────────────────────────
+  bats:
+    name: BATS e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: recursive }
+
+      - name: Install BATS and dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y zsh bats git
+          # bats-core helpers
+          git clone --depth=1 https://github.com/bats-core/bats-support /tmp/bats-support
+          git clone --depth=1 https://github.com/bats-core/bats-assert  /tmp/bats-assert
+
+      - name: Stage dotfiles
+        run: |
+          cp .zshenv .zshrc .zprofile "$HOME/"
+          cp -r .zsh "$HOME/.zsh"
+          mkdir -p "$HOME/.cache/zsh" "$HOME/.local/share/zinit"
+
+      - name: Run BATS e2e tests
+        env:
+          BATS_SUPPORT_PATH: /tmp/bats-support
+          BATS_ASSERT_PATH: /tmp/bats-assert
+        run: |
+          if [ -d tests/e2e ] && ls tests/e2e/*.bats 1>/dev/null 2>&1; then
+            bats tests/e2e/
+          else
+            echo "No e2e tests yet — skipping."
+          fi
+
+  # ─── Job 6: Brewfile validation (macOS) ──────────────────────────────────────
+  brewfile:
+    name: Brewfile check (macOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Brewfiles strictly
+        run: |
+          set -euo pipefail
+          brew update
+
+          echo "── Brewfile (personal) ──"
+          brew bundle list --file .config/brew/Brewfile
+          brew bundle check --file .config/brew/Brewfile --verbose --no-upgrade
+
+          echo ""
+          echo "── Brewfile.work (minimal) ──"
+          brew bundle list --file .config/brew/Brewfile.work
+          brew bundle check --file .config/brew/Brewfile.work --verbose --no-upgrade
+
+      - name: Brewfile.work must be a subset of Brewfile
+        run: |
+          comm -23 \
+            <(brew bundle list --file .config/brew/Brewfile.work | sort) \
+            <(brew bundle list --file .config/brew/Brewfile | sort) \
+            > extras.txt
+          if [ -s extras.txt ]; then
+            echo "FAIL: Brewfile.work has packages not in Brewfile:"
+            cat extras.txt
+            exit 1
+          fi
+          echo "OK: Brewfile.work is a strict subset of Brewfile."
+
+  # ─── Job 7: Secret scanning ───────────────────────────────────────────────────
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

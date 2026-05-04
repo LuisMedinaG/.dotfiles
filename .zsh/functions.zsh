@@ -103,15 +103,17 @@ validateYaml() {
     python3 -c 'import yaml,sys;yaml.safe_load(sys.stdin)' < "$1"
 }
 
-# Build karabiner config from anywhere
+# Build karabiner config from anywhere (macOS personal only)
 karabiner-build() {
+  [[ "$(uname -s)" != Darwin ]] && { echo "karabiner-build: macOS only." >&2; return 1; }
   npm --prefix "$HOME/.config/karabiner-config" run build
 }
 
-# Reload kanata config (restarts the LaunchDaemon)
+# Reload kanata config (restarts the LaunchDaemon) (macOS personal only)
 # First run: creates log dir, copies plist, and loads the daemon
 # Subsequent runs: just restarts the service
 kanata-reload() {
+  [[ "$(uname -s)" != Darwin ]] && { echo "kanata-reload: macOS only." >&2; return 1; }
   local plist="com.lumedina.kanata.plist"
   local daemon_path="/Library/LaunchDaemons/$plist"
   local log_dir="/Library/Logs/Kanata"
@@ -134,8 +136,9 @@ kanata-reload() {
   echo "Kanata reloaded"
 }
 
-# Stop kanata daemon
+# Stop kanata daemon (macOS personal only)
 kanata-stop() {
+  [[ "$(uname -s)" != Darwin ]] && { echo "kanata-stop: macOS only." >&2; return 1; }
   sudo launchctl stop io.lumedina.kanata
   echo "Kanata stopped"
 }
