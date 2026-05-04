@@ -30,14 +30,17 @@ setup() {
 
 @test "shell initialises even when zoxide is absent" {
   if _have zoxide; then skip "zoxide is installed"; fi
-  run bash -c 'zsh -i -c "echo ok" 2>/dev/null'
+  # Capture stderr so we can verify no "command not found: zoxide" leaks.
+  run bash -c 'zsh -i -c "echo ok" 2>&1'
   [ "$status" -eq 0 ]
+  [[ "$output" != *"command not found"* ]]
 }
 
 @test "shell initialises even when pyenv is absent" {
   if _have pyenv; then skip "pyenv is installed"; fi
-  run bash -c 'zsh -i -c "echo ok" 2>/dev/null'
+  run bash -c 'zsh -i -c "echo ok" 2>&1'
   [ "$status" -eq 0 ]
+  [[ "$output" != *"command not found"* ]]
 }
 
 @test "shell initialises even when fzf is absent" {
@@ -47,9 +50,12 @@ setup() {
   [[ "$output" != *"command not found: fzf"* ]]
 }
 
-@test "nvim alias falls back gracefully when nvim is absent" {
+@test "nvim alias is NOT set when nvim is absent" {
   if _have nvim; then skip "nvim is installed"; fi
-  # alias must simply not be set — not error on shell startup
-  run bash -c 'zsh -i -c "echo ok" 2>/dev/null'
+  # The alias should be guarded: `alias vim=nvim` must only be set when
+  # nvim is in PATH. If someone removes the `command -v nvim` guard,
+  # this test catches it.
+  run bash -c 'zsh -i -c "alias vim >/dev/null 2>&1 || echo absent" 2>/dev/null'
   [ "$status" -eq 0 ]
+  [ "$output" = "absent" ]
 }
