@@ -28,7 +28,7 @@ setup() {
 
 @test "DOTFILES_PROFILE defaults to 'personal' when unset and non-interactive" {
   run sh -c 'unset DOTFILES_PROFILE; sh .config/yadm/bootstrap </dev/null 2>&1 | head -3'
-  [[ "$output" == *"personal"* ]] || [[ "$output" == *"Profile:"* ]]
+  [[ "$output" == *"personal"* ]]
 }
 
 @test "phase 03-shell.sh: required dirs are created and idempotent" {

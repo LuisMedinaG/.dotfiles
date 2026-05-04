@@ -33,9 +33,15 @@ _mean_startup_ms() {
 }
 
 @test "mean zsh startup time is under ${STARTUP_BUDGET_MS}ms" {
-  if ! command -v date >/dev/null || ! date +%s%N | grep -q '[0-9]'; then
-    skip "nanosecond date not available on this platform"
+  # `date +%s%N` on BSD/macOS prints "<seconds>N" because %N is unsupported.
+  # Reject any output containing 'N' or non-digits before measuring.
+  if ! command -v date >/dev/null; then
+    skip "date command not found"
   fi
+  stamp=$(date +%s%N 2>/dev/null || echo "")
+  case "$stamp" in
+    ''|*[!0-9]*) skip "nanosecond date not available on this platform" ;;
+  esac
 
   mean_ms=$(_mean_startup_ms)
   echo "Mean startup: ${mean_ms}ms  (budget: ${STARTUP_BUDGET_MS}ms, runs: ${RUNS})"
@@ -47,8 +53,15 @@ _mean_startup_ms() {
   fi
 }
 
-@test "shell-time() function is available and returns output" {
+# Two assertions: (1) shell-time is defined, (2) it produces expected output.
+# Splitting them lets failures point at the actual regression.
+@test "shell-time() function is defined" {
+  run zsh -i -c 'typeset -f shell-time >/dev/null'
+  [ "$status" -eq 0 ]
+}
+
+@test "shell-time() runs and prints timing output" {
   run zsh -i -c 'shell-time 1'
   [ "$status" -eq 0 ]
-  [ -n "$output" ]
+  [[ "$output" == *"Timing zsh startup"* ]]
 }

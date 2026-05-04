@@ -3,10 +3,21 @@
 #
 # Each module is expected to expose a specific symbol. If a module is silently
 # skipped (e.g. due to a typo in source_if_exists path), the sentinel is absent.
+#
+# NOTE: bats-core's `run` captures combined stdout+stderr by default. zsh's
+# interactive startup in CI can emit warnings to stderr (compinit, no TTY)
+# that pollute $output. We extract the last non-empty line of $output for
+# tests that assert a specific value.
 
 setup() {
   load "${BATS_SUPPORT_PATH}/load.bash" 2>/dev/null || true
   load "${BATS_ASSERT_PATH}/load.bash"  2>/dev/null || true
+}
+
+# Return the last non-empty line of $output. Use after `run` to isolate the
+# command's actual stdout from any stderr noise.
+_last_line() {
+  echo "$output" | awk 'NF { last = $0 } END { print last }'
 }
 
 @test "zshenv: source_if_exists() is defined" {
@@ -27,25 +38,30 @@ setup() {
 @test "history.zsh: HISTFILE is set" {
   run zsh -i -c 'echo $HISTFILE'
   [ "$status" -eq 0 ]
-  [ -n "$output" ]
+  histfile=$(_last_line)
+  [ -n "$histfile" ]
+  [[ "$histfile" == */* ]]
 }
 
 @test "history.zsh: HISTSIZE is at least 10000" {
   run zsh -i -c 'echo $HISTSIZE'
   [ "$status" -eq 0 ]
-  [ "$output" -ge 10000 ]
+  size=$(_last_line)
+  [ "$size" -ge 10000 ]
 }
 
 @test "options.zsh: EXTENDED_GLOB is set" {
   run zsh -i -c '[[ -o extendedglob ]] && echo YES'
   [ "$status" -eq 0 ]
-  [ "$output" = "YES" ]
+  last=$(_last_line)
+  [ "$last" = "YES" ]
 }
 
 @test "prompt.zsh: PROMPT is non-empty" {
   run zsh -i -c 'echo "$PROMPT"'
   [ "$status" -eq 0 ]
-  [ -n "$output" ]
+  prompt=$(_last_line)
+  [ -n "$prompt" ]
 }
 
 @test "aliases.zsh: local overrides file is sourced without error" {

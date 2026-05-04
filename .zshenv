@@ -21,12 +21,15 @@ source_if_exists() {
 # Consistent with the pyenv/jenv/zoxide cache pattern in .zprofile / plugins/init.zsh.
 if [ -z "$HOMEBREW_PREFIX" ]; then
   _brew_bin=""
-  if [ "$(uname -m)" = arm64 ] && [ -x /opt/homebrew/bin/brew ]; then
-    _brew_bin=/opt/homebrew/bin/brew
-  elif [ -x /opt/homebrew/bin/brew ]; then
+  # Cover Apple Silicon, Intel macOS, Linuxbrew, and any custom PATH-based install.
+  if [ -x /opt/homebrew/bin/brew ]; then
     _brew_bin=/opt/homebrew/bin/brew
   elif [ -x /usr/local/bin/brew ]; then
     _brew_bin=/usr/local/bin/brew
+  elif [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+    _brew_bin=/home/linuxbrew/.linuxbrew/bin/brew
+  elif command -v brew >/dev/null 2>&1; then
+    _brew_bin="$(command -v brew)"
   fi
 
   if [ -n "$_brew_bin" ]; then
@@ -34,7 +37,15 @@ if [ -z "$HOMEBREW_PREFIX" ]; then
     # Regenerate if file is missing, empty, or older than 7 days.
     if [ ! -s "$_brew_cache" ] || [ -n "$(find "$_brew_cache" -mtime +7 2>/dev/null)" ]; then
       mkdir -p "${_brew_cache%/*}"
-      "$_brew_bin" shellenv > "$_brew_cache"
+      # Atomic write: temp file in same dir, then rename. Avoids a partially
+      # written cache being sourced by a concurrent shell.
+      _brew_tmp="${_brew_cache}.tmp.$$"
+      if "$_brew_bin" shellenv > "$_brew_tmp" 2>/dev/null; then
+        mv "$_brew_tmp" "$_brew_cache"
+      else
+        rm -f "$_brew_tmp"
+      fi
+      unset _brew_tmp
     fi
     source_if_exists "$_brew_cache"
     unset _brew_cache
