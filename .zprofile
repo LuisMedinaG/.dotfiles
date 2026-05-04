@@ -1,3 +1,4 @@
+# shellcheck shell=zsh
 #
 # This file is sourced by the Z shell (zsh) when it is started as a login shell.
 #

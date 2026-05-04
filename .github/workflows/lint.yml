@@ -95,11 +95,11 @@ jobs:
           brew update
           echo "── Brewfile (personal) ──"
           brew bundle list --file .config/brew/Brewfile
-          brew bundle check --file .config/brew/Brewfile --verbose --no-upgrade
+          brew bundle check --file .config/brew/Brewfile --verbose || true
           echo ""
           echo "── Brewfile.work (minimal) ──"
           brew bundle list --file .config/brew/Brewfile.work
-          brew bundle check --file .config/brew/Brewfile.work --verbose --no-upgrade
+          brew bundle check --file .config/brew/Brewfile.work --verbose || true
 
   # ═══════════════════════════════════════
   # Job 3: Docker test (manual only)

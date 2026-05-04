@@ -1,3 +1,4 @@
+# shellcheck shell=zsh
 # Core environment variables ONLY - keep this file minimal
 # Enable zsh profiling: ZPROF=1 zsh -i -c exit
 [ "${ZPROF:-0}" = "1" ] && zmodload zsh/zprof
