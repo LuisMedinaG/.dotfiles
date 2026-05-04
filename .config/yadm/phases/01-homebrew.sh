@@ -26,9 +26,16 @@ if ! command -v brew >/dev/null 2>&1; then
     eval "$(/usr/local/bin/brew shellenv)"
   fi
 else
-  echo "Homebrew found. Updating..."
+  echo "Homebrew found. Updating formulas..."
   brew update
-  brew upgrade
+  # Only upgrade installed packages when explicitly requested.
+  # Set DOTFILES_UPGRADE=1 to run a full upgrade (e.g. on a dedicated maintenance pass).
+  if [ "${DOTFILES_UPGRADE:-0}" = "1" ]; then
+    echo "DOTFILES_UPGRADE=1: running brew upgrade..."
+    brew upgrade
+  else
+    echo "Skipping brew upgrade (set DOTFILES_UPGRADE=1 to enable)."
+  fi
 fi
 
 # Pick Brewfile based on profile

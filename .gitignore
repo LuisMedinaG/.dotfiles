@@ -115,3 +115,26 @@ hs_err_pid*
 
 # Claude
 .claude/
+
+# Machine-local overrides — sourced automatically, never committed.
+# These live in $HOME and are intentionally outside yadm tracking.
+# Listing them here is defense-in-depth: prevents accidental staging
+# if someone runs `cp ~/.zshrc.local .` while debugging.
+.zshenv.local
+.zprofile.local
+.zshrc.local
+.aliases.local
+.gitconfig-work
+.gitconfig-linux
+.gitconfig-personal
+.config/mackup/backup/
+
+# Sensitive file types that should never be committed
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+id_ecdsa
+.ssh/

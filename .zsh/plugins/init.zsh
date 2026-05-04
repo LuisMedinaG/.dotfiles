@@ -14,6 +14,8 @@ autoload -Uz _zinit
 ### End of Zinit's installer chunk
 
 # https://github.com/djui/alias-tips
+# Turbo: defer one prompt cycle — no ordering constraint.
+zinit ice wait lucid
 zinit light djui/alias-tips
 
 # https://github.com/wfxr/forgit
@@ -21,22 +23,21 @@ zinit light djui/alias-tips
 # source_if_exists $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
 
 # https://github.com/Aloxaf/fzf-tab
+# Load synchronously: zstyles must be active before first completion invocation.
 zinit light Aloxaf/fzf-tab
 
-# Apply fzf-tab config if it loaded successfully
-if (( $+functions[fzf-tab-complete] )); then
-    zstyle ':completion:*' menu no
-    zstyle ':fzf-tab:*' switch-group '<' '>'
-    zstyle ':fzf-tab:*' use-fzf-default-opts yes
+# Apply fzf-tab config unconditionally — zstyles are inert until fzf-tab loads.
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:*' switch-group '<' '>'
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
 
-    # Previews — make tab completion visual
-    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --icons --color=always $realpath'
-    zstyle ':fzf-tab:complete:*:*' fzf-preview \
-      'if [ -d $realpath ]; then eza -1 --icons --color=always $realpath; elif [ -f $realpath ]; then bat -n --color=always --line-range :50 $realpath 2>/dev/null || cat $realpath; fi'
-    zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
-      '[[ $group == "[process ID]" ]] && ps -p $word -o pid,user,%cpu,%mem,command'
-    zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags '--preview-window=down:3:wrap'
-fi
+# Previews — make tab completion visual
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --icons --color=always $realpath'
+zstyle ':fzf-tab:complete:*:*' fzf-preview \
+  'if [ -d $realpath ]; then eza -1 --icons --color=always $realpath; elif [ -f $realpath ]; then bat -n --color=always --line-range :50 $realpath 2>/dev/null || cat $realpath; fi'
+zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
+  '[[ $group == "[process ID]" ]] && ps -p $word -o pid,user,%cpu,%mem,command'
+zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags '--preview-window=down:3:wrap'
 
 # https://github.com/ajeetdsouza/zoxide
 # For completions to work, the above line must be added after compinit is called.
@@ -53,17 +54,22 @@ if command -v zoxide >/dev/null 2>&1; then
   unset _zoxide_cache _zoxide_stale
 fi
 
-# https://github.com/olets/zsh-abbr — must come before syntax-highlighting
+# https://github.com/olets/zsh-abbr — must come before syntax-highlighting.
+# Use wait group '0a' so it loads before autosuggestions (0b) and syntax-hl (0c).
+zinit ice wait'0a' lucid
 zinit light olets/zsh-abbr
 
 # https://github.com/zsh-users/zsh-autosuggestions
-# my-forward-move-word is bound to the right arrow (^[OC) in options.zsh,
-# so it must be in the partial-accept list or the suggestion is never accepted.
+# Turbo: defer past first prompt; my-forward-move-word must stay in partial-accept list.
 ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS+=(my-forward-move-word)
+zinit ice wait'0b' lucid
 zinit light zsh-users/zsh-autosuggestions
 
-# https://github.com/zsh-users/zsh-syntax-highlighting — must be last
+# https://github.com/zsh-users/zsh-syntax-highlighting — must be last.
+# wait'0c' guarantees it loads after zsh-abbr (0a) and autosuggestions (0b).
+zinit ice wait'0c' lucid
 zinit light zsh-users/zsh-syntax-highlighting
 
 # See: https://iterm2.com/documentation-shell-integration.html
-source_if_exists "${HOME}/.iterm2_shell_integration.zsh"
+# Only load inside an actual iTerm2 session — avoids file I/O in every other terminal.
+[[ -n "$ITERM_SESSION_ID" ]] && source_if_exists "${HOME}/.iterm2_shell_integration.zsh"

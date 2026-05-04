@@ -50,4 +50,23 @@ if [ "${DOTFILES_PROFILE:-personal}" != "work" ]; then
   fi
 fi
 
+# Pre-clone Zinit so the first interactive shell has no network dependency.
+# .zsh/plugins/init.zsh sources this path on every shell; we just ensure it's present.
+ZINIT_DIR="$HOME/.local/share/zinit/zinit.git"
+if [ ! -f "$ZINIT_DIR/zinit.zsh" ]; then
+  echo "Pre-installing Zinit plugin manager..."
+  mkdir -p "$HOME/.local/share/zinit"
+  chmod g-rwX "$HOME/.local/share/zinit"
+  if command -v git >/dev/null 2>&1; then
+    git clone --depth=1 https://github.com/zdharma-continuum/zinit "$ZINIT_DIR" \
+      && echo "Zinit installed." \
+      || echo "Warning: Zinit clone failed — will retry on first interactive shell." >&2
+  else
+    echo "Warning: git not found, skipping Zinit pre-install." >&2
+  fi
+else
+  echo "Zinit already installed."
+fi
+unset ZINIT_DIR
+
 echo "✓ Phase 3 complete."
