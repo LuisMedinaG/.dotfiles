@@ -21,30 +21,35 @@ setup() {
 
 @test "profile selection: DOTFILES_PROFILE=work exits 0 non-interactively" {
   # Bootstrap must not prompt when DOTFILES_PROFILE is pre-set and stdin is not a TTY.
-  run sh "$BATS_TEST_DIRNAME/../../.config/yadm/bootstrap" </dev/null
-  # We don't assert exit code (phases may fail without deps) but it must not hang.
-  [ "$status" -ne 124 ]  # 124 = timeout
+  # Wrap in `timeout 60` so a real hang surfaces as exit 124.
+  # Explicitly set DOTFILES_PROFILE=work to actually exercise the work path
+  # (setup() defaults it to linuxbox).
+  run timeout 60 env DOTFILES_PROFILE=work sh "$BATS_TEST_DIRNAME/../../.config/yadm/bootstrap" </dev/null
+  [ "$status" -ne 124 ]  # 124 = timeout (would have hung)
 }
 
 @test "DOTFILES_PROFILE defaults to 'personal' when unset and non-interactive" {
-  run sh -c 'unset DOTFILES_PROFILE; sh .config/yadm/bootstrap </dev/null 2>&1 | head -3'
+  # Use BATS_TEST_DIRNAME-relative path so the test works regardless of cwd.
+  run sh -c "unset DOTFILES_PROFILE; sh \"$BATS_TEST_DIRNAME/../../.config/yadm/bootstrap\" </dev/null 2>&1 | head -3"
   [[ "$output" == *"personal"* ]]
 }
 
 @test "phase 03-shell.sh: required dirs are created and idempotent" {
   sh "$PHASES_DIR/03-shell.sh" >/dev/null 2>&1 || true
-  # Dirs must exist after first run
+  # Phase 03 creates these unconditionally; assert they exist with no fallback.
   [ -d "$HOME/.cache/zsh" ]
-  [ -d "$HOME/.local/state/nvim/undo" ] || true  # may need neovim installed
-  # Second run must not fail
+  [ -d "$HOME/.local/state/nvim/undo" ]
+  # Second run must not fail (idempotency)
   run sh "$PHASES_DIR/03-shell.sh"
   [ "$status" -eq 0 ]
 }
 
 @test "Zinit pre-clone: zinit dir exists after phase 03 runs" {
   sh "$PHASES_DIR/03-shell.sh" >/dev/null 2>&1 || true
-  # Either Zinit was cloned by phase 03, or the network was unavailable (acceptable).
-  # The key assertion: the phase itself did not hard-fail.
+  # Phase 03 creates this dir before attempting the clone, so it should exist
+  # even if the clone itself failed (e.g. offline runner).
+  [ -d "$HOME/.local/share/zinit" ]
+  # And the phase must remain idempotent on a second run.
   run sh "$PHASES_DIR/03-shell.sh"
   [ "$status" -eq 0 ]
 }
