@@ -56,12 +56,14 @@ _mean_startup_ms() {
 # Two assertions: (1) shell-time is defined, (2) it produces expected output.
 # Splitting them lets failures point at the actual regression.
 @test "shell-time() function is defined" {
-  run zsh -i -c 'typeset -f shell-time >/dev/null'
+  run bash -c 'zsh -i -c "typeset -f shell-time >/dev/null" 2>/dev/null'
   [ "$status" -eq 0 ]
 }
 
 @test "shell-time() runs and prints timing output" {
-  run zsh -i -c 'shell-time 1'
+  # shell-time itself runs nested zsh which produces its own startup
+  # output; we keep stderr captured to verify the "Timing" header.
+  run bash -c 'zsh -i -c "shell-time 1" 2>&1'
   [ "$status" -eq 0 ]
   [[ "$output" == *"Timing zsh startup"* ]]
 }

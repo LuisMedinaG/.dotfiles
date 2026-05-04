@@ -16,33 +16,33 @@ setup() {
 
 @test "shell initialises even when eza is absent" {
   if _have eza; then skip "eza is installed — degradation not testable here"; fi
-  run zsh -i -c 'echo ok'
+  run bash -c 'zsh -i -c "echo ok" 2>&1'
   [ "$status" -eq 0 ]
   [[ "$output" != *"command not found: eza"* ]]
 }
 
 @test "shell initialises even when bat is absent" {
   if _have bat; then skip "bat is installed"; fi
-  run zsh -i -c 'echo ok'
+  run bash -c 'zsh -i -c "echo ok" 2>&1'
   [ "$status" -eq 0 ]
   [[ "$output" != *"command not found: bat"* ]]
 }
 
 @test "shell initialises even when zoxide is absent" {
   if _have zoxide; then skip "zoxide is installed"; fi
-  run zsh -i -c 'echo ok'
+  run bash -c 'zsh -i -c "echo ok" 2>/dev/null'
   [ "$status" -eq 0 ]
 }
 
 @test "shell initialises even when pyenv is absent" {
   if _have pyenv; then skip "pyenv is installed"; fi
-  run zsh -i -c 'echo ok'
+  run bash -c 'zsh -i -c "echo ok" 2>/dev/null'
   [ "$status" -eq 0 ]
 }
 
 @test "shell initialises even when fzf is absent" {
   if _have fzf; then skip "fzf is installed"; fi
-  run zsh -i -c 'echo ok'
+  run bash -c 'zsh -i -c "echo ok" 2>&1'
   [ "$status" -eq 0 ]
   [[ "$output" != *"command not found: fzf"* ]]
 }
@@ -50,6 +50,6 @@ setup() {
 @test "nvim alias falls back gracefully when nvim is absent" {
   if _have nvim; then skip "nvim is installed"; fi
   # alias must simply not be set — not error on shell startup
-  run zsh -i -c 'echo ok'
+  run bash -c 'zsh -i -c "echo ok" 2>/dev/null'
   [ "$status" -eq 0 ]
 }

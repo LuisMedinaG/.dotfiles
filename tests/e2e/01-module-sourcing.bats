@@ -4,68 +4,66 @@
 # Each module is expected to expose a specific symbol. If a module is silently
 # skipped (e.g. due to a typo in source_if_exists path), the sentinel is absent.
 #
-# NOTE: bats-core's `run` captures combined stdout+stderr by default. zsh's
-# interactive startup in CI can emit warnings to stderr (compinit, no TTY)
-# that pollute $output. We extract the last non-empty line of $output for
-# tests that assert a specific value.
+# IMPORTANT — stderr handling:
+#   bats-core's `run` captures combined stdout+stderr by default. zsh's
+#   interactive startup in CI emits warnings ("not interactive and can't
+#   open terminal", "compinit: initialization aborted") that pollute
+#   $output. We wrap every zsh invocation with `bash -c '... 2>/dev/null'`
+#   so only the inner command's stdout makes it into $output.
 
 setup() {
   load "${BATS_SUPPORT_PATH}/load.bash" 2>/dev/null || true
   load "${BATS_ASSERT_PATH}/load.bash"  2>/dev/null || true
 }
 
-# Return the last non-empty line of $output. Use after `run` to isolate the
-# command's actual stdout from any stderr noise.
-_last_line() {
-  echo "$output" | awk 'NF { last = $0 } END { print last }'
+# Run a zsh command interactively and capture only its stdout.
+_zsh_stdout() {
+  bash -c "zsh -i -c '$1' 2>/dev/null"
 }
 
 @test "zshenv: source_if_exists() is defined" {
-  run zsh -i -c 'type source_if_exists'
+  run bash -c 'zsh -i -c "type source_if_exists" 2>/dev/null'
   [ "$status" -eq 0 ]
 }
 
 @test "functions.zsh: take() is defined" {
-  run zsh -i -c 'type take'
+  run bash -c 'zsh -i -c "type take" 2>/dev/null'
   [ "$status" -eq 0 ]
 }
 
 @test "functions.zsh: addToPATH() is defined" {
-  run zsh -i -c 'type addToPATH'
+  run bash -c 'zsh -i -c "type addToPATH" 2>/dev/null'
   [ "$status" -eq 0 ]
 }
 
 @test "history.zsh: HISTFILE is set" {
-  run zsh -i -c 'echo $HISTFILE'
+  run bash -c 'zsh -i -c "echo \$HISTFILE" 2>/dev/null'
   [ "$status" -eq 0 ]
-  histfile=$(_last_line)
-  [ -n "$histfile" ]
-  [[ "$histfile" == */* ]]
+  [ -n "$output" ]
+  [[ "$output" == */* ]]
 }
 
 @test "history.zsh: HISTSIZE is at least 10000" {
-  run zsh -i -c 'echo $HISTSIZE'
+  run bash -c 'zsh -i -c "echo \$HISTSIZE" 2>/dev/null'
   [ "$status" -eq 0 ]
-  size=$(_last_line)
-  [ "$size" -ge 10000 ]
+  [ "$output" -ge 10000 ]
 }
 
 @test "options.zsh: EXTENDED_GLOB is set" {
-  run zsh -i -c '[[ -o extendedglob ]] && echo YES'
+  run bash -c 'zsh -i -c "[[ -o extendedglob ]] && echo YES" 2>/dev/null'
   [ "$status" -eq 0 ]
-  last=$(_last_line)
-  [ "$last" = "YES" ]
+  [ "$output" = "YES" ]
 }
 
 @test "prompt.zsh: PROMPT is non-empty" {
-  run zsh -i -c 'echo "$PROMPT"'
+  run bash -c 'zsh -i -c "echo \"\$PROMPT\"" 2>/dev/null'
   [ "$status" -eq 0 ]
-  prompt=$(_last_line)
-  [ -n "$prompt" ]
+  [ -n "$output" ]
 }
 
 @test "aliases.zsh: local overrides file is sourced without error" {
   # aliases.local may not exist — source_if_exists must not error either way
-  run zsh -i -c 'echo ok'
+  run bash -c 'zsh -i -c "echo ok" 2>/dev/null'
   [ "$status" -eq 0 ]
+  [ "$output" = "ok" ]
 }
