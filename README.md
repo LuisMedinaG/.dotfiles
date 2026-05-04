@@ -64,6 +64,8 @@ After cloning, open a new terminal and run `exec zsh` to trigger Zinit's first-r
 
 ### After bootstrap (all platforms)
 
+Bootstrap saves a timestamped log to `~/.config/yadm/logs/bootstrap-YYYYMMDD-HHMMSS.log`. Check it if anything went wrong.
+
 **Merge your previous config** — the backup is saved to `~/.config/yadm/backup/<timestamp>/`:
 
 ```bash
@@ -349,6 +351,7 @@ Results at [Actions](../../actions).
 │       ├── bootstrap           # Entry point (calls phases)
 │       ├── encrypt             # Encrypted file list
 │       ├── backup/              # Timestamped backups of overwritten files
+│       ├── logs/                # Bootstrap run logs (bootstrap-YYYYMMDD-HHMMSS.log)
 │       └── phases/
 │           ├── 00-backup.sh    # Backup existing dotfiles
 │           ├── 01-homebrew.sh  # Install packages
