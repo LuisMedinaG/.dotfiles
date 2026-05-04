@@ -41,6 +41,13 @@ fi
 export DOTFILES_PROFILE
 echo "Profile: $DOTFILES_PROFILE"
 
+LOG_DIR="$HOME/.config/yadm/logs"
+LOG_FILE="$LOG_DIR/bootstrap-$(date +%Y%m%d-%H%M%S).log"
+mkdir -p "$LOG_DIR"
+echo "Logging to: $LOG_FILE"
+echo "bootstrap started: $(date)" >> "$LOG_FILE"
+echo "profile: $DOTFILES_PROFILE"  >> "$LOG_FILE"
+
 PHASES_DIR="$HOME/.config/yadm/phases"
 
 if [ ! -d "$PHASES_DIR" ]; then
@@ -48,33 +55,30 @@ if [ ! -d "$PHASES_DIR" ]; then
   exit 1
 fi
 
+run_phase() {
+  _phase="$1"
+  _name="$(basename "$_phase")"
+  echo ""
+  echo "▶ Running $_name..."
+  echo "────────────────────────────────────────"
+  printf '\n▶ %s\n────────────────────────────────────────\n' "$_name" >> "$LOG_FILE"
+  sh "$_phase" 2>&1 | tee -a "$LOG_FILE"
+  echo ""
+}
+
 # Phase 00: Backup existing files before overwriting
 if [ -f "$PHASES_DIR/00-backup.sh" ]; then
-  echo ""
-  echo "▶ Running 00-backup.sh..."
-  echo "────────────────────────────────────────"
-  sh "$PHASES_DIR/00-backup.sh"
-  echo ""
+  run_phase "$PHASES_DIR/00-backup.sh"
 fi
 
 # Run phases 01–03 (04-macos is opt-in)
 for phase in "$PHASES_DIR"/0[1-3]-*.sh; do
-  if [ -f "$phase" ]; then
-    echo ""
-    echo "▶ Running $(basename "$phase")..."
-    echo "────────────────────────────────────────"
-    sh "$phase"
-    echo ""
-  fi
+  [ -f "$phase" ] && run_phase "$phase"
 done
 
 # Run linuxbox phase (Linux-specific tooling, opt-in via profile)
 if [ "${DOTFILES_PROFILE}" = "linuxbox" ] && [ -f "$PHASES_DIR/05-linuxbox.sh" ]; then
-  echo ""
-  echo "▶ Running 05-linuxbox.sh..."
-  echo "────────────────────────────────────────"
-  sh "$PHASES_DIR/05-linuxbox.sh"
-  echo ""
+  run_phase "$PHASES_DIR/05-linuxbox.sh"
 fi
 
 # Offer to run macOS system defaults (phase 04)
@@ -82,11 +86,7 @@ if [ -t 0 ] && [ "$(uname -s)" = "Darwin" ]; then
   printf "Would you like to apply macOS system defaults? [y/N] "
   read -r answer
   if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
-    echo ""
-    echo "▶ Running 04-macos.sh..."
-    echo "────────────────────────────────────────"
-    sh "$PHASES_DIR/04-macos.sh"
-    echo ""
+    run_phase "$PHASES_DIR/04-macos.sh"
   fi
 fi
 
@@ -100,7 +100,8 @@ if [ -t 0 ] && [ "${DOTFILES_PROFILE}" = "personal" ] && command -v mackup >/dev
       echo ""
       echo "▶ Restoring app settings with mackup..."
       echo "────────────────────────────────────────"
-      mackup restore --force
+      printf '\n▶ mackup restore\n────────────────────────────────────────\n' >> "$LOG_FILE"
+      mackup restore --force 2>&1 | tee -a "$LOG_FILE"
       echo "✓ mackup restore complete."
       echo ""
     fi
@@ -110,6 +111,8 @@ fi
 echo "════════════════════════════════════════"
 echo "✓ Bootstrap complete!"
 echo "════════════════════════════════════════"
+echo "bootstrap finished: $(date)" >> "$LOG_FILE"
+echo "Log saved to: $LOG_FILE"
 echo ""
 if [ ! -t 0 ]; then
   echo "Optional: run macOS system defaults with:"
