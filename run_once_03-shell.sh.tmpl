@@ -2,9 +2,11 @@
 #
 # Phase 3: Shell — configure fzf key bindings, create needed directories.
 #
-# Run standalone:  sh ~/.config/yadm/phases/03-shell.sh
+# chezmoi runs this exactly once (re-runs only if this file's content changes).
 #
 set -eu
+
+DOTFILES_PROFILE="{{ .dotfiles_profile }}"
 
 echo "═══ Phase 3: Shell setup ═══"
 
@@ -30,14 +32,13 @@ mkdir -p "$HOME/.local/state/nvim/undo"   # neovim persistent undo
 mkdir -p "$HOME/.cache/zsh"               # zsh completion cache
 mkdir -p "$HOME/.venv"                    # python virtualenvs
 
-if [ "${DOTFILES_PROFILE:-personal}" = "personal" ]; then
+if [ "$DOTFILES_PROFILE" = "personal" ]; then
   mkdir -p "$HOME/.config/mackup/backup"  # mackup app settings storage
 fi
 
 # shell-ai: AI-powered shell commands (personal + linuxbox only, not work)
 # Requires OPENAI_API_KEY in ~/.zshenv.local (or configure another provider)
-# https://github.com/ricklamers/shell-ai
-if [ "${DOTFILES_PROFILE:-personal}" != "work" ]; then
+if [ "$DOTFILES_PROFILE" != "work" ]; then
   if command -v pipx >/dev/null 2>&1; then
     if ! pipx list 2>/dev/null | grep -q shell-ai; then
       echo "Installing shell-ai..."
@@ -51,7 +52,6 @@ if [ "${DOTFILES_PROFILE:-personal}" != "work" ]; then
 fi
 
 # Pre-clone Zinit so the first interactive shell has no network dependency.
-# .zsh/plugins/init.zsh sources this path on every shell; we just ensure it's present.
 ZINIT_DIR="$HOME/.local/share/zinit/zinit.git"
 if [ ! -f "$ZINIT_DIR/zinit.zsh" ]; then
   echo "Pre-installing Zinit plugin manager..."

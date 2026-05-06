@@ -13,7 +13,7 @@ brew "ripgrep"      # Search tool
 brew "tree"
 brew "eza"          # Modern ls replacement
 brew "jq"
-brew "yadm"         # Dotfile management
+brew "chezmoi"      # Dotfile management
 brew "zoxide"       # Smarter cd
 brew "gh"           # GitHub CLI
 brew "tmux"         # Terminal multiplexer

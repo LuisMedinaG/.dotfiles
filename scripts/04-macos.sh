@@ -2,7 +2,7 @@
 #
 # Phase 4: macOS defaults — sensible system preferences for developers.
 #
-# Run standalone:  sh ~/.config/yadm/phases/04-macos.sh
+# Run standalone:  sh "$(chezmoi source-path)/scripts/04-macos.sh"
 #
 # NOTE: This is OPT-IN. The bootstrap does NOT run this automatically.
 # After running, log out and back in (or restart) for changes to take effect.

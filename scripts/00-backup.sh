@@ -5,7 +5,7 @@
 # Creates a timestamped backup of any tracked file that already exists in $HOME.
 # Only files that would be overwritten by `yadm checkout` are backed up.
 #
-# Run standalone:  sh ~/.config/yadm/phases/00-backup.sh
+# Run standalone:  sh "$(chezmoi source-path)/scripts/00-backup.sh"
 #
 set -eu
 
@@ -13,17 +13,15 @@ echo "═══ Phase 0: Backup ═══"
 
 cd "$HOME" || exit 1
 
-BACKUP_DIR="$HOME/.config/yadm/backup/$(date +%Y%m%d_%H%M%S)"
+BACKUP_DIR="$HOME/.config/chezmoi-backup/$(date +%Y%m%d_%H%M%S)"
 
-# Get the list of files yadm tracks (or will track after checkout).
-# On first clone, yadm may already have the index even before checkout.
+# Get list of files chezmoi would apply (or fallback to key files).
 tracked_files=""
-if command -v yadm >/dev/null 2>&1; then
-  tracked_files="$(yadm ls-files 2>/dev/null || true)"
+if command -v chezmoi >/dev/null 2>&1; then
+  tracked_files="$(chezmoi managed 2>/dev/null || true)"
 fi
 
-# Fallback: if yadm ls-files returns nothing (e.g., pre-clone), use a
-# hardcoded list of the most important shell/config files.
+# Fallback if chezmoi isn't initialised yet
 if [ -z "$tracked_files" ]; then
   tracked_files=".zshenv .zshrc .zprofile .gitconfig .config/nvim/init.vim .config/tmux/tmux.conf"
 fi

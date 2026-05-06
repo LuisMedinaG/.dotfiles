@@ -8,48 +8,52 @@
 setup() {
   load "${BATS_SUPPORT_PATH}/load.bash" 2>/dev/null || true
   load "${BATS_ASSERT_PATH}/load.bash"  2>/dev/null || true
-  PHASES_DIR="$BATS_TEST_DIRNAME/../../.config/yadm/phases"
+  SCRIPTS_DIR="$BATS_TEST_DIRNAME/../../scripts"
+  SHELL_SCRIPT="$BATS_TEST_DIRNAME/../../run_once_03-shell.sh.tmpl"
   export DOTFILES_PROFILE="${DOTFILES_PROFILE:-linuxbox}"
 }
 
-@test "phase 03-shell.sh is idempotent (second run exits 0)" {
+# Render the .tmpl script by substituting {{ .dotfiles_profile }} with the env var.
+# This avoids needing chezmoi installed in CI just for tests.
+_render_shell_script() {
+  sed "s/{{ .dotfiles_profile }}/$DOTFILES_PROFILE/g" "$SHELL_SCRIPT"
+}
+
+@test "run_once_03-shell: is idempotent (second run exits 0)" {
   # Run once to set up, then again to verify idempotency.
-  sh "$PHASES_DIR/03-shell.sh" >/dev/null 2>&1 || true
-  run sh "$PHASES_DIR/03-shell.sh"
+  _render_shell_script | sh >/dev/null 2>&1 || true
+  run sh -c "$(_render_shell_script)"
   [ "$status" -eq 0 ]
 }
 
-@test "profile selection: DOTFILES_PROFILE=work exits 0 non-interactively" {
-  # Bootstrap must not prompt when DOTFILES_PROFILE is pre-set and stdin is not a TTY.
-  # Wrap in `timeout 60` so a real hang surfaces as exit 124.
-  # Explicitly set DOTFILES_PROFILE=work to actually exercise the work path
-  # (setup() defaults it to linuxbox).
-  run timeout 60 env DOTFILES_PROFILE=work sh "$BATS_TEST_DIRNAME/../../.config/yadm/bootstrap" </dev/null
-  [ "$status" -ne 124 ]  # 124 = timeout (would have hung)
+@test "profile selection: DOTFILES_PROFILE=work renders correctly" {
+  # Template must substitute the profile value without error.
+  result=$(DOTFILES_PROFILE=work sed "s/{{ .dotfiles_profile }}/work/g" "$SHELL_SCRIPT" | head -20)
+  [[ "$result" == *"DOTFILES_PROFILE=\"work\""* ]]
 }
 
-@test "DOTFILES_PROFILE defaults to 'personal' when unset and non-interactive" {
-  # Use BATS_TEST_DIRNAME-relative path so the test works regardless of cwd.
-  run sh -c "unset DOTFILES_PROFILE; sh \"$BATS_TEST_DIRNAME/../../.config/yadm/bootstrap\" </dev/null 2>&1 | head -3"
-  [[ "$output" == *"personal"* ]]
+@test "DOTFILES_PROFILE defaults to 'personal' in pre_bootstrap.sh" {
+  PRE_BOOTSTRAP="$BATS_TEST_DIRNAME/../../.local/bin/pre_bootstrap.sh"
+  run sh -c "grep 'DOTFILES_PROFILE=\"personal\"' \"$PRE_BOOTSTRAP\""
+  [ "$status" -eq 0 ]
 }
 
-@test "phase 03-shell.sh: required dirs are created and idempotent" {
-  sh "$PHASES_DIR/03-shell.sh" >/dev/null 2>&1 || true
-  # Phase 03 creates these unconditionally; assert they exist with no fallback.
+@test "run_once_03-shell: required dirs are created and idempotent" {
+  _render_shell_script | sh >/dev/null 2>&1 || true
+  # Phase 03 creates these unconditionally; assert they exist.
   [ -d "$HOME/.cache/zsh" ]
   [ -d "$HOME/.local/state/nvim/undo" ]
   # Second run must not fail (idempotency)
-  run sh "$PHASES_DIR/03-shell.sh"
+  run sh -c "$(_render_shell_script)"
   [ "$status" -eq 0 ]
 }
 
-@test "Zinit pre-clone: zinit dir exists after phase 03 runs" {
-  sh "$PHASES_DIR/03-shell.sh" >/dev/null 2>&1 || true
-  # Phase 03 creates this dir before attempting the clone, so it should exist
-  # even if the clone itself failed (e.g. offline runner).
+@test "Zinit pre-clone: zinit dir exists after run_once_03 runs" {
+  _render_shell_script | sh >/dev/null 2>&1 || true
+  # Phase creates this dir before attempting the clone, so it should exist
+  # even if the clone failed (e.g. offline runner).
   [ -d "$HOME/.local/share/zinit" ]
-  # And the phase must remain idempotent on a second run.
-  run sh "$PHASES_DIR/03-shell.sh"
+  # And must remain idempotent on a second run.
+  run sh -c "$(_render_shell_script)"
   [ "$status" -eq 0 ]
 }

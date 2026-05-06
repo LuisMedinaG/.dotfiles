@@ -2,7 +2,7 @@
 #
 # Phase 5: Linux dev box — system packages not available via Homebrew.
 #
-# Run standalone:  sh ~/.config/yadm/phases/05-linuxbox.sh
+# chezmoi runs this exactly once (re-runs only if this file's content changes).
 #
 set -eu
 
@@ -19,7 +19,7 @@ if ! command -v sudo >/dev/null 2>&1; then
   exit 0
 fi
 
-# ─── apt packages ────────────────────────────────────────────────────────────
+# ─── apt packages ─────────────────────────────────────────────────────────────
 
 sudo apt-get update -qq
 
@@ -35,7 +35,7 @@ if ! command -v zoxide >/dev/null 2>&1; then
   sudo apt-get install -y --no-install-recommends zoxide
 fi
 
-# ─── eza (modern ls, not in Ubuntu main repos) ───────────────────────────────
+# ─── eza (modern ls, not in Ubuntu main repos) ────────────────────────────────
 
 if ! command -v eza >/dev/null 2>&1; then
   echo "Installing eza..."
@@ -51,7 +51,7 @@ http://deb.gierens.de stable main" \
   sudo apt-get install -y --no-install-recommends eza
 fi
 
-# ─── pipx + shell-ai ─────────────────────────────────────────────────────────
+# ─── pipx + shell-ai ──────────────────────────────────────────────────────────
 
 if ! command -v pipx >/dev/null 2>&1; then
   echo "Installing pipx..."
@@ -65,7 +65,7 @@ else
   echo "shell-ai already installed."
 fi
 
-# ─── required directories (mirrors 03-shell.sh for Linux) ────────────────────
+# ─── required directories (mirrors 03-shell for Linux) ────────────────────────
 
 mkdir -p "$HOME/.local/state/nvim/undo"
 mkdir -p "$HOME/.cache/zsh"

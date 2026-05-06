@@ -25,8 +25,7 @@ Modular ZSH config sourced by `.zshrc` in this order:
 | `karabiner-build` | Build Karabiner config from `~/.config/karabiner-config/` |
 | `kanata-reload` | Reload kanata daemon (auto-setup on first run) |
 | `shell-time [n]` | Benchmark zsh startup (default 10 iterations) |
-| `update-all` | Update Homebrew + Zinit plugins + yadm pull + mackup backup |
-| `dotfiles-sync <to-clone\|to-yadm>` | Sync between yadm worktree and git clone |
+| `update-all` | Update Homebrew + Zinit plugins + chezmoi update + mackup backup |
 
 ## Adding local overrides
 

@@ -10,7 +10,7 @@ brew "git"
 brew "zsh"
 brew "jq"
 brew "tree"
-brew "yadm"         # Dotfile management
+brew "chezmoi"      # Dotfile management
 brew "gh"           # GitHub CLI
 brew "tmux"         # Terminal multiplexer
 
