@@ -1,0 +1,18 @@
+# Files in this repo that are NOT deployed to $HOME by chezmoi.
+# Everything not listed here (or in a parent .chezmoiignore) will be
+# applied to $HOME when running `chezmoi apply`.
+
+# Repo metadata
+README.md
+CLAUDE.md
+.github/
+tests/
+
+# Plain scripts kept for manual/standalone use
+scripts/
+
+# chezmoi config (per-machine, never committed)
+# ~/.config/chezmoi/chezmoi.toml is written by pre_bootstrap.sh
+
+# Mackup backup dir — large, machine-specific, not tracked
+.config/mackup/backup/

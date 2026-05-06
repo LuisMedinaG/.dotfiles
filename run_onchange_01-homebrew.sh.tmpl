@@ -1,10 +1,16 @@
 #!/bin/sh
 #
-# Phase 1: Homebrew — install or update Homebrew and all packages from Brewfile.
+# Phase 1: Homebrew — install or update Homebrew and packages from Brewfile.
 #
-# Run standalone:  sh ~/.config/yadm/phases/01-homebrew.sh
+# chezmoi re-runs this whenever the rendered content changes, which includes
+# when either Brewfile changes (their checksums are embedded below).
+#
+# Brewfile checksum:      {{ include ".config/brew/Brewfile" | sha256sum }}
+# Brewfile.work checksum: {{ include ".config/brew/Brewfile.work" | sha256sum }}
 #
 set -eu
+
+DOTFILES_PROFILE="{{ .dotfiles_profile }}"
 
 echo "═══ Phase 1: Homebrew ═══"
 
@@ -29,17 +35,14 @@ else
   echo "Homebrew found. Updating formulas..."
   brew update
   # Only upgrade installed packages when explicitly requested.
-  # Set DOTFILES_UPGRADE=1 to run a full upgrade (e.g. on a dedicated maintenance pass).
   if [ "${DOTFILES_UPGRADE:-0}" = "1" ]; then
     echo "DOTFILES_UPGRADE=1: running brew upgrade..."
     brew upgrade
-  else
-    echo "Skipping brew upgrade (set DOTFILES_UPGRADE=1 to enable)."
   fi
 fi
 
 # Pick Brewfile based on profile
-if [ "${DOTFILES_PROFILE:-personal}" = "work" ]; then
+if [ "$DOTFILES_PROFILE" = "work" ]; then
   BREWFILE="$HOME/.config/brew/Brewfile.work"
 else
   BREWFILE="$HOME/.config/brew/Brewfile"

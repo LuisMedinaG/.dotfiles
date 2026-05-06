@@ -96,7 +96,7 @@ shell-time() {
   done
 }
 
-# Update everything: Homebrew (if present), Zinit plugins, yadm, and app settings
+# Update everything: Homebrew (if present), Zinit plugins, chezmoi, and app settings
 update-all() {
   if command -v brew >/dev/null 2>&1; then
     echo "── Homebrew ──"
@@ -108,48 +108,12 @@ update-all() {
   zsh -ic "zinit update --all" 2>/dev/null
 
   echo ""
-  echo "── yadm pull ──"
-  yadm pull
+  echo "── chezmoi update ──"
+  chezmoi update
 
   if command -v mackup >/dev/null 2>&1; then
     echo ""
     echo "── Mackup (app settings backup) ──"
     mackup backup --force
   fi
-}
-
-# Sync dotfiles between yadm worktree ($HOME) and git clone
-dotfiles-sync() {
-  # macOS: ~/Documents/Projects/.dotfiles  Linux: ~/projects/.dotfiles
-  local clone_dir
-  if [[ "$(uname -s)" == "Darwin" ]]; then
-    clone_dir="$HOME/Documents/Projects/.dotfiles"
-  else
-    clone_dir="$HOME/projects/.dotfiles"
-  fi
-  if [ ! -d "$clone_dir/.git" ]; then
-    echo "Error: Git clone not found at $clone_dir" >&2
-    return 1
-  fi
-
-  local direction="${1:-}"
-  case "$direction" in
-    to-clone)
-      echo "Syncing yadm → git clone..."
-      yadm diff --name-only | while read -r file; do
-        cp "$HOME/$file" "$clone_dir/$file" 2>/dev/null && echo "  copied $file"
-      done
-      ;;
-    to-yadm)
-      echo "Syncing git clone → yadm..."
-      git -C "$clone_dir" diff --name-only | while read -r file; do
-        cp "$clone_dir/$file" "$HOME/$file" 2>/dev/null && echo "  copied $file"
-      done
-      ;;
-    *)
-      echo "Usage: dotfiles-sync <to-clone|to-yadm>"
-      echo "  to-clone  Copy changed files from \$HOME to git clone"
-      echo "  to-yadm   Copy changed files from git clone to \$HOME"
-      ;;
-  esac
 }
