@@ -19,11 +19,8 @@ Modular ZSH config sourced by `.zshrc` in this order:
 |----------|-------------|
 | `nvm` / `node` / `npm` | Lazy-loaded wrappers — NVM only sourced on first use |
 | `_nvm_auto_use` | Auto `nvm use` when `cd`-ing into a directory with `.nvmrc` |
-| `reload-ssh` | Reload Yubikey SSH keys via OpenSC PKCS#11 |
 | `activate-venv` | Fuzzy-select and activate a Python venv from `~/.venv/` |
 | `take <dir>` | `mkdir -p` + `cd` |
-| `addToPATH <path>` | Idempotent PATH prepend |
-| `cache_eval <name> <cmd> [days]` | Cache eval output to `~/.cache/zsh/` (default 7-day TTL) |
 | `validateYaml <file>` | Validate YAML via Python |
 | `karabiner-build` | Build Karabiner config from `~/.config/karabiner-config/` |
 | `kanata-reload` | Reload kanata daemon (auto-setup on first run) |

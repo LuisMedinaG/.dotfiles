@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Phase 2: Dotfiles — checkout latest dotfiles and init submodules.
+# Phase 2: Dotfiles — checkout latest dotfiles.
 #
 # Run standalone:  sh ~/.config/yadm/phases/02-dotfiles.sh
 #
@@ -28,9 +28,6 @@ if ! yadm pull --rebase; then
   echo "Or discard local changes with:        yadm restore ." >&2
   exit 1
 fi
-
-echo "Updating submodules..."
-yadm submodule update --init --recursive 2>/dev/null || echo "Warning: no submodules configured."
 
 echo "Setting yadm alternates and permissions..."
 yadm alt

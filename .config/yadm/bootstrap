@@ -8,7 +8,7 @@
 # Phases:
 #   00-backup.sh    — Backup existing dotfiles before overwriting
 #   01-homebrew.sh  — Install Homebrew + Brewfile packages
-#   02-dotfiles.sh  — Checkout dotfiles, init submodules
+#   02-dotfiles.sh  — Checkout dotfiles, pull latest
 #   03-shell.sh     — fzf setup, create required directories
 #   04-macos.sh     — macOS defaults (OPT-IN, not run by default)
 #

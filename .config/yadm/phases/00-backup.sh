@@ -50,7 +50,7 @@ if [ "$backed_up" -gt 0 ]; then
   echo ""
   echo "After bootstrap, review the backup and merge what you need into:"
   echo "  ~/.zshenv.local   (env vars, PATH — loaded by ALL shells)"
-  echo "  ~/.zprofile.local (login-shell setup — pyenv, jenv, etc.)"
+  echo "  ~/.zprofile.local (login-shell setup — version managers, etc.)"
   echo "  ~/.zshrc.local    (aliases, functions, interactive config)"
 else
   echo "No existing files to back up."

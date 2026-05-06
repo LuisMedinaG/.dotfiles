@@ -1,125 +1,41 @@
-# ~/.gitignore
-#
-# This .gitignore is for yadm, which tracks dotfiles in your $HOME directory.
-# Add patterns for files and directories that should NOT be committed to your dotfiles repository.
+# ~/.gitignore for yadm — tracks dotfiles in $HOME.
+# Add patterns for files that should NOT be committed.
 
-# General OS-generated files
-############################################
+# OS noise
 .DS_Store
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
-Thumbs.db
-Desktop.ini
-
-# macOS specific
-############################################
-.AppleDouble
-.LSOverride
-.DocumentRevisions-V100
 .fseventsd
-.VolumeIcon.icns
-.com.apple.timemachine.donotpresent
-.CFUserTextEncoding
+Thumbs.db
 
-# IDE and Editor specific files
-############################################
-# VSCode
-.vscode/
-.vscode-server/
-*.code-workspace
-
-# Vim/Neovim
+# Editor noise
 *.swp
 *.swo
-*.swn
-*.viminfo 
+*.viminfo
+.vscode/
+.vscode-server/
 
-# Build artifacts, dependencies, and compiled files
-############################################
+# Build/dependency artifacts (commonly created in $HOME during dev)
 node_modules/
-bower_components/
-vendor/
-target/
-build/
-dist/
-out/
-output/
-gen/
-tmp/
-temp/
 __pycache__/
 *.pyc
-*.pyo
-*.o
-*.obj
-*.class
-*.jar
-*.war
-*.ear
-*.dll
-*.exe
-*.so
-*.dylib
-*.bundle
-*.deb
-*.rpm
-*.snap
-*.msi
-*.pkg
-
-# Python virtual environments
-############################################
-venv/
-.venv/
-env/
-.env/
-ENV/
 .tox/
-pip-wheel-metadata/
 
-# Log files and crash dumps
-############################################
-*.log
-logs/
-*.log.*
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-appsignal.log
-*.crash
-hs_err_pid*
-
-# Archives (unless explicitly versioning a specific small archive)
-############################################
-*.zip
-*.tar
-*.tar.gz
-*.tgz
-*.tar.bz2
-*.tbz
-*.rar
-*.7z
-*.gz
-*.bz2
-*.xz
-
-# Large data, cache, and frequently changing directories
-# Be very careful with these. You usually don't want them in dotfiles.
-############################################
+# Caches and logs
 .cache/
+*.log
 
-# Karabiner config generated files
-.config/karabiner-config/package-lock.json
+# Python venvs
+.venv/
+venv/
+env/
 
-# Claude
+# Tooling state
 .claude/
 
 # Machine-local overrides — sourced automatically, never committed.
 # These live in $HOME and are intentionally outside yadm tracking.
-# Listing them here is defense-in-depth: prevents accidental staging
-# if someone runs `cp ~/.zshrc.local .` while debugging.
 .zshenv.local
 .zprofile.local
 .zshrc.local
@@ -129,7 +45,7 @@ hs_err_pid*
 .gitconfig-personal
 .config/mackup/backup/
 
-# Sensitive file types that should never be committed
+# Secrets — never commit
 *.pem
 *.key
 *.p12
