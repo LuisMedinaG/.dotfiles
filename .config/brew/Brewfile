@@ -17,6 +17,8 @@ brew "yadm"         # Dotfile management
 brew "zoxide"       # Smarter cd
 brew "gh"           # GitHub CLI
 brew "tmux"         # Terminal multiplexer
+tap "cormacrelf/tap"
+brew "cormacrelf/tap/dark-notify" # Auto-switch tmux theme on macOS light/dark mode
 brew "mackup"       # App settings backup
 brew "kanata"       # Keyboard remapping daemon
 
