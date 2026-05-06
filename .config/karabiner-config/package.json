@@ -12,7 +12,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^22.15.21",
-    "eslint": "^9.27.0",
+    "eslint": "^10.0.0",
     "karabiner.ts": "latest",
     "prettier": "^2",
     "tsx": "^4",
