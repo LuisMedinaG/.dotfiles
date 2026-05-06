@@ -153,3 +153,26 @@ dotfiles-sync() {
       ;;
   esac
 }
+
+# Open file in nvim, splitting tmux window if inside a session.
+# Without tmux, just opens nvim normally.
+# Usage: nv file.txt
+#   nv        → opens nvim in current pane
+#   nv file   → splits tmux side-by-side (-h) and opens file
+nv() {
+  if [ -z "$TMUX" ] || [ $# -eq 0 ]; then
+    command nvim "$@"
+    return
+  fi
+  tmux split-window -h -c "#{pane_current_path}" nvim "$@"
+}
+
+# Open file in nvim with a top/bottom split (tmux -v).
+# Usage: nvl file.txt
+nvl() {
+  if [ -z "$TMUX" ] || [ $# -eq 0 ]; then
+    command nvim "$@"
+    return
+  fi
+  tmux split-window -v -c "#{pane_current_path}" nvim "$@"
+}
