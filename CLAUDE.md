@@ -95,7 +95,6 @@ The goal is maximum sharing with minimal divergence. All three environments run 
 | **GUI apps** | VS Code, Chrome, iTerm2, BTT, Homerow, Karabiner, Spaceman, Lunar, Multitouch | none | none |
 | **Keyboard tools** | kanata + karabiner-elements | none | none |
 | **App backup** | mackup (runs in bootstrap + `update-all`) | none | none |
-| **shell-ai** | pipx install (phase 03) | none | pipx install (phase 05) |
 | **macOS defaults** | phase 04 (opt-in) | none | none |
 | **Linux packages** | — | — | neovim, zoxide, eza (apt/deb) |
 | **fzf bindings** | `$HOMEBREW_PREFIX/opt/fzf/shell/` | `$HOMEBREW_PREFIX/opt/fzf/shell/` | `/usr/share/doc/fzf/examples/` |

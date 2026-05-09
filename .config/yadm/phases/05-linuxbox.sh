@@ -70,7 +70,7 @@ http://deb.gierens.de stable main" \
   fi
 fi
 
-# ─── pipx + shell-ai ─────────────────────────────────────────────────────────
+# ─── pipx ─────────────────────────────────────────────────────────
 
 if ! command -v pipx >/dev/null 2>&1; then
   if _can_sudo_apt; then
@@ -80,13 +80,6 @@ if ! command -v pipx >/dev/null 2>&1; then
   else
     echo "Warning: pipx not found and sudo apt-get not available — install manually." >&2
   fi
-fi
-
-if ! pipx list 2>/dev/null | grep -q shell-ai; then
-  echo "Installing shell-ai..."
-  pipx install shell-ai
-else
-  echo "shell-ai already installed."
 fi
 
 # ─── required directories (mirrors 03-shell.sh for Linux) ────────────────────
