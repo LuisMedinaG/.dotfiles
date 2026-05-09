@@ -31,8 +31,9 @@ __pycache__/
 venv/
 env/
 
-# Tooling state
-.claude/
+# Tooling state — local/generated files only; settings.json is committed
+.claude/settings.local.json
+.claude/todos.json
 
 # Machine-local overrides — sourced automatically, never committed.
 # These live in $HOME and are intentionally outside yadm tracking.
