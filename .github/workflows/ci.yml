@@ -27,20 +27,28 @@ jobs:
       - name: zsh -n on all zsh files
         run: |
           set -e
+          echo "Checking zsh files..."
           for f in .zshenv .zprofile .zshrc .zsh/**/*.zsh .zsh/*.zsh; do
-            [ -f "$f" ] && zsh -n "$f"
+            if [ -f "$f" ]; then
+              echo "  $f"
+              zsh -n "$f" 2>&1 || { echo "FAIL: $f"; exit 1; }
+            fi
           done
+          echo "All zsh files: OK"
 
       - name: sh -n + shellcheck on all shell scripts
         run: |
           set -e
+          echo "Checking shell scripts..."
           find .config/yadm/phases .local/bin -type f \( -name '*.sh' -o -perm -u+x \) -print0 |
             while IFS= read -r -d '' f; do
               # Skip files that aren't actually shell scripts
               head -1 "$f" | grep -q '^#!/.*sh' || continue
-              sh -n "$f"
+              echo "  $f"
+              sh -n "$f" 2>&1 || { echo "FAIL: $f"; exit 1; }
               shellcheck --exclude=SC1091,SC2312 --severity=warning "$f" || true
             done
+          echo "All shell scripts: OK"
 
   # ─── Job 2: BATS e2e ───────────────────────────────────────────────────────
   bats:
