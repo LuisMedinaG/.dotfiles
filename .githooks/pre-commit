@@ -1,0 +1,87 @@
+#!/bin/sh
+#
+# pre-commit — validate staged shell/zsh files before they're committed.
+#
+# Catches the syntax + ShellCheck issues that otherwise only surface in CI.
+# Only staged files are checked, so it stays fast.
+#
+# Enable once per clone:
+#   git config core.hooksPath .githooks
+#
+# Bypass for a single commit (e.g. WIP):
+#   git commit --no-verify
+#
+# NOTE: deliberately uses `set -u` (not `set -eu`) — the hook runs several
+# checks and aggregates every failure into one report instead of bailing on
+# the first. Exit status is driven by the `fail` flag at the end.
+set -u
+
+staged=$(git diff --cached --name-only --diff-filter=ACM)
+if [ -z "$staged" ]; then
+  exit 0
+fi
+
+fail=0
+
+# Locate a zsh binary (optional — zsh checks are skipped if it's absent).
+ZSH_BIN=""
+for candidate in zsh /bin/zsh /usr/bin/zsh /opt/homebrew/bin/zsh /usr/local/bin/zsh; do
+  if command -v "$candidate" >/dev/null 2>&1; then
+    ZSH_BIN=$(command -v "$candidate")
+    break
+  fi
+done
+
+have_shellcheck=0
+if command -v shellcheck >/dev/null 2>&1; then
+  have_shellcheck=1
+fi
+
+check_zsh() {
+  [ -n "$ZSH_BIN" ] || return 0
+  if ! "$ZSH_BIN" -n "$1" 2>/dev/null; then
+    echo "  ✗ zsh syntax error: $1"
+    fail=1
+  fi
+}
+
+for file in $staged; do
+  [ -f "$file" ] || continue
+
+  # zsh config files (no extension) and modules (*.zsh).
+  case "$file" in
+    .zshenv|.zshrc|.zprofile|*.zsh)
+      check_zsh "$file"
+      continue
+      ;;
+  esac
+
+  # Everything else: classify by shebang.
+  shebang=$(head -1 "$file" 2>/dev/null)
+  case "$shebang" in
+    *zsh*)  check_zsh "$file"; continue ;;
+    *bash*) checker=bash ;;
+    *sh*)   checker=sh ;;
+    *)      continue ;;
+  esac
+
+  if ! "$checker" -n "$file" 2>/dev/null; then
+    echo "  ✗ $checker syntax error: $file"
+    fail=1
+  fi
+
+  if [ "$have_shellcheck" -eq 1 ]; then
+    # Same exclusions as tests/run_all.sh + the trap/unused false-positives.
+    if ! shellcheck --exclude=SC1091,SC2312,SC2034,SC2317 --severity=warning "$file"; then
+      fail=1
+    fi
+  fi
+done
+
+if [ "$fail" -ne 0 ]; then
+  echo ""
+  echo "pre-commit: checks failed — fix the above, or bypass with 'git commit --no-verify'."
+  exit 1
+fi
+
+exit 0

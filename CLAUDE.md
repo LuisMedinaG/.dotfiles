@@ -24,6 +24,15 @@ yadm pull         # fast-forward to latest
 - **Run tests:** `bats tests/e2e/`
 - **Bootstrap:** `yadm bootstrap` (or `sh ~/.config/yadm/bootstrap`)
 - **Brewfile:** `.config/brew/Brewfile`
+- **Enable pre-commit checks:** `git config core.hooksPath .githooks` (run once per clone)
+
+## Pre-commit Hook
+
+`.githooks/pre-commit` validates **staged** shell/zsh files before each commit —
+`zsh -n` for `.zsh*`/`*.zsh`, `sh -n`/`bash -n` by shebang, plus ShellCheck. It
+catches the syntax/lint issues that otherwise only fail in CI. Enable it once per
+clone with `git config core.hooksPath .githooks`; bypass a single commit with
+`git commit --no-verify`. Missing `zsh`/`shellcheck` are skipped gracefully.
 
 ## Conventions
 

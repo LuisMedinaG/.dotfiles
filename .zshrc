@@ -19,4 +19,8 @@ source_if_exists $ZSH/plugins/init.zsh
 source_if_exists ~/.zshrc.local
 
 # Print zsh profiling report when ZPROF=1. Activate with: ZPROF=1 zsh -i -c exit
-[[ "${ZPROF:-0}" == 1 ]] && zprof | head -30
+# Use an `if` (not `&&`) so .zshrc's exit status stays 0 when ZPROF is unset —
+# otherwise bare `zsh -i -c exit` returns 1 and breaks status checks.
+if [[ "${ZPROF:-0}" == 1 ]]; then
+  zprof | head -30
+fi
