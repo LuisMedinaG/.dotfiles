@@ -18,7 +18,7 @@ source_if_exists() {
 # ───── Homebrew ─────
 # Cache `brew shellenv` output (static PATH/env vars) to avoid a subprocess fork
 # on every shell. Regenerated if missing or older than 7 days.
-# Consistent with the pyenv/jenv/zoxide cache pattern in .zprofile / plugins/init.zsh.
+# Consistent with the zoxide cache pattern in plugins/init.zsh.
 if [ -z "$HOMEBREW_PREFIX" ]; then
   _brew_bin=""
   # Cover Apple Silicon, Intel macOS, Linuxbrew, and any custom PATH-based install.

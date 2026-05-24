@@ -17,6 +17,8 @@ brew "yadm"         # Dotfile management
 brew "zoxide"       # Smarter cd
 brew "gh"           # GitHub CLI
 brew "tmux"         # Terminal multiplexer
+tap "cormacrelf/tap"
+brew "cormacrelf/tap/dark-notify" # Auto-switch tmux theme on macOS light/dark mode
 brew "mackup"       # App settings backup
 brew "kanata"       # Keyboard remapping daemon
 
@@ -25,8 +27,6 @@ cask "spaceman"     # Show spaces in menu bar
 # ZSH plugins are managed by Zinit (plugins/init.zsh) — no Homebrew packages needed
 
 # Development tools
-brew "pyenv"        # Python version management
-brew "jenv"         # Java version management
 brew "pipx"         # Install Python CLI tools in isolated envs
 
 # Applications

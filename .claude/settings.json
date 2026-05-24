@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | python3 -c \"import json,sys,os; d=json.load(sys.stdin); f=d.get('file_path',''); print(os.path.expanduser(f)) if f else None\"); home=$(eval echo ~); case \"$file\" in \"$home/.zsh\"*|\"$home/.zshrc\"*|\"$home/.zshenv\"*|\"$home/.zprofile\"*|\"$home/.zshrc.local\"*|\"$home/.zshenv.local\"*) echo '{\"decision\":\"deny\",\"reason\":\"Edit the dotfiles repo, not $HOME directly. Path: .dotfiles/.zsh/ or root config files.\"}'; exit 2 ;; esac",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | python3 -c \"import json,sys,os; d=json.load(sys.stdin); f=d.get('file_path',''); print(f) if f else None\"); case \"$file\" in *.sh) command -v shellcheck >/dev/null 2>&1 && shellcheck \"$file\" 2>&1 ;; *.zsh) zsh -n \"$file\" 2>&1 ;; esac",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

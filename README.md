@@ -29,7 +29,7 @@ Then open a new terminal.
 |-------|--------|--------------|
 | 00 | `00-backup.sh` | Backs up existing dotfiles before overwriting |
 | 01 | `01-homebrew.sh` | Installs packages from Brewfile or Brewfile.work |
-| 02 | `02-dotfiles.sh` | Checks out dotfiles, pulls latest, inits git submodules |
+| 02 | `02-dotfiles.sh` | Checks out dotfiles, pulls latest |
 | 03 | `03-shell.sh` | Installs fzf key bindings, creates required directories |
 
 The `work` profile selects `Brewfile.work` (CLI tools only, no casks — no kanata, BetterTouchTool, Spaceman, Lunar, etc.) and skips mackup setup.
@@ -77,7 +77,7 @@ Move machine-specific config into `.local` files (not tracked by yadm):
 | File | Loaded by | Use for |
 |------|-----------|---------|
 | `~/.zshenv.local` | All shells (incl. tmux) | Env vars, PATH additions |
-| `~/.zprofile.local` | Login shells only | pyenv/jenv overrides, login-only PATH |
+| `~/.zprofile.local` | Login shells only | Login-only PATH, version managers |
 | `~/.zshrc.local` | Interactive shells | Aliases, functions, company-specific config |
 
 **macOS personal — additional steps:**
@@ -118,7 +118,7 @@ Grant permissions for keyboard tools:
 
 **Core CLI tools present on all three:** `bat`, `eza`, `fd`, `fzf`, `ripgrep`, `neovim`, `git`, `curl`, `jq`, `gh`, `tmux`, `zoxide`
 
-**Work omits** (not in Brewfile.work): `kanata`, `mackup`, `pyenv`, `jenv` — add to `~/.zshrc.local` as needed.
+**Work omits** (not in Brewfile.work): `kanata`, `mackup` — add to `~/.zshrc.local` as needed.
 
 **Linux omits** (phase 05 doesn't install): `bat`, `ripgrep` — install via `apt install bat ripgrep` and the `cat`/`grep` aliases will activate automatically.
 
@@ -149,16 +149,15 @@ yadm bootstrap
 
 ```
 .zshenv            → env vars, EDITOR, source_if_exists helper → .zshenv.local
-.zprofile          → Homebrew, pyenv (cached), jenv (cached), NVM → .zprofile.local
+.zprofile          → Homebrew PATH, NVM dir → .zprofile.local
 .zshrc             → sources everything below → .zshrc.local:
 
 .zsh/
 ├── options.zsh    → shell options, keybindings
 ├── history.zsh    → history settings
 ├── completion.zsh → tab completion, fzf-tab config, SSH hosts
-├── functions.zsh  → lazy NVM, .nvmrc auto-switch, take, reload-ssh,
-│                    cache_eval, shell-time, update-all, dotfiles-sync,
-│                    karabiner-build
+├── functions.zsh  → lazy NVM, .nvmrc auto-switch, take, activate-venv,
+│                    shell-time, update-all, dotfiles-sync, karabiner-build
 ├── aliases.zsh    → ls→eza, cat→bat, grep→rg, vim→nvim
 ├── prompt.zsh     → minimal prompt with git branch
 ├── plugins/
@@ -176,7 +175,7 @@ yadm bootstrap
 | bat, eza, fd, fzf, ripgrep | neovim, gh |
 | git, curl, wget, jq, tree | tmux, zoxide |
 
-**macOS personal adds** ([Brewfile](.config/brew/Brewfile)): `kanata`, `mackup`, `pyenv`, `jenv`, and GUI casks (VS Code, Chrome, iTerm2, Homerow, Karabiner-Elements, BetterTouchTool, Multitouch, Spaceman, Lunar).
+**macOS personal adds** ([Brewfile](.config/brew/Brewfile)): `kanata`, `mackup`, and GUI casks (VS Code, Chrome, iTerm2, Homerow, Karabiner-Elements, BetterTouchTool, Multitouch, Spaceman, Lunar).
 
 **macOS work** ([Brewfile.work](.config/brew/Brewfile.work)): core CLI only, no casks, no keyboard tools.
 
@@ -192,7 +191,6 @@ yadm bootstrap
 | Karabiner | `.config/karabiner-config/` | Meh key + leader system ([details](.config/karabiner-config/README.md)) |
 | Kanata | `.config/kanata/` | Home-row mods + Fn layer ([details](.config/kanata/README.md)) |
 | skhd | `.config/skhd/.skhdrc` | macOS hotkey daemon |
-| Raycast | `.config/raycast/` | Extensions and config ([details](.config/raycast/README.md)) |
 | Mackup | `.mackup.cfg` + `.mackup/` | Backs up GUI app settings (iTerm2, VS Code, BTT, etc.) |
 
 ### Mackup (app settings backup)
@@ -218,10 +216,7 @@ Apps tracked: iTerm2, VS Code, Spotify, BetterTouchTool, Homerow, Multitouch, Sw
 | `kanata-reload` | Reload kanata daemon (auto-setup on first run) |
 | `take <dir>` | mkdir + cd in one command |
 | `activate-venv` | Fuzzy-select a Python virtual environment |
-| `reload-ssh` | Reload Yubikey SSH keys |
 | `validateYaml <file>` | Validate a YAML file |
-| `addToPATH <path>` | Idempotent PATH prepend |
-| `cache_eval <name> <cmd> [days]` | Cache eval output (default 7-day TTL) |
 
 ### Scripts ([.local/bin/](.local/bin/))
 
@@ -252,15 +247,6 @@ dotfiles-sync to-clone   # copy yadm changes → git clone
 dotfiles-sync to-yadm    # copy git clone changes → yadm worktree
 ```
 
-### Sensitive files
-
-Files listed in `.config/yadm/encrypt` can be encrypted:
-
-```bash
-yadm encrypt    # encrypt listed files
-yadm decrypt    # decrypt them
-```
-
 ### Machine-specific configs
 
 **Preferred:** Use `.local` files for machine-specific overrides (not tracked by yadm):
@@ -282,9 +268,9 @@ yadm alt
 
 ## Performance
 
-pyenv and jenv init output is cached in `~/.cache/zsh/` with a 7-day TTL. NVM is lazy-loaded (only sourced on first `nvm`/`node`/`npm` call). `.nvmrc` files are auto-detected on `cd`.
+`brew shellenv` output is cached in `~/.cache/zsh/` with a 7-day TTL. NVM is lazy-loaded (only sourced on first `nvm`/`node`/`npm` call). `.nvmrc` files are auto-detected on `cd`.
 
-Clear caches: `rm ~/.cache/zsh/pyenv_init.zsh ~/.cache/zsh/jenv_init.zsh`
+Clear caches: `rm ~/.cache/zsh/*.zsh`
 
 Benchmark: `shell-time` (or `shell-time 50` for more iterations)
 
@@ -292,32 +278,11 @@ Benchmark: `shell-time` (or `shell-time 50` for more iterations)
 
 ## Testing
 
-### Locally
-
 ```bash
-sh tests/run_all.sh
+bats tests/e2e/
 ```
 
-Checks ZSH syntax, shell script syntax, ShellCheck, Brewfile validation, and common mistakes. Takes a few seconds, installs nothing.
-
-### Docker
-
-```bash
-docker build -t dotfiles-test -f Dockerfile.test .
-docker run --rm dotfiles-test
-```
-
-### CI (GitHub Actions)
-
-Every push to `main` runs three jobs automatically:
-
-| Job | Runner | What it checks |
-|-----|--------|----------------|
-| Syntax & Lint | Ubuntu | zsh -n, sh -n, shellcheck, common mistakes |
-| Brewfile Check | macOS | All packages exist in Homebrew |
-| Docker Test | Ubuntu | Builds and runs the test container |
-
-Results at [Actions](../../actions).
+CI runs on every push: shell lint (zsh -n + shellcheck), bats e2e suite, Brewfile validation on macOS, and a gitleaks secret scan. See [Actions](../../actions).
 
 ---
 
@@ -344,25 +309,22 @@ Results at [Actions](../../actions).
 │   ├── kanata/                 # Kanata (home-row mods + Fn layer)
 │   ├── karabiner-config/       # Karabiner (TypeScript → JSON)
 │   ├── nvim/init.vim           # Neovim config
-│   ├── raycast/                # Raycast extensions & config
 │   ├── skhd/.skhdrc            # Hotkey daemon
 │   ├── tmux/tmux.conf          # tmux config
 │   └── yadm/
 │       ├── bootstrap           # Entry point (calls phases)
-│       ├── encrypt             # Encrypted file list
 │       ├── backup/              # Timestamped backups of overwritten files
 │       ├── logs/                # Bootstrap run logs (bootstrap-YYYYMMDD-HHMMSS.log)
 │       └── phases/
 │           ├── 00-backup.sh    # Backup existing dotfiles
 │           ├── 01-homebrew.sh  # Install packages
-│           ├── 02-dotfiles.sh  # Checkout + submodules
+│           ├── 02-dotfiles.sh  # Checkout + pull
 │           ├── 03-shell.sh     # fzf + directories
 │           ├── 04-macos.sh     # macOS defaults (opt-in)
 │           └── 05-linuxbox.sh  # Linux apt installs (linuxbox profile)
 ├── .local/bin/                 # Scripts (rfv, pre_bootstrap.sh)
 ├── .github/workflows/lint.yml  # CI pipeline
-├── tests/run_all.sh            # Test suite
-├── Dockerfile.test             # Docker test container
+├── tests/e2e/                  # Bats test suite
 ├── .zshenv                     # Environment variables
 ├── .zprofile                   # Login shell setup
 ├── .zshrc                      # Interactive shell config

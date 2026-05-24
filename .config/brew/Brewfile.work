@@ -24,7 +24,3 @@ brew "zoxide"       # Smarter cd
 brew "neovim"
 
 # ZSH plugins are managed by Zinit (plugins/init.zsh) — no Homebrew packages needed
-
-# Development tools (add as needed — these don't require admin)
-# brew "pyenv"
-# brew "jenv"

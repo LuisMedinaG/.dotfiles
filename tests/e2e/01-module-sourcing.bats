@@ -31,11 +31,6 @@ _zsh_stdout() {
   [ "$status" -eq 0 ]
 }
 
-@test "functions.zsh: addToPATH() is defined" {
-  run bash -c 'zsh -i -c "type addToPATH" 2>/dev/null'
-  [ "$status" -eq 0 ]
-}
-
 @test "history.zsh: HISTFILE is set" {
   run bash -c 'zsh -i -c "echo \$HISTFILE" 2>/dev/null'
   [ "$status" -eq 0 ]
