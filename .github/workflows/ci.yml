@@ -27,14 +27,16 @@ jobs:
       - name: zsh -n on all zsh files
         run: |
           set -e
-          echo "Checking zsh files..."
-          for f in .zshenv .zprofile .zshrc .zsh/**/*.zsh .zsh/*.zsh; do
-            if [ -f "$f" ]; then
-              echo "  $f"
-              zsh -n "$f" 2>&1 || { echo "FAIL: $f"; exit 1; }
-            fi
+          echo "Checking zsh configuration files..."
+          # Root config files
+          for f in .zshenv .zprofile .zshrc; do
+            [ -f "$f" ] && zsh -n "$f" && echo "  ✓ $f" || { echo "  ✗ $f"; exit 1; }
           done
-          echo "All zsh files: OK"
+          # Module files
+          echo "Checking zsh modules..."
+          find .zsh -type f -name '*.zsh' | sort | while read f; do
+            zsh -n "$f" && echo "  ✓ $f" || { echo "  ✗ $f"; exit 1; }
+          done
 
       - name: sh -n + shellcheck on all shell scripts
         run: |
