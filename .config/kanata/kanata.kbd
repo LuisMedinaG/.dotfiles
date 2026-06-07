@@ -20,10 +20,8 @@ versus when it's sent from the virtual keyboard of Karabiner-Elements
 https://github.com/pqrs-org/Karabiner-Elements/issues/3879
 |#
 
-;; Caps Lock / Hyper key is handled by Karabiner-Elements (see ../karabiner-config/)
-;; Reference: Hyper key in kanata (disabled, kept for reference):
-;;   hyperkey (tap-hold-press $tap-time $hold-time esc (multi lsft lctl lalt lmet))
-;;   Then in defsrc add `caps` and in base layer use `@hyperkey`
+;; Caps Lock → Meh key (tap = Esc, hold = Ctrl+Alt+Shift)
+;; Handled here in kanata because process-unmapped-keys intercepts caps before Karabiner sees it.
 
 (defcfg
   process-unmapped-keys yes
@@ -32,7 +30,7 @@ https://github.com/pqrs-org/Karabiner-Elements/issues/3879
 
 (defsrc
   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
-  a    s    d    f    j    k    l    ;
+  caps a    s    d    f    j    k    l    ;
   fn
 )
 
@@ -45,18 +43,21 @@ https://github.com/pqrs-org/Karabiner-Elements/issues/3879
 ;; https://precondition.github.io/home-row-mods
 (deflayer base
   🔅   🔆   mctl  sls  dtn  dnd  ◀◀   ▶⏸   ▶▶   🔇   🔉   🔊
-  @a   @s   @d   @f   @j   @k   @l   @;
+  @meh @a   @s   @d   @f   @j   @k   @l   @;
   @fn
 )
 
 ;; Hold fn to get real F1–F12 instead of media keys
 (deflayer fn
   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
-  _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _
   fn
 )
 
 (defalias
+  ;; Meh key
+  meh (tap-hold-press $tap-time $hold-time esc (multi lsft lctl lalt))
+
   ;; Home-row mods
   a (tap-hold $tap-time $hold-time a lctl)
   s (tap-hold $tap-time $hold-time s lalt)
