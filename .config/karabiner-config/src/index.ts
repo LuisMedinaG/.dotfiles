@@ -66,10 +66,12 @@ function createMehKeyRule() {
 
 function createAppQuickAccessRules() {
   return rule('App Quick Access').manipulators([
-    map('g', 'Meh').to(toApp('Google Chrome')),
-    map('v', 'Meh').to(toApp('Visual Studio Code')),
-    map('i', 'Meh').to(toApp('iTerm')),
-    map('c', 'Meh').to(toApp('Claude')),
+    withCondition(ifVar(LEADER_VAR, 0))([
+      map('g', 'Meh').to(toApp('Google Chrome')),
+      map('v', 'Meh').to(toApp('Visual Studio Code')),
+      map('i', 'Meh').to(toApp('iTerm')),
+      map('c', 'Meh').to(toApp('Claude')),
+    ]),
   ]);
 }
 
@@ -96,7 +98,7 @@ function createLeaderKeyRule() {
     l: {
       name: 'Link',
       mapping: validateStringMap(linksData, 'links.json'),
-      action: url => to$(`open ${url}`),
+      action: url => to$(`open "${url}"`),
     },
     r: {
       name: 'Raycast',
@@ -148,9 +150,9 @@ function formatCategoryHint(mapping: Record<string, string | string[]>): string 
   return Object.entries(mapping)
     .map(([key, value]) => {
       const displayName = Array.isArray(value) ? value[1] : value;
-      return `${key.toUpperCase()}_${displayName}\n`;
+      return `${key.toUpperCase()}_${displayName}`;
     })
-    .join('  ');
+    .join('\n  ');
 }
 
 function createLeaderSystem(varName: string, mappings: CategoryMapping, escapeActions: ToEvent[]) {
@@ -169,10 +171,6 @@ function createLeaderSystem(varName: string, mappings: CategoryMapping, escapeAc
         return map(key, 'Meh')
           .toVar(varName, key)
           .toNotificationMessage(varName, `${category.name}:\n  ${hint}`);
-        // .toDelayedAction(
-        //   escapeActions, // Actions when timer expires (ifInvoked)
-        //   escapeActions  // Actions when canceled (ifCanceled) - same cleanup
-        // );
       }),
     ),
 
