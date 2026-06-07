@@ -14,7 +14,7 @@
     </array>
 
     <key>RunAtLoad</key>
-    <true/>
+    <false/>
 
     <key>KeepAlive</key>
     <true/>
