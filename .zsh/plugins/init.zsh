@@ -1,3 +1,8 @@
+# Skip entirely in non-interactive shells (e.g. scripted/tool invocations) —
+# zinit, fzf-tab, zoxide's cd widget, and syntax-highlighting all require zle,
+# which isn't available there. Sourcing them anyway trips bindkey/zle errors.
+[[ -o interactive ]] || return
+
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
     print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
