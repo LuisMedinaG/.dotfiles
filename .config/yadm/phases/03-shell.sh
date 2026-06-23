@@ -51,6 +51,5 @@ if [ ! -f "$ZINIT_DIR/zinit.zsh" ]; then
 else
   echo "Zinit already installed."
 fi
-unset ZINIT_DIR
 
 echo "✓ Phase 3 complete."

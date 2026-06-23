@@ -7,5 +7,3 @@ export interface CategoryMapping {
     action: (v: string) => ToEvent | ToEvent[];
   };
 }
-
-export type CategoryMappings = Record<string, CategoryMapping>;

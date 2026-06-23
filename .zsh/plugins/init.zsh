@@ -23,9 +23,6 @@ autoload -Uz _zinit
 zinit ice wait lucid
 zinit light djui/alias-tips
 
-# https://github.com/wfxr/forgit
-# export FORGIT_INSTALL_DIR="$HOMEBREW_PREFIX/share/forgit"
-# source_if_exists $HOMEBREW_PREFIX/share/forgit/forgit.plugin.zsh
 
 # https://github.com/Aloxaf/fzf-tab
 # Load synchronously: zstyles must be active before first completion invocation.

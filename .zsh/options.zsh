@@ -50,20 +50,10 @@ my-backward-delete-word() {
   zle backward-kill-word
 }
 
-# Delete whole word with `ctrl+alt+w`
-my-backward-delete-whole-word() {
-  local WORDCHARS=$WORDCHARS
-  # Add `:` to WORDCHARS if it's not present
-  [[ ! $WORDCHARS == *":"* ]] && WORDCHARS="$WORDCHARS"":"
-  # zle <widget-name> will run an existing widget.
-  zle backward-kill-word
-}
-
 # Register functions with ZLE
 zle -N my-backward-move-word
 zle -N my-forward-move-word
 zle -N my-backward-delete-word
-zle -N my-backward-delete-whole-word
 
 # Word-movement key bindings — covers Terminal.app, iTerm2, VS Code, Ghostty,
 # Warp, and tmux passthrough. Different terminals send different escape
@@ -86,7 +76,6 @@ bindkey "^[D"      my-backward-move-word  # ESC+D — Terminal.app default profi
 bindkey "^[C"      my-forward-move-word   # ESC+C
 
 bindkey '^W' my-backward-delete-word
-# bindkey '^[^W' my-backward-delete-whole-word
 
 # History search: type partial command, then Up/Down to search history
 bindkey '^[[A' history-beginning-search-backward-end  # Up arrow

@@ -65,20 +65,6 @@ _fzf_compgen_dir() {
     fd --type d --hidden --follow --exclude ".git" "$1"
 }
 
-# Command-specific tab completion (ONLY for commands that benefit) 
-# _fzf_comprun() {
-#     local command=$1
-#     shift
-#     case "$command" in
-#         cd) fzf --height=80% \
-#         --walker-skip .git,node_modules,target \
-#         --preview 'tree -C {}' \
-#         --preview-window=right:35% \
-#         "$@" ;;
-#         *) fzf "$@" ;;
-#     esac
-# }
-
 # Load key bindings and completion
 if [[ -n "$HOMEBREW_PREFIX" ]]; then
     source_if_exists "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"

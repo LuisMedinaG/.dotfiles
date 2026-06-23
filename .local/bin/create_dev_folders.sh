@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -eu
 
 # Define the base directory (you might want to change this)
@@ -26,8 +26,5 @@ FOLDERS=(
 )
 
 echo "Creating base folders..."
-for folder in "${FOLDERS[@]}"; do
-  mkdir -p "$folder" && echo "Created: $folder" || echo "Error creating: $folder"
-done
-
+mkdir -p "${FOLDERS[@]}"
 echo "Base folder structure created."

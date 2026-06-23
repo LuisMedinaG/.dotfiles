@@ -1,18 +1,3 @@
-" ╔══════════════════════════════════════════════════════════════╗
-" ║  Minimalist Neovim Config — Sane Defaults for Getting Started  ║
-" ╚══════════════════════════════════════════════════════════════╝
-"
-" Tips for learning vim:
-"   :Tutor           — built-in 30-min interactive tutorial (start here!)
-"   h/j/k/l          — left/down/up/right
-"   i                — enter insert mode (type text)
-"   Esc or jk        — back to normal mode
-"   :w               — save, :q — quit, :wq — save+quit
-"   dd               — delete line, yy — copy line, p — paste
-"   /pattern         — search, n/N — next/prev match
-"   u / Ctrl-r       — undo / redo
-"   ciw              — change inner word (delete word + insert mode)
-
 " ───── Basics ─────
 set nocompatible             " Use Vim defaults (not vi)
 filetype plugin indent on    " Detect filetypes, load plugins + indent rules

@@ -10,11 +10,9 @@
 set -eu
 
 DOTFILES_PROFILE="personal"
-for arg in "$@"; do
-  case "$arg" in
-    --work) DOTFILES_PROFILE="work" ;;
-  esac
-done
+case "${1:-}" in
+  --work) DOTFILES_PROFILE="work" ;;
+esac
 export DOTFILES_PROFILE
 
 # 1. Install Homebrew (skip if already present)

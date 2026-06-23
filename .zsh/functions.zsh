@@ -156,23 +156,14 @@ dotfiles-sync() {
 
 # Open file in nvim, splitting tmux window if inside a session.
 # Without tmux, just opens nvim normally.
-# Usage: nv file.txt
-#   nv        → opens nvim in current pane
-#   nv file   → splits tmux side-by-side (-h) and opens file
-nv() {
+# Usage: nv file.txt  (horizontal split)  nvl file.txt  (vertical split)
+_nvim_split() {
+  local dir="${1:-}"; shift
   if [ -z "$TMUX" ] || [ $# -eq 0 ]; then
     command nvim "$@"
-    return
+  else
+    tmux split-window -"$dir" -c "#{pane_current_path}" nvim "$@"
   fi
-  tmux split-window -h -c "#{pane_current_path}" nvim "$@"
 }
-
-# Open file in nvim with a top/bottom split (tmux -v).
-# Usage: nvl file.txt
-nvl() {
-  if [ -z "$TMUX" ] || [ $# -eq 0 ]; then
-    command nvim "$@"
-    return
-  fi
-  tmux split-window -v -c "#{pane_current_path}" nvim "$@"
-}
+nv()  { _nvim_split h "$@"; }
+nvl() { _nvim_split v "$@"; }

@@ -70,22 +70,4 @@ http://deb.gierens.de stable main" \
   fi
 fi
 
-# ─── pipx ─────────────────────────────────────────────────────────
-
-if ! command -v pipx >/dev/null 2>&1; then
-  if _can_sudo_apt; then
-    echo "Installing pipx..."
-    _apt_update_once
-    sudo apt-get install -y --no-install-recommends pipx
-  else
-    echo "Warning: pipx not found and sudo apt-get not available — install manually." >&2
-  fi
-fi
-
-# ─── required directories (mirrors 03-shell.sh for Linux) ────────────────────
-
-mkdir -p "$HOME/.local/state/nvim/undo"
-mkdir -p "$HOME/.cache/zsh"
-mkdir -p "$HOME/.venv"
-
 echo "✓ Phase 5 complete."

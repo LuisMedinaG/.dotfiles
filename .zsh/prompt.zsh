@@ -46,5 +46,3 @@ zstyle ':vcs_info:*:*' check-for-changes true
 PROMPT='%(?.%F{cyan}.%F{red})❯%f %F{blue}%2~%f ${vcs_info_msg_0_} '
 RPROMPT='%F{8}%*%f'
 
-# Oh My Posh:
-# eval "$(oh-my-posh init zsh)"

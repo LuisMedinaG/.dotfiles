@@ -16,7 +16,6 @@
 	ds = diff --staged
 	lg = log --oneline --graph --decorate --all -20
 	last = log -1 HEAD --stat
-	hash = rev-parse HEAD
 	uncommit = reset --mixed HEAD^
 	aliases = config --get-regexp ^alias\\.
 [diff]

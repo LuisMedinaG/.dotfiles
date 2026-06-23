@@ -53,14 +53,12 @@ zstyle ':completion:*' completer _extensions _complete _approximate
 # Use cache for commands using cache
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "$HOME/.cache/zsh/zcompcache"
-# Complete the alias when _expand_alias is used as a function
-zstyle ':completion:*' complete true
 
 zle -C alias-expansion complete-word _generic
 bindkey '^Xa' alias-expansion
 zstyle ':completion:alias-expansion:*' completer _expand_alias
 
-# Use cache for commands which use it
+
 
 # Allow you to select in a menu (overridden by fzf-tab below when loaded)
 zstyle ':completion:*' menu select
@@ -78,7 +76,7 @@ zstyle ':completion:*:*:*:*:warnings' format ' %F{red}-- no matches found --%f'
 
 # Only display some tags for the command cd
 zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
-# zstyle ':completion:*:complete:git:argument-1:' tag-order !aliases
+
 
 # Case-insensitive matching (important feature)
 # See ZSHCOMPWID "completion matching control"
@@ -98,13 +96,7 @@ zstyle ":completion:*:descriptions" format "[%d]"
 
 # fzf-tab zstyles are applied in plugins/init.zsh after Zinit loads fzf-tab
 
-# FZF_TAB_DEFAULT_FZF_FLAGS=(
-#   "--height=~85%"
-#   "--walker-skip .git,node_modules,target"
-#   "--preview 'tree -C {}'"
-#   "--preview-window=right:35%"
-# )
-# zstyle ":fzf-tab:*" fzf-flags "${FZF_TAB_DEFAULT_FZF_FLAGS[@]}"
+
 
 # fzf-tab preview zstyles live in plugins/init.zsh (after fzf-tab is loaded)
 

@@ -19,19 +19,8 @@ fi
 # Close System Settings to prevent it from overriding changes
 osascript -e 'tell application "System Settings" to quit' 2>/dev/null || true
 
-# Ask for sudo upfront and keep it alive
+# Ask for sudo upfront and keep it alive for the duration of this script.
 sudo -v
-_sudo_keepalive() { while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done; }
-_sudo_keepalive &
-_SUDO_PID=$!
-_cleanup_sudo_keepalive() {
-  _rc=$?
-  trap - EXIT INT TERM
-  kill "$_SUDO_PID" 2>/dev/null || true
-  wait "$_SUDO_PID" 2>/dev/null || true
-  exit "$_rc"
-}
-trap _cleanup_sudo_keepalive EXIT INT TERM
 
 ###############################################################################
 # General UI/UX                                                               #
@@ -76,7 +65,6 @@ defaults write NSGlobalDomain InitialKeyRepeat -int 10
 
 # Tap to click
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
-defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
 ###############################################################################

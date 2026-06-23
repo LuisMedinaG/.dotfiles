@@ -26,9 +26,6 @@ cask "spaceman"     # Show spaces in menu bar
 
 # ZSH plugins are managed by Zinit (plugins/init.zsh) — no Homebrew packages needed
 
-# Development tools
-brew "pipx"         # Install Python CLI tools in isolated envs
-
 # Applications
 cask "visual-studio-code"
 cask "google-chrome"

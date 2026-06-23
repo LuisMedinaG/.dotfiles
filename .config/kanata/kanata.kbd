@@ -1,25 +1,3 @@
-#|
-MacOS: Sequoia 15.4.1 (24E263)
-Prerequisites:
-1.  Privacy & Security > Full Disk Access: Add <kanata-bin-path>
-2.  Privacy & Security > Input Monitoring: Add <kanata-bin-path>
-
-Launch Commands (Terminal):
-sudo cp com.<username>.kanata.plist /Library/LaunchDaemons/
-sudo launchctl load /Library/LaunchDaemons/com.<username>.kanata.plist
-sudo launchctl start com.<username>.kanata
-|#
-
-#|
-https://github.com/jtroo/kanata/issues/975
-# Bug: F-row key get override on MacOS
-> It seems that macOS behaves differently when fn is sent from an Apple device
-versus when it's sent from the virtual keyboard of Karabiner-Elements
-
-# Fixed in Karabiner-Elements v15.0.14
-https://github.com/pqrs-org/Karabiner-Elements/issues/3879
-|#
-
 ;; Caps Lock → Meh key (tap = Esc, hold = Ctrl+Alt+Shift)
 ;; Handled here in kanata because process-unmapped-keys intercepts caps before Karabiner sees it.
 
