@@ -196,5 +196,24 @@ sync_dotfiles() {
     kanata-stop'
 
   [ "$status" -eq 23 ]
-  [ "$output" = '/bin/launchctl bootout system/io.lumedina.kanata' ]
+  [ "$output" = '/bin/launchctl bootout system/io.lumedina.kanata.manual' ]
+}
+
+@test "shell-safety.KANATA.3 bootstraps a manual job outside launchd startup directories" {
+  [ "$(uname -s)" = Darwin ] || skip 'launchd is macOS only'
+  mkdir -p "$HOME/bin" "$HOME/.config/kanata"
+  touch "$HOME/.config/kanata/kanata.kbd"
+  printf '#!/bin/sh\nexit 0\n' > "$HOME/bin/kanata"
+  chmod +x "$HOME/bin/kanata"
+  export PATH="$HOME/bin:$PATH"
+
+  run zsh -fc 'export ZSH="$MODULES"; source "$MODULES/functions.zsh"
+    sudo() { print -r -- "$*"; }
+    kanata-reload'
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'bootout system/io.lumedina.kanata.manual'* ]]
+  [[ "$output" == *'bootstrap system /Library/Kanata/com.lumedina.kanata.plist'* ]]
+  [[ "$output" != *'/Library/LaunchDaemons/'* && "$output" != *'launchctl enable'* ]]
+  [ "$(/usr/bin/plutil -extract Label raw -o - "$MODULES/tools/com.lumedina.kanata.plist")" = io.lumedina.kanata.manual ]
 }
