@@ -7,6 +7,7 @@ components:
     requirements:
       1: The system daemon runs a root-owned copy of Kanata with a root-owned copy of its configuration.
       2: Stopping the daemon unloads it and reports errors.
+      3: Manual reload starts Kanata without enabling its boot or login jobs.
   SYNC:
     requirements:
       1: Sync detects destination conflicts before copying any files.

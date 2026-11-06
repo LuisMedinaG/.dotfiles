@@ -58,10 +58,11 @@ karabiner-build() {
 # Install fresh snapshots and restart the system daemon.
 kanata-reload() {
   [[ "$(uname -s)" != Darwin ]] && { echo "kanata-reload: macOS only." >&2; return 1; }
-  local label="io.lumedina.kanata"
+  local label="io.lumedina.kanata.manual"
   local plist="com.lumedina.kanata.plist"
-  local daemon_path="/Library/LaunchDaemons/$plist"
   local runtime_dir="/Library/Kanata"
+  # shell-safety.KANATA.3
+  local daemon_path="$runtime_dir/$plist"
   local template="${ZSH:-$HOME/.zsh}/tools/$plist"
   local config="$HOME/.config/kanata/kanata.kbd"
   local binary
@@ -85,7 +86,7 @@ kanata-reload() {
 kanata-stop() {
   [[ "$(uname -s)" != Darwin ]] && { echo "kanata-stop: macOS only." >&2; return 1; }
   # shell-safety.KANATA.2
-  sudo /bin/launchctl bootout system/io.lumedina.kanata || return
+  sudo /bin/launchctl bootout system/io.lumedina.kanata.manual || return
   echo "Kanata stopped"
 }
 

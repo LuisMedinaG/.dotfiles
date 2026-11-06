@@ -30,6 +30,7 @@ Modular ZSH config sourced by `.zshrc` in this order:
 
 Run `kanata-reload` with admin credentials after changing the Kanata config or upgrading the binary.
 It copies the binary from PATH and the config from `~/.config/kanata/kanata.kbd` into `/Library/Kanata`.
+The manual service loads from that directory for the current boot. Use `kanata-stop` to unload it.
 
 Run the regression tests with `bats ~/.zsh/tests/regression.bats`.
 

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>io.lumedina.kanata</string>
+    <string>io.lumedina.kanata.manual</string>
     <key>ProgramArguments</key>
     <array>
         <string>/Library/Kanata/kanata</string>
