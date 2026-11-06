@@ -1,0 +1,29 @@
+feature:
+  name: shell-safety
+  product: zsh
+
+components:
+  KANATA:
+    requirements:
+      1: The system daemon runs a root-owned copy of Kanata with a root-owned copy of its configuration.
+      2: Stopping the daemon unloads it and reports errors.
+  SYNC:
+    requirements:
+      1: Sync detects destination conflicts before copying any files.
+      2: Sync handles staged source changes and literal filenames and reports failures.
+  FZF:
+    requirements:
+      1: File and directory completion enumerate entries under an absolute search root.
+  COMPLETION:
+    requirements:
+      1: Completion initialization audits directories on every startup and refreshes stale dumps.
+      2: SSH completion lists literal host aliases from config, known hosts, and the system hosts file.
+  STARTUP:
+    requirements:
+      1: Lazy NVM loading uses the same installation path as detection.
+      2: Zoxide startup uses only complete generated cache files.
+      3: Plugin initialization stops when Zinit cannot load and keeps native completion when fzf-tab is unavailable.
+      4: Existing Node command aliases do not prevent reloading shell functions.
+  UPDATES:
+    requirements:
+      1: The update command shows failures and exits nonzero if any step fails.

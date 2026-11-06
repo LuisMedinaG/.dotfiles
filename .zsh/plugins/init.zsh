@@ -3,20 +3,18 @@
 # which isn't available there. Sourcing them anyway trips bindkey/zle errors.
 [[ -o interactive ]] || return
 
-### Added by Zinit's installer
+# shell-safety.STARTUP.3
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
     print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
-    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
-    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
-        print -P "%F{33} %F{34}Installation successful.%f%b" || \
-        print -P "%F{160} The clone has failed.%f%b"
+    command mkdir -p "$HOME/.local/share/zinit" &&
+        command chmod g-rwX "$HOME/.local/share/zinit" || return
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" || return
+    print -P "%F{33} %F{34}Installation successful.%f%b"
 fi
 
-source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh" || return
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
-
-### End of Zinit's installer chunk
 
 # https://github.com/djui/alias-tips
 # Turbo: defer one prompt cycle — no ordering constraint.
@@ -26,20 +24,18 @@ zinit light djui/alias-tips
 
 # https://github.com/Aloxaf/fzf-tab
 # Load synchronously: zstyles must be active before first completion invocation.
-zinit light Aloxaf/fzf-tab
+if (( $+commands[fzf] )) && zinit light Aloxaf/fzf-tab && (( $+functions[enable-fzf-tab] )); then
+  zstyle ':completion:*' menu no
+  zstyle ':fzf-tab:*' switch-group '<' '>'
+  zstyle ':fzf-tab:*' use-fzf-default-opts yes
 
-# Apply fzf-tab config unconditionally — zstyles are inert until fzf-tab loads.
-zstyle ':completion:*' menu no
-zstyle ':fzf-tab:*' switch-group '<' '>'
-zstyle ':fzf-tab:*' use-fzf-default-opts yes
-
-# Previews — make tab completion visual
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --icons --color=always $realpath'
-zstyle ':fzf-tab:complete:*:*' fzf-preview \
-  'if [ -d $realpath ]; then eza -1 --icons --color=always $realpath; elif [ -f $realpath ]; then bat -n --color=always --line-range :50 $realpath 2>/dev/null || cat $realpath; fi'
-zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
-  '[[ $group == "[process ID]" ]] && ps -p $word -o pid,user,%cpu,%mem,command'
-zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags '--preview-window=down:3:wrap'
+  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --icons --color=always $realpath'
+  zstyle ':fzf-tab:complete:*:*' fzf-preview \
+    'if [ -d $realpath ]; then eza -1 --icons --color=always $realpath; elif [ -f $realpath ]; then bat -n --color=always --line-range :50 $realpath 2>/dev/null || cat $realpath; fi'
+  zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
+    '[[ $group == "[process ID]" ]] && ps -p $word -o pid,user,%cpu,%mem,command'
+  zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags '--preview-window=down:3:wrap'
+fi
 
 # https://github.com/ajeetdsouza/zoxide
 # For completions to work, the above line must be added after compinit is called.
@@ -47,13 +43,19 @@ zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags '--preview-window=d
 if command -v zoxide >/dev/null 2>&1; then
   _zoxide_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zoxide_init.zsh"
   # Regen if missing/empty, or older than 7 days. (N.mh+168) = mtime > 168h ago.
-  _zoxide_stale=( ${_zoxide_cache}(N.mh+168) )
-  if [[ ! -s $_zoxide_cache || -n $_zoxide_stale ]]; then
-    mkdir -p "${_zoxide_cache:h}"
-    zoxide init zsh --cmd cd > "$_zoxide_cache"
+  # shell-safety.STARTUP.2
+  if [[ ! -s "$_zoxide_cache" || -n "$_zoxide_cache"(#qN.mh+168) ]]; then
+    if command mkdir -p "${_zoxide_cache:h}" &&
+        _zoxide_tmp=$(command mktemp "$_zoxide_cache.XXXXXXXX"); then
+      if ! zoxide init zsh --cmd cd > "$_zoxide_tmp" ||
+          [[ ! -s "$_zoxide_tmp" ]] ||
+          ! command mv -f "$_zoxide_tmp" "$_zoxide_cache"; then
+        command rm -f "$_zoxide_tmp"
+      fi
+    fi
   fi
-  source "$_zoxide_cache"
-  unset _zoxide_cache _zoxide_stale
+  [[ -s "$_zoxide_cache" ]] && source "$_zoxide_cache"
+  unset _zoxide_cache _zoxide_tmp
 fi
 
 # https://github.com/olets/zsh-abbr — must come before syntax-highlighting.

@@ -58,11 +58,11 @@ export FZF_ALT_C_OPTS="--walker-skip .git,node_modules,target --preview 'eza --t
 # cat <TAB>          # Needs files
 # cp file1 <TAB>     # Second argument needs files
 _fzf_compgen_path() {
-    fd --hidden --follow --exclude ".git" "$1"
+    fd --hidden --follow --exclude ".git" . "$1"
 }
 
 _fzf_compgen_dir() {
-    fd --type d --hidden --follow --exclude ".git" "$1"
+    fd --type d --hidden --follow --exclude ".git" . "$1"
 }
 
 # Load key bindings and completion
