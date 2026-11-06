@@ -14,12 +14,11 @@ autoload -U compinit
 # Define zcompdump file location
 zcompdump_file="${ZDOTDIR:-$HOME}/.zcompdump"
 
-# Only regenerate completion cache once per day.
-# Native zsh glob (N.mh-24) avoids forking `find` on every shell startup.
-if [[ -n "$zcompdump_file"(#qN.mh-24) ]]; then
-  compinit -C -i -d "$zcompdump_file"   # use existing cache, fast path
+# shell-safety.COMPLETION.1
+if [[ -f "$zcompdump_file" && -z "$zcompdump_file"(#qN.mh-24) ]]; then
+  compinit -i -d "$zcompdump_file" -D && compdump
 else
-  compinit -i -d "$zcompdump_file"      # stale or missing → regenerate
+  compinit -i -d "$zcompdump_file"
 fi
 unset zcompdump_file
 _comp_options+=(globdots) # With hidden files
@@ -100,27 +99,36 @@ zstyle ":completion:*:descriptions" format "[%d]"
 
 # fzf-tab preview zstyles live in plugins/init.zsh (after fzf-tab is loaded)
 
-# SSH hosts completion
-# zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
-zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts '
-  reply=(
-    ${=${${(f)"$(
-      {
-        # Get hosts from SSH config files (main + any config-* fragments)
-        command cat ~/.ssh/config ~/.ssh/config-*(N) /etc/ssh/ssh_config 2>/dev/null |
-        command grep -i "^\\s*Host\\s" | command awk "{print \$2}" | 
-        command grep -v "\\*" ;
-        
-        # Get hosts from known_hosts files
-        command cat ~/.ssh/known_hosts /etc/ssh/ssh_known_hosts 2>/dev/null |
-        command awk "{print \$1}" | command cut -d, -f1 | 
-        command grep -v "\\[|\\*" | command sed "s/].*//g" ;
-        
-        # Get hosts from /etc/hosts
-        command cat /etc/hosts 2>/dev/null |
-        command grep -v "^#" | command grep -v "^\\s*$" |
-        command awk "{print \$2}" ;
-      } | command sort -u
-    )"}%%[# ]*}//,/ }
-  )
-'
+# shell-safety.COMPLETION.2
+_ssh_completion_hosts() {
+  {
+    command cat ~/.ssh/config ~/.ssh/config-*(N) /etc/ssh/ssh_config 2>/dev/null |
+      command awk '
+        tolower($0) ~ /^[[:space:]]*host([[:space:]]|=)/ {
+          sub(/^[[:space:]]*[^[:space:]=]+[[:space:]]*=?[[:space:]]*/, "")
+          sub(/#.*/, "")
+          for (i = 1; i <= NF; i++) {
+            gsub(/^"|"$/, "", $i)
+            if ($i !~ /[?*!]/ && $i != "") print $i
+          }
+        }'
+
+    command cat ~/.ssh/known_hosts /etc/ssh/ssh_known_hosts 2>/dev/null |
+      command awk '
+        NF && $1 !~ /^[#@|]/ {
+          n = split($1, hosts, ",")
+          for (i = 1; i <= n; i++) {
+            host = hosts[i]
+            if (host ~ /^\[.*\]:[0-9]+$/) {
+              sub(/^\[/, "", host)
+              sub(/\]:[0-9]+$/, "", host)
+            }
+            if (host !~ /[?*!\[\]]/ && host != "") print host
+          }
+        }'
+
+    command awk '{ sub(/#.*/, ""); for (i = 2; i <= NF; i++) print $i }' /etc/hosts
+  } | command sort -u
+}
+
+zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${(f)"$(_ssh_completion_hosts)"})'
